@@ -27,9 +27,19 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 
 REQUIREMENTS = ['python-mirobo==0.1.3']
 
-ATTR_POWER = 'power'
 ATTR_TEMPERATURE = 'temperature'
-ATTR_CURRENT = 'current'
+ATTR_HUMIDITY = 'humidity'
+ATTR_AIR_QUALITY_INDEX = 'aqi'
+ATTR_MODE = 'mode'
+ATTR_FILTER_HOURS_USED = 'filter_hours_used'
+ATTR_FILTER_LIFE = 'filter_life_remaining'
+ATTR_FAVORITE_LEVEL = 'favorite_level'
+ATTR_BUZZER = 'buzzer'
+ATTR_CHILD_LOCK = 'child_lock'
+ATTR_LED = 'led'
+ATTR_LED_BRIGHTNESS = 'led_brightness'
+ATTR_MOTOR_SPEED = 'motor_speed'
+
 SUCCESS = ['ok']
 
 
@@ -69,7 +79,17 @@ class XiaomiAirPurifier(FanEntity):
         self._state = None
         self._state_attrs = {
             ATTR_TEMPERATURE: None,
-            ATTR_CURRENT: None
+            ATTR_HUMIDITY: None,
+            ATTR_AIR_QUALITY_INDEX: None,
+            ATTR_MODE: None,
+            ATTR_FILTER_HOURS_USED: None,
+            ATTR_FILTER_LIFE: None,
+            ATTR_FAVORITE_LEVEL: None,
+            ATTR_BUZZER: None,
+            ATTR_CHILD_LOCK: None,
+            ATTR_LED: None,
+            ATTR_LED_BRIGHTNESS: None,
+            ATTR_MOTOR_SPEED: None
         }
 
     @property
@@ -143,7 +163,16 @@ class XiaomiAirPurifier(FanEntity):
             self._state = state.is_on
             self._state_attrs = {
                 ATTR_TEMPERATURE: state.temperature,
-                ATTR_CURRENT: state.current,
+                ATTR_HUMIDITY: state.humidity,
+                ATTR_MODE: state.mode,
+                ATTR_FILTER_HOURS_USED: state.filter_hours_used,
+                ATTR_FILTER_LIFE: state.filter_life_remaining,
+                ATTR_FAVORITE_LEVEL: state.favorite_level,
+                ATTR_BUZZER: state.buzzer,
+                ATTR_CHILD_LOCK: state.child_lock,
+                ATTR_LED: state.led,
+                ATTR_LED_BRIGHTNESS: state.led_brightness,
+                ATTR_MOTOR_SPEED: state.motor_speed
             }
 
         except DeviceException as ex:
