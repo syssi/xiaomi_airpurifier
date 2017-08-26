@@ -25,7 +25,10 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
 })
 
-REQUIREMENTS = ['python-mirobo==0.1.3']
+#REQUIREMENTS = ['python-mirobo']
+REQUIREMENTS = ['https://github.com/syssi/python-mirobo/archive/'
+                '297acd2e87e415853731b40e93b88fcc3a279f2c.zip#'
+                'python-mirobo']
 
 ATTR_TEMPERATURE = 'temperature'
 ATTR_HUMIDITY = 'humidity'
