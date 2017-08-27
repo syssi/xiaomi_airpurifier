@@ -26,8 +26,8 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 })
 
 #REQUIREMENTS = ['python-mirobo']
-REQUIREMENTS = ['https://github.com/syssi/python-mirobo/archive/'
-                '297acd2e87e415853731b40e93b88fcc3a279f2c.zip#'
+REQUIREMENTS = ['https://github.com/rytilahti/python-mirobo/archive/'
+                '168f5c0ff381b3b02cedd0917597195b3c521a20.zip#'
                 'python-mirobo']
 
 ATTR_TEMPERATURE = 'temperature'
