@@ -167,7 +167,7 @@ class XiaomiAirPurifier(FanEntity):
             self._state_attrs = {
                 ATTR_TEMPERATURE: state.temperature,
                 ATTR_HUMIDITY: state.humidity,
-                ATTR_MODE: state.mode,
+                ATTR_MODE: state.mode.value,
                 ATTR_FILTER_HOURS_USED: state.filter_hours_used,
                 ATTR_FILTER_LIFE: state.filter_life_remaining,
                 ATTR_FAVORITE_LEVEL: state.favorite_level,
