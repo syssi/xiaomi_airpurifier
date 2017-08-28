@@ -174,7 +174,7 @@ class XiaomiAirPurifier(FanEntity):
                 ATTR_BUZZER: state.buzzer,
                 ATTR_CHILD_LOCK: state.child_lock,
                 ATTR_LED: state.led,
-                ATTR_LED_BRIGHTNESS: state.led_brightness,
+                ATTR_LED_BRIGHTNESS: state.led_brightness.value,
                 ATTR_MOTOR_SPEED: state.motor_speed
             }
 
