@@ -81,6 +81,7 @@ class XiaomiAirPurifier(FanEntity):
         self._air_purifier = air_purifier
         self._state = None
         self._state_attrs = {
+            ATTR_AIR_QUALITY_INDEX: None,
             ATTR_TEMPERATURE: None,
             ATTR_HUMIDITY: None,
             ATTR_AIR_QUALITY_INDEX: None,
@@ -165,6 +166,7 @@ class XiaomiAirPurifier(FanEntity):
 
             self._state = state.is_on
             self._state_attrs = {
+                ATTR_AIR_QUALITY_INDEX: state.aqi,
                 ATTR_TEMPERATURE: state.temperature,
                 ATTR_HUMIDITY: state.humidity,
                 ATTR_MODE: state.mode.value,
