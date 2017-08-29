@@ -11,7 +11,8 @@ import logging
 import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.fan import (FanEntity, PLATFORM_SCHEMA, )
+from homeassistant.helpers.entity import ToggleEntity
+from homeassistant.components.fan import (FanEntity, PLATFORM_SCHEMA, SUPPORT_SET_SPEED, )
 from homeassistant.const import (CONF_NAME, CONF_HOST, CONF_TOKEN, )
 from homeassistant.exceptions import PlatformNotReady
 
@@ -96,6 +97,11 @@ class XiaomiAirPurifier(FanEntity):
         }
 
     @property
+    def supported_features(self):
+        """Flag supported features."""
+        return SUPPORT_SET_SPEED
+
+    @property
     def should_poll(self):
         """Poll the fan."""
         return True
@@ -136,8 +142,13 @@ class XiaomiAirPurifier(FanEntity):
             return False
 
     @asyncio.coroutine
-    def async_turn_on(self, **kwargs):
+    def async_turn_on(self: ToggleEntity, speed: str=None, **kwargs) -> None:
         """Turn the fan on."""
+
+        if speed:
+            # Assumption: If operation mode was set the device must not be turned on explicit
+            yield from self.async_set_speed(speed)
+            return
 
         result = yield from self._try_command(
             "Turning the air purifier on failed.", self._air_purifier.on)
@@ -146,7 +157,7 @@ class XiaomiAirPurifier(FanEntity):
             self._state = True
 
     @asyncio.coroutine
-    def async_turn_off(self, **kwargs):
+    def async_turn_off(self: ToggleEntity, **kwargs) -> None:
         """Turn the fan off."""
         result = yield from self._try_command(
             "Turning the air purifier off failed.", self._air_purifier.off)
@@ -181,3 +192,40 @@ class XiaomiAirPurifier(FanEntity):
 
         except DeviceException as ex:
             _LOGGER.error("Got exception while fetching the state: %s", ex)
+
+    @property
+    def speed_list(self: ToggleEntity) -> list:
+        """Get the list of available speeds."""
+        from mirobo.airpurifier import OperationMode
+        supported_speeds = list()
+        for mode in OperationMode:
+            supported_speeds.append(mode.name)
+
+        return supported_speeds
+
+    @property
+    def speed(self):
+        """Return the current speed."""
+        if self._state:
+            from mirobo.airpurifier import OperationMode
+
+            return OperationMode(self._state_attrs[ATTR_MODE]).name
+
+        return None
+
+    @asyncio.coroutine
+    def async_set_speed(self: ToggleEntity, speed: str) -> None:
+        """Set the speed of the fan."""
+        _LOGGER.debug("Setting the operation mode to: " + speed)
+        from mirobo.airpurifier import OperationMode
+
+        result = yield from self._try_command(
+            "Setting operation mode of the air purifier failed.", self._air_purifier.set_mode, OperationMode[speed])
+
+        if result:
+            self._state_attrs[ATTR_MODE] = OperationMode[speed].value
+            if speed == OperationMode('idle').name:
+                # Setting the operation mode "idle" will turn off the device(?)
+                self._state = False
+            else:
+                self._state = True
