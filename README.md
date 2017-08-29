@@ -15,4 +15,4 @@ fan:
 ```
 
 # Features
-* Basic functionality: on, off & current state
+* Basic functionality: on, off, operation modes (auto, silent, favorite, idle) & current state
