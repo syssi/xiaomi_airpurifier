@@ -142,8 +142,13 @@ class XiaomiAirPurifier(FanEntity):
             return False
 
     @asyncio.coroutine
-    def async_turn_on(self, **kwargs):
+    def async_turn_on(self: ToggleEntity, speed: str=None, **kwargs) -> None:
         """Turn the fan on."""
+
+        if speed:
+            # Assumption: If operation mode was set the device must not be turned on explicit
+            yield from self.async_set_speed(speed)
+            return
 
         result = yield from self._try_command(
             "Turning the air purifier on failed.", self._air_purifier.on)
@@ -152,7 +157,7 @@ class XiaomiAirPurifier(FanEntity):
             self._state = True
 
     @asyncio.coroutine
-    def async_turn_off(self, **kwargs):
+    def async_turn_off(self: ToggleEntity, **kwargs) -> None:
         """Turn the fan off."""
         result = yield from self._try_command(
             "Turning the air purifier off failed.", self._air_purifier.off)
@@ -199,7 +204,7 @@ class XiaomiAirPurifier(FanEntity):
         return supported_speeds
 
     @property
-    def speed(self) -> str:
+    def speed(self):
         """Return the current speed."""
         if self._state:
             from mirobo.airpurifier import OperationMode
@@ -211,8 +216,16 @@ class XiaomiAirPurifier(FanEntity):
     @asyncio.coroutine
     def async_set_speed(self: ToggleEntity, speed: str) -> None:
         """Set the speed of the fan."""
-        _LOGGER.debug("Set fan speed to: " + speed)
+        _LOGGER.debug("Setting the operation mode to: " + speed)
         from mirobo.airpurifier import OperationMode
 
-        yield from self._try_command(
-            "Turning the air purifier on failed.", self._air_purifier.set_mode, OperationMode[speed])
+        result = yield from self._try_command(
+            "Setting operation mode of the air purifier failed.", self._air_purifier.set_mode, OperationMode[speed])
+
+        if result:
+            self._state_attrs[ATTR_MODE] = OperationMode[speed].value
+            if speed == OperationMode.idle.name:
+                # Setting the operation mode "idle" will turn off the device(?)
+                self._state = False
+            else:
+                self._state = True
