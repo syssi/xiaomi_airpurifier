@@ -224,7 +224,7 @@ class XiaomiAirPurifier(FanEntity):
 
         if result:
             self._state_attrs[ATTR_MODE] = OperationMode[speed].value
-            if speed == OperationMode.idle.name:
+            if speed == OperationMode('idle').name:
                 # Setting the operation mode "idle" will turn off the device(?)
                 self._state = False
             else:
