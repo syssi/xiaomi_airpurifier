@@ -11,7 +11,8 @@ import logging
 import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
-from homeassistant.components.fan import (FanEntity, PLATFORM_SCHEMA, )
+from homeassistant.helpers.entity import ToggleEntity
+from homeassistant.components.fan import (FanEntity, PLATFORM_SCHEMA, SUPPORT_SET_SPEED, )
 from homeassistant.const import (CONF_NAME, CONF_HOST, CONF_TOKEN, )
 from homeassistant.exceptions import PlatformNotReady
 
@@ -94,6 +95,11 @@ class XiaomiAirPurifier(FanEntity):
             ATTR_LED_BRIGHTNESS: None,
             ATTR_MOTOR_SPEED: None
         }
+
+    @property
+    def supported_features(self):
+        """Flag supported features."""
+        return SUPPORT_SET_SPEED
 
     @property
     def should_poll(self):
@@ -181,3 +187,35 @@ class XiaomiAirPurifier(FanEntity):
 
         except DeviceException as ex:
             _LOGGER.error("Got exception while fetching the state: %s", ex)
+
+    @property
+    def speed_list(self: ToggleEntity) -> list:
+        """Get the list of available speeds."""
+        from mirobo.airpurifier import OperationMode
+        supported_speeds = list()
+        for mode in OperationMode:
+            supported_speeds.append(mode.name)
+
+        return supported_speeds
+
+    @property
+    def speed(self) -> str:
+        """Return the current speed."""
+        if self._state:
+            from mirobo.airpurifier import OperationMode
+
+            return OperationMode(self._state_attrs[ATTR_MODE]).name
+
+        return None
+
+    @asyncio.coroutine
+    def async_set_speed(self: ToggleEntity, speed: str) -> None:
+        """Set the speed of the fan."""
+        _LOGGER.debug("Set fan speed to: " + speed)
+        from mirobo.airpurifier import OperationMode
+
+        result = yield from self._try_command(
+            "Turning the air purifier on failed.", self._air_purifier.set_mode, OperationMode[speed])
+
+        if result:
+            self._state = True
