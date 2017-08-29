@@ -7,7 +7,7 @@ Thanks to [Rytilahti](https://github.com/rytilahti/python-mirobo) for all the wo
 # Setup
 
 ```
-switch:
+fan:
   - platform: xiaomi_airpurifier
     name: Xiaomi Air Purifier 2
     host: 192.168.130.71
