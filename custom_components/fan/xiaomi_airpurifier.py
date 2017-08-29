@@ -214,8 +214,5 @@ class XiaomiAirPurifier(FanEntity):
         _LOGGER.debug("Set fan speed to: " + speed)
         from mirobo.airpurifier import OperationMode
 
-        result = yield from self._try_command(
+        yield from self._try_command(
             "Turning the air purifier on failed.", self._air_purifier.set_mode, OperationMode[speed])
-
-        if result:
-            self._state = True
