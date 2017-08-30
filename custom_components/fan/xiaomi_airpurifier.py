@@ -12,7 +12,8 @@ import voluptuous as vol
 
 import homeassistant.helpers.config_validation as cv
 from homeassistant.helpers.entity import ToggleEntity
-from homeassistant.components.fan import (FanEntity, PLATFORM_SCHEMA, SUPPORT_SET_SPEED, )
+from homeassistant.components.fan import (FanEntity, PLATFORM_SCHEMA,
+                                          SUPPORT_SET_SPEED, )
 from homeassistant.const import (CONF_NAME, CONF_HOST, CONF_TOKEN, )
 from homeassistant.exceptions import PlatformNotReady
 
@@ -26,7 +27,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
 })
 
-#REQUIREMENTS = ['python-mirobo']
+# REQUIREMENTS = ['python-mirobo']
 REQUIREMENTS = ['https://github.com/rytilahti/python-mirobo/archive/'
                 '168f5c0ff381b3b02cedd0917597195b3c521a20.zip#'
                 'python-mirobo']
@@ -142,11 +143,11 @@ class XiaomiAirPurifier(FanEntity):
             return False
 
     @asyncio.coroutine
-    def async_turn_on(self: ToggleEntity, speed: str=None, **kwargs) -> None:
+    def async_turn_on(self: ToggleEntity, speed: str = None, **kwargs) -> None:
         """Turn the fan on."""
 
         if speed:
-            # Assumption: If operation mode was set the device must not be turned on explicit
+            # If operation mode was set the device must not be turned on.
             yield from self.async_set_speed(speed)
             return
 
@@ -171,7 +172,8 @@ class XiaomiAirPurifier(FanEntity):
         from mirobo import DeviceException
 
         try:
-            state = yield from self.hass.async_add_job(self._air_purifier.status)
+            state = yield from self.hass.async_add_job(
+                self._air_purifier.status)
             _LOGGER.debug("Got new state: %s", state.data)
 
             self._state = state.is_on
@@ -186,9 +188,12 @@ class XiaomiAirPurifier(FanEntity):
                 ATTR_BUZZER: state.buzzer,
                 ATTR_CHILD_LOCK: state.child_lock,
                 ATTR_LED: state.led,
-                ATTR_LED_BRIGHTNESS: state.led_brightness.value,
                 ATTR_MOTOR_SPEED: state.motor_speed
             }
+
+            if state.led_brightness:
+                self._state_attrs[
+                    ATTR_LED_BRIGHTNESS] = state.led_brightness.value
 
         except DeviceException as ex:
             _LOGGER.error("Got exception while fetching the state: %s", ex)
@@ -220,12 +225,13 @@ class XiaomiAirPurifier(FanEntity):
         from mirobo.airpurifier import OperationMode
 
         result = yield from self._try_command(
-            "Setting operation mode of the air purifier failed.", self._air_purifier.set_mode, OperationMode[speed])
+            "Setting operation mode of the air purifier failed.",
+            self._air_purifier.set_mode, OperationMode[speed])
 
         if result:
             self._state_attrs[ATTR_MODE] = OperationMode[speed].value
             if speed == OperationMode('idle').name:
-                # Setting the operation mode "idle" will turn off the device(?)
+                # Setting the operation mode "idle" will turn off the device.
                 self._state = False
             else:
                 self._state = True
