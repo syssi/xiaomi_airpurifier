@@ -40,7 +40,7 @@ set_favorite_level:
       example: 'fan.xiaomi_air_purifier'
 
     level:
-      description: Level, between 0 and 20(?).
+      description: Level, between 0 and 17.
       example: '1'
 
 set_led_brightness:

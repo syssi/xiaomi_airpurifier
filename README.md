@@ -86,10 +86,10 @@ Set the led brightness. Supported values are 0 (Bright), 1 (Dim), 2 (Off).
 
 #### Service airpurifier/set_favorite_level
 
-Set the favorite level. FIXME: Provide a list of possible values and requirements (operation mode?).
+Set the favorite level of the operation mode "favorite".
 
 | Service data attribute    | Optional | Description                                           |
 |---------------------------|----------|-------------------------------------------------------|
 | `entity_id`               |      yes | Only act on specific air purifier. Else targets all.  |
-| `level`                   |       no |  Level, between 0 and 20(?).                          |
+| `level`                   |       no |  Level, between 0 and 17.                             |
 
