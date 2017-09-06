@@ -32,10 +32,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
 })
 
-# REQUIREMENTS = ['python-mirobo']
-REQUIREMENTS = ['https://github.com/rytilahti/python-mirobo/archive/'
-                'e6c49f978517dc27c9a7fe9702fa4c5fafe93d2d.zip#'
-                'python-mirobo']
+REQUIREMENTS = ['python-mirobo>=0.2.0']
 
 ATTR_TEMPERATURE = 'temperature'
 ATTR_HUMIDITY = 'humidity'
@@ -72,7 +69,6 @@ SERVICE_SCHEMA_LED_BRIGHTNESS = AIRPURIFIER_SERVICE_SCHEMA.extend({
 })
 
 SERVICE_SCHEMA_FAVORITE_LEVEL = AIRPURIFIER_SERVICE_SCHEMA.extend({
-    # FIXME: This range is just a guess
     vol.Required(ATTR_LEVEL):
         vol.All(vol.Coerce(int), vol.Clamp(min=0, max=17))
 })
@@ -251,7 +247,7 @@ class XiaomiAirPurifier(FanEntity):
         try:
             state = yield from self.hass.async_add_job(
                 self._air_purifier.status)
-            _LOGGER.debug("Got new state: %s", state.data)
+            _LOGGER.debug("Got new state: %s", state)
 
             self._state = state.is_on
             self._state_attrs = {
