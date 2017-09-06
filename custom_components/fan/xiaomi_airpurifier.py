@@ -247,7 +247,7 @@ class XiaomiAirPurifier(FanEntity):
         try:
             state = yield from self.hass.async_add_job(
                 self._air_purifier.status)
-            _LOGGER.debug("Got new state: %s", state.data)
+            _LOGGER.debug("Got new state: %s", state)
 
             self._state = state.is_on
             self._state_attrs = {
