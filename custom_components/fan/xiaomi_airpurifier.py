@@ -46,6 +46,7 @@ ATTR_CHILD_LOCK = 'child_lock'
 ATTR_LED = 'led'
 ATTR_LED_BRIGHTNESS = 'led_brightness'
 ATTR_MOTOR_SPEED = 'motor_speed'
+ATTR_USE_TIME = 'use_time'
 
 ATTR_BRIGHTNESS = 'brightness'
 ATTR_LEVEL = 'level'
@@ -159,6 +160,7 @@ class XiaomiAirPurifier(FanEntity):
             ATTR_AIR_QUALITY_INDEX: None,
             ATTR_TEMPERATURE: None,
             ATTR_HUMIDITY: None,
+            ATTR_BRIGHTNESS: None,
             ATTR_MODE: None,
             ATTR_FILTER_HOURS_USED: None,
             ATTR_FILTER_LIFE: None,
@@ -167,7 +169,8 @@ class XiaomiAirPurifier(FanEntity):
             ATTR_CHILD_LOCK: None,
             ATTR_LED: None,
             ATTR_LED_BRIGHTNESS: None,
-            ATTR_MOTOR_SPEED: None
+            ATTR_USE_TIME: None,
+            ATTR_MOTOR_SPEED: None,
         }
 
     @property
@@ -251,9 +254,10 @@ class XiaomiAirPurifier(FanEntity):
 
             self._state = state.is_on
             self._state_attrs = {
+                ATTR_AIR_QUALITY_INDEX: state.aqi,
                 ATTR_TEMPERATURE: state.temperature,
                 ATTR_HUMIDITY: state.humidity,
-                ATTR_AIR_QUALITY_INDEX: state.aqi,
+                ATTR_BRIGHTNESS: state.brightness,
                 ATTR_MODE: state.mode.value,
                 ATTR_FILTER_HOURS_USED: state.filter_hours_used,
                 ATTR_FILTER_LIFE: state.filter_life_remaining,
@@ -261,7 +265,9 @@ class XiaomiAirPurifier(FanEntity):
                 ATTR_BUZZER: state.buzzer,
                 ATTR_CHILD_LOCK: state.child_lock,
                 ATTR_LED: state.led,
-                ATTR_MOTOR_SPEED: state.motor_speed
+                ATTR_LED_BRIGHTNESS: state.led_brightness,
+                ATTR_USE_TIME: state.use_time,
+                ATTR_MOTOR_SPEED: state.motor_speed,
             }
 
             if state.led_brightness:
