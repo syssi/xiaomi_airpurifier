@@ -106,6 +106,10 @@ def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
     try:
         air_purifier = AirPurifier(host, token)
         device_info = air_purifier.info()
+        _LOGGER.info("%s %s %s initialized",
+                     device_info.raw['model'],
+                     device_info.raw['fw_ver'],
+                     device_info.raw['hw_ver'])
 
         xiaomi_air_purifier = XiaomiAirPurifier(
             name, air_purifier, device_info)
