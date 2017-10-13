@@ -32,7 +32,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
 })
 
-REQUIREMENTS = ['python-mirobo>=0.2.0']
+REQUIREMENTS = ['python-miio>=0.3.0']
 
 ATTR_TEMPERATURE = 'temperature'
 ATTR_HUMIDITY = 'humidity'
@@ -91,7 +91,7 @@ SERVICE_TO_METHOD = {
 @asyncio.coroutine
 def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
     """Set up the air purifier from config."""
-    from mirobo import AirPurifier, DeviceException
+    from miio import AirPurifier, DeviceException
     if PLATFORM not in hass.data:
         hass.data[PLATFORM] = {}
 
@@ -201,7 +201,7 @@ class XiaomiAirPurifier(FanEntity):
     @asyncio.coroutine
     def _try_command(self, mask_error, func, *args, **kwargs):
         """Call a air purifier command handling error messages."""
-        from mirobo import DeviceException
+        from miio import DeviceException
         try:
             result = yield from self.hass.async_add_job(
                 partial(func, *args, **kwargs))
@@ -233,7 +233,7 @@ class XiaomiAirPurifier(FanEntity):
     @asyncio.coroutine
     def async_update(self):
         """Fetch state from the device."""
-        from mirobo import DeviceException
+        from miio import DeviceException
 
         try:
             state = yield from self.hass.async_add_job(
@@ -265,14 +265,14 @@ class XiaomiAirPurifier(FanEntity):
     @property
     def speed_list(self: ToggleEntity) -> list:
         """Get the list of available speeds."""
-        from mirobo.airpurifier import OperationMode
+        from miio.airpurifier import OperationMode
         return [mode.name for mode in OperationMode]
 
     @property
     def speed(self):
         """Return the current speed."""
         if self._state:
-            from mirobo.airpurifier import OperationMode
+            from miio.airpurifier import OperationMode
 
             return OperationMode(self._state_attrs[ATTR_MODE]).name
 
@@ -282,7 +282,7 @@ class XiaomiAirPurifier(FanEntity):
     def async_set_speed(self: ToggleEntity, speed: str) -> None:
         """Set the speed of the fan."""
         _LOGGER.debug("Setting the operation mode to: " + speed)
-        from mirobo.airpurifier import OperationMode
+        from miio.airpurifier import OperationMode
 
         yield from self._try_command(
             "Setting operation mode of the air purifier failed.",
@@ -319,7 +319,7 @@ class XiaomiAirPurifier(FanEntity):
     @asyncio.coroutine
     def async_set_led_brightness(self, brightness: int=2):
         """Set the led brightness."""
-        from mirobo.airpurifier import LedBrightness
+        from miio.airpurifier import LedBrightness
 
         yield from self._try_command(
             "Setting the led brightness of the air purifier failed.",
