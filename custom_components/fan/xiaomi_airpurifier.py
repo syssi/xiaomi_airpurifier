@@ -32,6 +32,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
 })
 
+
 REQUIREMENTS = ['python-miio>=0.3.0']
 
 ATTR_TEMPERATURE = 'temperature'
@@ -46,9 +47,11 @@ ATTR_CHILD_LOCK = 'child_lock'
 ATTR_LED = 'led'
 ATTR_LED_BRIGHTNESS = 'led_brightness'
 ATTR_MOTOR_SPEED = 'motor_speed'
+ATTR_USE_TIME = 'use_time'
 
 ATTR_BRIGHTNESS = 'brightness'
 ATTR_LEVEL = 'level'
+ATTR_MODEL = 'model'
 
 SUCCESS = ['ok']
 
@@ -103,8 +106,14 @@ def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
 
     try:
         air_purifier = AirPurifier(host, token)
+        device_info = air_purifier.info()
+        _LOGGER.info("%s %s %s initialized",
+                     device_info.raw['model'],
+                     device_info.raw['fw_ver'],
+                     device_info.raw['hw_ver'])
 
-        xiaomi_air_purifier = XiaomiAirPurifier(name, air_purifier)
+        xiaomi_air_purifier = XiaomiAirPurifier(
+            name, air_purifier, device_info)
         hass.data[PLATFORM][host] = xiaomi_air_purifier
     except DeviceException:
         raise PlatformNotReady
@@ -147,9 +156,10 @@ def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
 class XiaomiAirPurifier(FanEntity):
     """Representation of a Xiaomi Air Purifier."""
 
-    def __init__(self, name, air_purifier):
+    def __init__(self, name, air_purifier, device_info):
         """Initialize the air purifier."""
         self._name = name
+        self._device_info = device_info
 
         self._air_purifier = air_purifier
         self._state = None
@@ -157,6 +167,7 @@ class XiaomiAirPurifier(FanEntity):
             ATTR_AIR_QUALITY_INDEX: None,
             ATTR_TEMPERATURE: None,
             ATTR_HUMIDITY: None,
+            ATTR_BRIGHTNESS: None,
             ATTR_MODE: None,
             ATTR_FILTER_HOURS_USED: None,
             ATTR_FILTER_LIFE: None,
@@ -165,7 +176,9 @@ class XiaomiAirPurifier(FanEntity):
             ATTR_CHILD_LOCK: None,
             ATTR_LED: None,
             ATTR_LED_BRIGHTNESS: None,
-            ATTR_MOTOR_SPEED: None
+            ATTR_USE_TIME: None,
+            ATTR_MOTOR_SPEED: None,
+            ATTR_MODEL: self._device_info.raw['model'],
         }
 
     @property
@@ -241,10 +254,11 @@ class XiaomiAirPurifier(FanEntity):
             _LOGGER.debug("Got new state: %s", state)
 
             self._state = state.is_on
-            self._state_attrs = {
+            self._state_attrs.update({
+                ATTR_AIR_QUALITY_INDEX: state.aqi,
                 ATTR_TEMPERATURE: state.temperature,
                 ATTR_HUMIDITY: state.humidity,
-                ATTR_AIR_QUALITY_INDEX: state.aqi,
+                ATTR_BRIGHTNESS: state.brightness,
                 ATTR_MODE: state.mode.value,
                 ATTR_FILTER_HOURS_USED: state.filter_hours_used,
                 ATTR_FILTER_LIFE: state.filter_life_remaining,
@@ -252,12 +266,17 @@ class XiaomiAirPurifier(FanEntity):
                 ATTR_BUZZER: state.buzzer,
                 ATTR_CHILD_LOCK: state.child_lock,
                 ATTR_LED: state.led,
-                ATTR_MOTOR_SPEED: state.motor_speed
-            }
+                ATTR_LED_BRIGHTNESS: state.led_brightness,
+                ATTR_USE_TIME: state.use_time,
+                ATTR_MOTOR_SPEED: state.motor_speed,
+            })
 
             if state.led_brightness:
                 self._state_attrs[
                     ATTR_LED_BRIGHTNESS] = state.led_brightness.value
+            else:
+                self._state_attrs[
+                    ATTR_LED_BRIGHTNESS] = 0
 
         except DeviceException as ex:
             _LOGGER.error("Got exception while fetching the state: %s", ex)
