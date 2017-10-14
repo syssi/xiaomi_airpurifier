@@ -32,7 +32,6 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
 })
 
-
 REQUIREMENTS = ['python-miio>=0.3.0']
 
 ATTR_TEMPERATURE = 'temperature'
@@ -108,9 +107,9 @@ def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
         air_purifier = AirPurifier(host, token)
         device_info = air_purifier.info()
         _LOGGER.info("%s %s %s initialized",
-                     device_info.raw['model'],
-                     device_info.raw['fw_ver'],
-                     device_info.raw['hw_ver'])
+                     device_info.model,
+                     device_info.firmware_version,
+                     device_info.hardware_version)
 
         xiaomi_air_purifier = XiaomiAirPurifier(
             name, air_purifier, device_info)
@@ -178,7 +177,7 @@ class XiaomiAirPurifier(FanEntity):
             ATTR_LED_BRIGHTNESS: None,
             ATTR_USE_TIME: None,
             ATTR_MOTOR_SPEED: None,
-            ATTR_MODEL: self._device_info.raw['model'],
+            ATTR_MODEL: self._device_info.model,
         }
 
     @property
