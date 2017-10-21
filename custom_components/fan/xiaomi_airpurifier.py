@@ -32,7 +32,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
 })
 
-REQUIREMENTS = ['python-mirobo>=0.2.0']
+REQUIREMENTS = ['python-miio>=0.3.0']
 
 ATTR_TEMPERATURE = 'temperature'
 ATTR_HUMIDITY = 'humidity'
@@ -46,9 +46,11 @@ ATTR_CHILD_LOCK = 'child_lock'
 ATTR_LED = 'led'
 ATTR_LED_BRIGHTNESS = 'led_brightness'
 ATTR_MOTOR_SPEED = 'motor_speed'
+ATTR_USE_TIME = 'use_time'
 
 ATTR_BRIGHTNESS = 'brightness'
 ATTR_LEVEL = 'level'
+ATTR_MODEL = 'model'
 
 SUCCESS = ['ok']
 
@@ -91,7 +93,7 @@ SERVICE_TO_METHOD = {
 @asyncio.coroutine
 def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
     """Set up the air purifier from config."""
-    from mirobo import AirPurifier, DeviceException
+    from miio import AirPurifier, DeviceException
     if PLATFORM not in hass.data:
         hass.data[PLATFORM] = {}
 
@@ -103,8 +105,14 @@ def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
 
     try:
         air_purifier = AirPurifier(host, token)
+        device_info = air_purifier.info()
+        _LOGGER.info("%s %s %s initialized",
+                     device_info.model,
+                     device_info.firmware_version,
+                     device_info.hardware_version)
 
-        xiaomi_air_purifier = XiaomiAirPurifier(name, air_purifier)
+        xiaomi_air_purifier = XiaomiAirPurifier(
+            name, air_purifier, device_info)
         hass.data[PLATFORM][host] = xiaomi_air_purifier
     except DeviceException:
         raise PlatformNotReady
@@ -127,8 +135,6 @@ def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
         update_tasks = []
         for air_purifier in target_air_purifiers:
             yield from getattr(air_purifier, method['method'])(**params)
-
-        for air_purifier in target_air_purifiers:
             update_tasks.append(air_purifier.async_update_ha_state(True))
 
         if update_tasks:
@@ -149,9 +155,10 @@ def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
 class XiaomiAirPurifier(FanEntity):
     """Representation of a Xiaomi Air Purifier."""
 
-    def __init__(self, name, air_purifier):
+    def __init__(self, name, air_purifier, device_info):
         """Initialize the air purifier."""
         self._name = name
+        self._device_info = device_info
 
         self._air_purifier = air_purifier
         self._state = None
@@ -167,7 +174,9 @@ class XiaomiAirPurifier(FanEntity):
             ATTR_CHILD_LOCK: None,
             ATTR_LED: None,
             ATTR_LED_BRIGHTNESS: None,
-            ATTR_MOTOR_SPEED: None
+            ATTR_USE_TIME: None,
+            ATTR_MOTOR_SPEED: None,
+            ATTR_MODEL: self._device_info.model,
         }
 
     @property
@@ -203,7 +212,7 @@ class XiaomiAirPurifier(FanEntity):
     @asyncio.coroutine
     def _try_command(self, mask_error, func, *args, **kwargs):
         """Call a air purifier command handling error messages."""
-        from mirobo import DeviceException
+        from miio import DeviceException
         try:
             result = yield from self.hass.async_add_job(
                 partial(func, *args, **kwargs))
@@ -216,33 +225,26 @@ class XiaomiAirPurifier(FanEntity):
             return False
 
     @asyncio.coroutine
-    def async_turn_on(self: ToggleEntity, speed: str = None, **kwargs) -> None:
+    def async_turn_on(self: ToggleEntity, speed: str=None, **kwargs) -> None:
         """Turn the fan on."""
-
         if speed:
             # If operation mode was set the device must not be turned on.
             yield from self.async_set_speed(speed)
             return
 
-        result = yield from self._try_command(
+        yield from self._try_command(
             "Turning the air purifier on failed.", self._air_purifier.on)
-
-        if result:
-            self._state = True
 
     @asyncio.coroutine
     def async_turn_off(self: ToggleEntity, **kwargs) -> None:
         """Turn the fan off."""
-        result = yield from self._try_command(
+        yield from self._try_command(
             "Turning the air purifier off failed.", self._air_purifier.off)
-
-        if result:
-            self._state = False
 
     @asyncio.coroutine
     def async_update(self):
         """Fetch state from the device."""
-        from mirobo import DeviceException
+        from miio import DeviceException
 
         try:
             state = yield from self.hass.async_add_job(
@@ -250,10 +252,10 @@ class XiaomiAirPurifier(FanEntity):
             _LOGGER.debug("Got new state: %s", state)
 
             self._state = state.is_on
-            self._state_attrs = {
+            self._state_attrs.update({
+                ATTR_AIR_QUALITY_INDEX: state.aqi,
                 ATTR_TEMPERATURE: state.temperature,
                 ATTR_HUMIDITY: state.humidity,
-                ATTR_AIR_QUALITY_INDEX: state.aqi,
                 ATTR_MODE: state.mode.value,
                 ATTR_FILTER_HOURS_USED: state.filter_hours_used,
                 ATTR_FILTER_LIFE: state.filter_life_remaining,
@@ -261,12 +263,17 @@ class XiaomiAirPurifier(FanEntity):
                 ATTR_BUZZER: state.buzzer,
                 ATTR_CHILD_LOCK: state.child_lock,
                 ATTR_LED: state.led,
-                ATTR_MOTOR_SPEED: state.motor_speed
-            }
+                ATTR_LED_BRIGHTNESS: state.led_brightness,
+                ATTR_USE_TIME: state.use_time,
+                ATTR_MOTOR_SPEED: state.motor_speed,
+            })
 
             if state.led_brightness:
                 self._state_attrs[
                     ATTR_LED_BRIGHTNESS] = state.led_brightness.value
+            else:
+                self._state_attrs[
+                    ATTR_LED_BRIGHTNESS] = 0
 
         except DeviceException as ex:
             _LOGGER.error("Got exception while fetching the state: %s", ex)
@@ -274,18 +281,14 @@ class XiaomiAirPurifier(FanEntity):
     @property
     def speed_list(self: ToggleEntity) -> list:
         """Get the list of available speeds."""
-        from mirobo.airpurifier import OperationMode
-        supported_speeds = list()
-        for mode in OperationMode:
-            supported_speeds.append(mode.name)
-
-        return supported_speeds
+        from miio.airpurifier import OperationMode
+        return [mode.name for mode in OperationMode]
 
     @property
     def speed(self):
         """Return the current speed."""
         if self._state:
-            from mirobo.airpurifier import OperationMode
+            from miio.airpurifier import OperationMode
 
             return OperationMode(self._state_attrs[ATTR_MODE]).name
 
@@ -295,19 +298,11 @@ class XiaomiAirPurifier(FanEntity):
     def async_set_speed(self: ToggleEntity, speed: str) -> None:
         """Set the speed of the fan."""
         _LOGGER.debug("Setting the operation mode to: " + speed)
-        from mirobo.airpurifier import OperationMode
+        from miio.airpurifier import OperationMode
 
-        result = yield from self._try_command(
+        yield from self._try_command(
             "Setting operation mode of the air purifier failed.",
             self._air_purifier.set_mode, OperationMode[speed])
-
-        if result:
-            self._state_attrs[ATTR_MODE] = OperationMode[speed].value
-            if speed == OperationMode('idle').name:
-                # Setting the operation mode "idle" will turn off the device.
-                self._state = False
-            else:
-                self._state = True
 
     @asyncio.coroutine
     def async_set_buzzer_on(self):
@@ -338,16 +333,16 @@ class XiaomiAirPurifier(FanEntity):
             self._air_purifier.set_led, False)
 
     @asyncio.coroutine
-    def async_set_led_brightness(self, brightness: int = 2):
+    def async_set_led_brightness(self, brightness: int=2):
         """Set the led brightness."""
-        from mirobo.airpurifier import LedBrightness
+        from miio.airpurifier import LedBrightness
 
         yield from self._try_command(
             "Setting the led brightness of the air purifier failed.",
             self._air_purifier.set_led_brightness, LedBrightness(brightness))
 
     @asyncio.coroutine
-    def async_set_favorite_level(self, level: int = 1):
+    def async_set_favorite_level(self, level: int=1):
         """Set the favorite level."""
         yield from self._try_command(
             "Setting the favorite level of the air purifier failed.",
