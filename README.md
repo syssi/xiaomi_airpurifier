@@ -1,6 +1,6 @@
 # Xiaomi Air Purifier
 
-This is a custom component for home assistant to integrate the Xiaomi Air Purifier 2 and Xiaomi Air Purifier Pro.
+This is a custom component for home assistant to integrate the Xiaomi Air Purifier 2, Air Purifier 2S and Xiaomi Air Purifier Pro.
 
 Please follow the instructions on [Retrieving the Access Token](https://home-assistant.io/components/xiaomi/#retrieving-the-access-token) to get the API token to use in the configuration.yaml file.
 
@@ -10,24 +10,25 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 * On, Off
 * Operation modes (auto, silent, favorite, idle)
 * Buzzer (on, off)
+* Child lock (on, off)
 * LED (on, off), LED brightness (bright, dim, off)
-* Favorite Level
-* States
+* Favorite Level (0...16)
+* Attributes
   - power
   - aqi
+  - average_aqi
   - humidity
   - temperature
   - mode
+  - favorite_level
   - led
   - led_brightness
   - buzzer
   - child_lock
-  - brightness
-  - favorite_level
-  - filter1_life
-  - f1_hour_used
-  - use_time
-  - motor1_speed
+  - purify_volume
+  - filter_life_remaining
+  - filter_hours_used
+  - motor_speed
 
 ## Setup
 
@@ -49,47 +50,62 @@ Turn the buzzer on.
 
 | Service data attribute    | Optional | Description                                           |
 |---------------------------|----------|-------------------------------------------------------|
-| `entity_id`               |      yes | Only act on specific air purifier. Else targets all.  |
+| `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.  |
 
 #### Service fan/xiaomi_miio_set_buzzer_off
 
 Turn the buzzer off.
 
-| Service data attribute    | Optional | Description                                           |
-|---------------------------|----------|-------------------------------------------------------|
-| `entity_id`               |      yes | Only act on specific air purifier. Else targets all.  |
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.  |
 
 #### Service fan/xiaomi_miio_set_led_on
 
 Turn the led on.
 
-| Service data attribute    | Optional | Description                                           |
-|---------------------------|----------|-------------------------------------------------------|
-| `entity_id`               |      yes | Only act on specific air purifier. Else targets all.  |
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.  |
 
 #### Service fan/xiaomi_miio_set_led_off
 
 Turn the led off.
 
-| Service data attribute    | Optional | Description                                           |
-|---------------------------|----------|-------------------------------------------------------|
-| `entity_id`               |      yes | Only act on specific air purifier. Else targets all.  |
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.  |
+
+#### Service fan/xiaomi_miio_set_child_lock_on
+
+Turn the child lock on.
+
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.  |
+
+#### Service fan/xiaomi_miio_set_child_lock_off
+
+Turn the child lock off.
+
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.  |
 
 #### Service fan/xiaomi_miio_set_led_brightness
 
 Set the led brightness. Supported values are 0 (Bright), 1 (Dim), 2 (Off).
 
-| Service data attribute    | Optional | Description                                           |
-|---------------------------|----------|-------------------------------------------------------|
-| `entity_id`               |      yes | Only act on specific air purifier. Else targets all.  |
-| `brightness`              |       no | Brightness, between 0 and 2.                          |
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.  |
+| `brightness`              |       no | Brightness, between 0 and 2.                            |
 
 #### Service fan/xiaomi_miio_set_favorite_level
 
 Set the favorite level of the operation mode "favorite".
 
-| Service data attribute    | Optional | Description                                           |
-|---------------------------|----------|-------------------------------------------------------|
-| `entity_id`               |      yes | Only act on specific air purifier. Else targets all.  |
-| `level`                   |       no |  Level, between 0 and 16.                             |
-
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.  |
+| `level`                   |       no | Level, between 0 and 16.                                |
