@@ -275,6 +275,7 @@ class XiaomiAirPurifier(FanEntity):
                     ATTR_LED_BRIGHTNESS] = state.led_brightness.value
 
         except DeviceException as ex:
+            self._state = None
             _LOGGER.error("Got exception while fetching the state: %s", ex)
 
     @property
