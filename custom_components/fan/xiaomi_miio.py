@@ -67,6 +67,18 @@ ATTR_AVERAGE_AIR_QUALITY_INDEX = 'average_aqi'
 ATTR_PURIFY_VOLUME = 'purify_volume'
 ATTR_BRIGHTNESS = 'brightness'
 ATTR_LEVEL = 'level'
+ATTR_MOTOR2_SPEED = 'motor2_speed'
+ATTR_ILLUMINANCE = 'illuminance'
+ATTR_FILTER_RFID_PRODUCT_ID = 'filter_rfid_product_id'
+ATTR_FILTER_RFID_TAG = 'filter_rfid_tag'
+ATTR_FILTER_TYPE = 'filter_type'
+ATTR_LEARN_MODE = 'learn_mode'
+ATTR_SLEEP_TIME = 'sleep_time'
+ATTR_SLEEP_LEARN_COUNT = 'sleep_mode_learn_count'
+ATTR_EXTRA_FEATURES = 'extra_features'
+ATTR_TURBO_MODE_SUPPORTED = 'turbo_mode_supported'
+ATTR_AUTO_DETECT = 'auto_detect'
+ATTR_SLEEP_MODE = 'sleep_mode'
 
 ATTR_TARGET_HUMIDITY = 'target_humidity'
 ATTR_TRANS_LEVEL = 'trans_level'
@@ -370,6 +382,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
 
         self._state = None
         self._state_attrs = {
+            ATTR_MODEL: self._model,
             ATTR_AIR_QUALITY_INDEX: None,
             ATTR_TEMPERATURE: None,
             ATTR_HUMIDITY: None,
@@ -384,7 +397,18 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
             ATTR_MOTOR_SPEED: None,
             ATTR_AVERAGE_AIR_QUALITY_INDEX: None,
             ATTR_PURIFY_VOLUME: None,
-            ATTR_MODEL: self._model,
+            ATTR_MOTOR2_SPEED: None,
+            ATTR_ILLUMINANCE: None,
+            ATTR_FILTER_RFID_PRODUCT_ID: None,
+            ATTR_FILTER_RFID_TAG: None,
+            ATTR_FILTER_TYPE: None,
+            ATTR_LEARN_MODE: None,
+            ATTR_SLEEP_TIME: None,
+            ATTR_SLEEP_LEARN_COUNT: None,
+            ATTR_EXTRA_FEATURES: None,
+            ATTR_TURBO_MODE_SUPPORTED: None,
+            ATTR_AUTO_DETECT: None,
+            ATTR_SLEEP_MODE: None,
         }
         self._skip_update = False
 
@@ -426,7 +450,21 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
                 ATTR_MOTOR_SPEED: state.motor_speed,
                 ATTR_AVERAGE_AIR_QUALITY_INDEX: state.average_aqi,
                 ATTR_PURIFY_VOLUME: state.purify_volume,
+                ATTR_MOTOR2_SPEED: state.motor2_speed,
+                ATTR_ILLUMINANCE: state.illuminance,
+                ATTR_FILTER_RFID_PRODUCT_ID: state.filter_rfid_product_id,
+                ATTR_FILTER_RFID_TAG: state.filter_rfid_tag,
+                ATTR_FILTER_TYPE: state.filter_type,
+                ATTR_LEARN_MODE: state.learn_mode,
+                ATTR_SLEEP_TIME: state.sleep_time,
+                ATTR_SLEEP_LEARN_COUNT: state.sleep_mode_learn_count,
+                ATTR_EXTRA_FEATURES: state.extra_features,
+                ATTR_TURBO_MODE_SUPPORTED: state.turbo_mode_supported,
+                ATTR_AUTO_DETECT: state.auto_detect,
             })
+
+            if state.sleep_mode:
+                self._state_attrs[ATTR_SLEEP_MODE] = state.sleep_mode.value
 
             if state.led_brightness:
                 self._state_attrs[
@@ -519,6 +557,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice, FanEntity):
 
         self._state = None
         self._state_attrs = {
+            ATTR_MODEL: self._model,
             ATTR_TEMPERATURE: None,
             ATTR_HUMIDITY: None,
             ATTR_MODE: None,
@@ -527,7 +566,6 @@ class XiaomiAirHumidifier(XiaomiGenericDevice, FanEntity):
             ATTR_CHILD_LOCK: None,
             ATTR_TRANS_LEVEL: None,
             ATTR_TARGET_HUMIDITY: None,
-            ATTR_MODEL: self._model,
         }
         self._skip_update = False
 
