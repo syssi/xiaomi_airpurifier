@@ -70,7 +70,6 @@ ATTR_LEVEL = 'level'
 ATTR_TARGET_HUMIDITY = 'target_humidity'
 ATTR_TRANS_LEVEL = 'trans_level'
 
-
 SUCCESS = ['ok']
 
 SERVICE_SET_BUZZER_ON = 'xiaomi_miio_set_buzzer_on'
@@ -303,6 +302,30 @@ class XiaomiGenericDevice(FanEntity):
             "Turning the child lock of the miio device off failed.",
             self._device.set_child_lock, False)
 
+    @asyncio.coroutine
+    def async_set_led_on(self):
+        """Turn the led on."""
+        return None
+
+    @asyncio.coroutine
+    def async_set_led_off(self):
+        """Turn the led off."""
+        return None
+
+    @asyncio.coroutine
+    def async_set_favorite_level(self, level: int = 1):
+        return None
+
+    @asyncio.coroutine
+    def async_set_led_brightness(self, brightness: int = 2):
+        """Set the led brightness."""
+        return None
+
+    @asyncio.coroutine
+    def async_set_target_humidity(self, humidity: int = 40):
+        """Set the target humidity."""
+        return None
+
 
 class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
     """Representation of a Xiaomi Air Purifier."""
@@ -514,7 +537,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice, FanEntity):
             self._device.set_mode, OperationMode[speed])
 
     @asyncio.coroutine
-    def async_set_led_brightness(self, brightness: int=2):
+    def async_set_led_brightness(self, brightness: int = 2):
         """Set the led brightness."""
         from miio.airhumidifier import LedBrightness
 
@@ -523,7 +546,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice, FanEntity):
             self._device.set_led_brightness, LedBrightness(brightness))
 
     @asyncio.coroutine
-    def async_set_target_humidity(self, humidity: int=40):
+    def async_set_target_humidity(self, humidity: int = 40):
         """Set the target humidity."""
         yield from self._try_command(
             "Setting the target humidity of the miio device failed.",
