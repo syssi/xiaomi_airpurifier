@@ -24,7 +24,7 @@ DEFAULT_NAME = 'Xiaomi Miio Device'
 PLATFORM = 'xiaomi_miio'
 
 CONF_MODEL = 'model'
-MODEL_AIRPURIFIER_PRO = 'zhimi.airpurifier.v6'
+MODEL_AIRPURIFIER_PRO = ['zhimi.airpurifier.v6', 'zhimi.airpurifier.v3']
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_HOST): cv.string,
@@ -82,6 +82,8 @@ ATTR_SLEEP_MODE = 'sleep_mode'
 
 ATTR_TARGET_HUMIDITY = 'target_humidity'
 ATTR_TRANS_LEVEL = 'trans_level'
+ATTR_FEATURES = 'features'
+ATTR_VOLUME = 'volume'
 
 SUCCESS = ['ok']
 
@@ -90,16 +92,23 @@ SUPPORT_SET_LED = 16
 SUPPORT_SET_CHILD_LOCK = 32
 SUPPORT_SET_LED_BRIGHTNESS = 64
 SUPPORT_SET_FAVORITE_LEVEL = 128
-SUPPORT_SET_TARGET_HUMIDITY = 256
+SUPPORT_SET_AUTO_DETECT = 256
+SUPPORT_SET_LEARN_MODE = 512
+SUPPORT_SET_VOLUME = 1024
+SUPPORT_RESET_FILTER = 2048
+SUPPORT_SET_EXTRA_FEATURES = 4096
+SUPPORT_SET_TARGET_HUMIDITY = 8192
 
 SUPPORT_FLAGS_GENERIC = (SUPPORT_SET_SPEED | SUPPORT_SET_BUZZER |
     SUPPORT_SET_CHILD_LOCK)
 
 SUPPORT_FLAGS_AIRPURIFIER = (SUPPORT_FLAGS_GENERIC |
-    SUPPORT_SET_LED | SUPPORT_SET_LED_BRIGHTNESS | SUPPORT_SET_FAVORITE_LEVEL)
+    SUPPORT_SET_LED | SUPPORT_SET_LED_BRIGHTNESS | SUPPORT_SET_FAVORITE_LEVEL |
+    SUPPORT_SET_LEARN_MODE | SUPPORT_RESET_FILTER | SUPPORT_SET_EXTRA_FEATURES)
 
 SUPPORT_FLAGS_AIRPURIFIER_PRO = (SUPPORT_SET_SPEED | SUPPORT_SET_CHILD_LOCK |
-    SUPPORT_SET_LED | SUPPORT_SET_FAVORITE_LEVEL)
+    SUPPORT_SET_LED | SUPPORT_SET_FAVORITE_LEVEL | SUPPORT_SET_AUTO_DETECT |
+    SUPPORT_SET_VOLUME)
 
 SUPPORT_FLAGS_AIRHUMIDIFIER = (SUPPORT_FLAGS_GENERIC |
     SUPPORT_SET_LED_BRIGHTNESS | SUPPORT_SET_TARGET_HUMIDITY)
@@ -112,6 +121,13 @@ SERVICE_SET_CHILD_LOCK_ON = 'xiaomi_miio_set_child_lock_on'
 SERVICE_SET_CHILD_LOCK_OFF = 'xiaomi_miio_set_child_lock_off'
 SERVICE_SET_LED_BRIGHTNESS = 'xiaomi_miio_set_led_brightness'
 SERVICE_SET_FAVORITE_LEVEL = 'xiaomi_miio_set_favorite_level'
+SERVICE_SET_AUTO_DETECT_ON = 'xiaomi_miio_set_auto_detect_on'
+SERVICE_SET_AUTO_DETECT_OFF = 'xiaomi_miio_set_auto_detect_off'
+SERVICE_SET_LEARN_MODE_ON = 'xiaomi_miio_set_learn_mode_on'
+SERVICE_SET_LEARN_MODE_OFF = 'xiaomi_miio_set_learn_mode_off'
+SERVICE_SET_VOLUME = 'xiaomi_miio_set_volume'
+SERVICE_RESET_FILTER = 'xiaomi_miio_reset_filter'
+SERVICE_SET_EXTRA_FEATURES = 'xiaomi_miio_set_extra_features'
 SERVICE_SET_TARGET_HUMIDITY = 'xiaomi_miio_set_target_humidity'
 
 AIRPURIFIER_SERVICE_SCHEMA = vol.Schema({
@@ -128,6 +144,16 @@ SERVICE_SCHEMA_FAVORITE_LEVEL = AIRPURIFIER_SERVICE_SCHEMA.extend({
         vol.All(vol.Coerce(int), vol.Clamp(min=0, max=16))
 })
 
+SERVICE_SCHEMA_VOLUME = AIRPURIFIER_SERVICE_SCHEMA.extend({
+    vol.Required(ATTR_VOLUME):
+        vol.All(vol.Coerce(int), vol.Clamp(min=0, max=100))
+})
+
+SERVICE_SCHEMA_EXTRA_FEATURES = AIRPURIFIER_SERVICE_SCHEMA.extend({
+    vol.Required(ATTR_FEATURES):
+        vol.All(vol.Coerce(int), vol.Range(min=0))
+})
+
 SERVICE_SCHEMA_TARGET_HUMIDITY = AIRPURIFIER_SERVICE_SCHEMA.extend({
     vol.Required(ATTR_HUMIDITY):
         vol.All(vol.Coerce(int), vol.In([30, 40, 50, 60, 70, 80]))
@@ -140,12 +166,23 @@ SERVICE_TO_METHOD = {
     SERVICE_SET_LED_OFF: {'method': 'async_set_led_off'},
     SERVICE_SET_CHILD_LOCK_ON: {'method': 'async_set_child_lock_on'},
     SERVICE_SET_CHILD_LOCK_OFF: {'method': 'async_set_child_lock_off'},
+    SERVICE_SET_AUTO_DETECT_ON: {'method': 'async_set_auto_detect_on'},
+    SERVICE_SET_AUTO_DETECT_OFF: {'method': 'async_set_auto_detect_off'},
+    SERVICE_SET_LEARN_MODE_ON: {'method': 'async_set_learn_mode_on'},
+    SERVICE_SET_LEARN_MODE_OFF: {'method': 'async_set_learn_mode_off'},
+    SERVICE_RESET_FILTER: {'method': 'async_reset_filter'},
     SERVICE_SET_LED_BRIGHTNESS: {
         'method': 'async_set_led_brightness',
         'schema': SERVICE_SCHEMA_LED_BRIGHTNESS},
     SERVICE_SET_FAVORITE_LEVEL: {
         'method': 'async_set_favorite_level',
         'schema': SERVICE_SCHEMA_FAVORITE_LEVEL},
+    SERVICE_SET_VOLUME: {
+        'method': 'async_set_volume',
+        'schema': SERVICE_SCHEMA_VOLUME},
+    SERVICE_SET_EXTRA_FEATURES: {
+        'method': 'async_set_extra_features',
+        'schema': SERVICE_SCHEMA_EXTRA_FEATURES},
     SERVICE_SET_TARGET_HUMIDITY: {
         'method': 'async_set_target_humidity',
         'schema': SERVICE_SCHEMA_TARGET_HUMIDITY},
@@ -415,7 +452,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
     @property
     def supported_features(self):
         """Flag supported features."""
-        if self._model == MODEL_AIRPURIFIER_PRO:
+        if self._model in MODEL_AIRPURIFIER_PRO:
             return SUPPORT_FLAGS_AIRPURIFIER_PRO
 
         return SUPPORT_FLAGS_AIRPURIFIER
@@ -478,7 +515,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
     def speed_list(self: ToggleEntity) -> list:
         """Get the list of available speeds."""
         from miio.airpurifier import OperationMode
-        if self._model == MODEL_AIRPURIFIER_PRO:
+        if self._model in MODEL_AIRPURIFIER_PRO:
             return [mode.name for mode in OperationMode if mode.name != 'Idle']
 
         return [mode.name for mode in OperationMode]
@@ -544,6 +581,76 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
         yield from self._try_command(
             "Setting the favorite level of the miio device failed.",
             self._device.set_favorite_level, level)
+
+    @asyncio.coroutine
+    def async_set_auto_detect_on(self):
+        """Turn the auto detect on."""
+        if self.supported_features & SUPPORT_SET_AUTO_DETECT == 0:
+            return
+
+        yield from self._try_command(
+            "Turning the learn mode of the miio device on failed.",
+            self._device.set_auto_detect, True)
+
+    @asyncio.coroutine
+    def async_set_auto_detect_off(self):
+        """Turn the auto detect off."""
+        if self.supported_features & SUPPORT_SET_AUTO_DETECT == 0:
+            return
+
+        yield from self._try_command(
+            "Turning the learn mode of the miio device off failed.",
+            self._device.set_auto_detect, False)
+
+    @asyncio.coroutine
+    def async_set_learn_mode_on(self):
+        """Turn the learn mode on."""
+        if self.supported_features & SUPPORT_SET_LEARN_MODE == 0:
+            return
+
+        yield from self._try_command(
+            "Turning the learn mode of the miio device on failed.",
+            self._device.set_learn_mode, True)
+
+    @asyncio.coroutine
+    def async_set_learn_mode_off(self):
+        """Turn the learn mode off."""
+        if self.supported_features & SUPPORT_SET_LEARN_MODE == 0:
+            return
+
+        yield from self._try_command(
+            "Turning the learn mode of the miio device off failed.",
+            self._device.set_learn_mode, False)
+
+    @asyncio.coroutine
+    def async_set_volume(self, volume: int = 50):
+        """Set the sound volume."""
+        if self.supported_features & SUPPORT_SET_VOLUME == 0:
+            return
+
+        yield from self._try_command(
+            "Setting the sound volume of the miio device failed.",
+            self._device.set_volume, volume)
+
+    @asyncio.coroutine
+    def async_set_extra_features(self, features: int = 1):
+        """Set the extra features."""
+        if self.supported_features & SUPPORT_SET_EXTRA_FEATURES == 0:
+            return
+
+        yield from self._try_command(
+            "Setting the extra features of the miio device failed.",
+            self._device.set_extra_features, features)
+
+    @asyncio.coroutine
+    def async_reset_filter(self):
+        """Reset the filter lifetime and usage."""
+        if self.supported_features & SUPPORT_RESET_FILTER == 0:
+            return
+
+        yield from self._try_command(
+            "Resetting the filter lifetime of the miio device failed.",
+            self._device.reset_filter)
 
 
 class XiaomiAirHumidifier(XiaomiGenericDevice, FanEntity):
