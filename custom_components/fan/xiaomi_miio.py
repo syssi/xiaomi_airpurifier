@@ -434,19 +434,24 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
             ATTR_MOTOR_SPEED: None,
             ATTR_AVERAGE_AIR_QUALITY_INDEX: None,
             ATTR_PURIFY_VOLUME: None,
-            ATTR_MOTOR2_SPEED: None,
-            ATTR_ILLUMINANCE: None,
-            ATTR_FILTER_RFID_PRODUCT_ID: None,
-            ATTR_FILTER_RFID_TAG: None,
-            ATTR_FILTER_TYPE: None,
             ATTR_LEARN_MODE: None,
             ATTR_SLEEP_TIME: None,
             ATTR_SLEEP_LEARN_COUNT: None,
             ATTR_EXTRA_FEATURES: None,
             ATTR_TURBO_MODE_SUPPORTED: None,
-            ATTR_AUTO_DETECT: None,
             ATTR_SLEEP_MODE: None,
         }
+
+        if self._model in MODEL_AIRPURIFIER_PRO:
+            self._state_attrs.update({
+                ATTR_FILTER_RFID_PRODUCT_ID: None,
+                ATTR_FILTER_RFID_TAG: None,
+                ATTR_FILTER_TYPE: None,
+                ATTR_ILLUMINANCE: None,
+                ATTR_MOTOR2_SPEED: None,
+                ATTR_AUTO_DETECT: None,
+            })
+
         self._skip_update = False
 
     @property
@@ -487,18 +492,22 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
                 ATTR_MOTOR_SPEED: state.motor_speed,
                 ATTR_AVERAGE_AIR_QUALITY_INDEX: state.average_aqi,
                 ATTR_PURIFY_VOLUME: state.purify_volume,
-                ATTR_MOTOR2_SPEED: state.motor2_speed,
-                ATTR_ILLUMINANCE: state.illuminance,
-                ATTR_FILTER_RFID_PRODUCT_ID: state.filter_rfid_product_id,
-                ATTR_FILTER_RFID_TAG: state.filter_rfid_tag,
-                ATTR_FILTER_TYPE: state.filter_type,
                 ATTR_LEARN_MODE: state.learn_mode,
                 ATTR_SLEEP_TIME: state.sleep_time,
                 ATTR_SLEEP_LEARN_COUNT: state.sleep_mode_learn_count,
                 ATTR_EXTRA_FEATURES: state.extra_features,
                 ATTR_TURBO_MODE_SUPPORTED: state.turbo_mode_supported,
-                ATTR_AUTO_DETECT: state.auto_detect,
             })
+
+            if self._model in MODEL_AIRPURIFIER_PRO:
+                self._state_attrs.update({
+                    ATTR_FILTER_RFID_PRODUCT_ID: state.filter_rfid_product_id,
+                    ATTR_FILTER_RFID_TAG: state.filter_rfid_tag,
+                    ATTR_FILTER_TYPE: state.filter_type,
+                    ATTR_ILLUMINANCE: state.illuminance,
+                    ATTR_MOTOR2_SPEED: state.motor2_speed,
+                    ATTR_AUTO_DETECT: state.auto_detect,
+                })
 
             if state.sleep_mode:
                 self._state_attrs[ATTR_SLEEP_MODE] = state.sleep_mode.value
