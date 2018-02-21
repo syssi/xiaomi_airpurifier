@@ -30,7 +30,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_TOKEN): vol.All(cv.string, vol.Length(min=32, max=32)),
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
     vol.Optional(CONF_MODEL, default=None): vol.In(
-        ['zhimi.airpurifier.m1',
+        [None, 'zhimi.airpurifier.m1',
          'zhimi.airpurifier.m2',
          'zhimi.airpurifier.ma1',
          'zhimi.airpurifier.ma2',
@@ -197,10 +197,11 @@ def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
 class XiaomiGenericDevice(FanEntity):
     """Representation of a generic Xiaomi device."""
 
-    def __init__(self, name, device):
+    def __init__(self, name, device, model):
         """Initialize the generic Xiaomi device."""
         self._name = name
         self._device = device
+        self._model = model
         self._state = None
         self._state_attrs = {}
         self._skip_update = False
@@ -306,11 +307,12 @@ class XiaomiGenericDevice(FanEntity):
 class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
     """Representation of a Xiaomi Air Purifier."""
 
-    def __init__(self, name, device):
+    def __init__(self, name, device, model):
         """Initialize the air purifier."""
         self._name = name
-
         self._device = device
+        self._model = model
+
         self._state = None
         self._state_attrs = {
             ATTR_AIR_QUALITY_INDEX: None,
@@ -327,6 +329,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
             ATTR_MOTOR_SPEED: None,
             ATTR_AVERAGE_AIR_QUALITY_INDEX: None,
             ATTR_PURIFY_VOLUME: None,
+            ATTR_MODEL: self._model,
         }
         self._skip_update = False
 
@@ -346,7 +349,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
             _LOGGER.debug("Got new state: %s", state)
 
             self._state = state.is_on
-            self._state_attrs = {
+            self._state_attrs.update({
                 ATTR_TEMPERATURE: state.temperature,
                 ATTR_HUMIDITY: state.humidity,
                 ATTR_AIR_QUALITY_INDEX: state.aqi,
@@ -360,7 +363,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
                 ATTR_MOTOR_SPEED: state.motor_speed,
                 ATTR_AVERAGE_AIR_QUALITY_INDEX: state.average_aqi,
                 ATTR_PURIFY_VOLUME: state.purify_volume,
-            }
+            })
 
             if state.led_brightness:
                 self._state_attrs[
@@ -430,11 +433,12 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
 class XiaomiAirHumidifier(XiaomiGenericDevice, FanEntity):
     """Representation of a Xiaomi Air Humidifier."""
 
-    def __init__(self, name, device):
+    def __init__(self, name, device, model):
         """Initialize the air humidifier."""
         self._name = name
-
         self._device = device
+        self._model = model
+
         self._state = None
         self._state_attrs = {
             ATTR_TEMPERATURE: None,
@@ -445,6 +449,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice, FanEntity):
             ATTR_CHILD_LOCK: None,
             ATTR_TRANS_LEVEL: None,
             ATTR_TARGET_HUMIDITY: None,
+            ATTR_MODEL: self._model,
         }
         self._skip_update = False
 
@@ -464,7 +469,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice, FanEntity):
             _LOGGER.debug("Got new state: %s", state)
 
             self._state = state.is_on
-            self._state_attrs = {
+            self._state_attrs.update({
                 ATTR_TEMPERATURE: state.temperature,
                 ATTR_HUMIDITY: state.humidity,
                 ATTR_MODE: state.mode.value,
@@ -472,7 +477,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice, FanEntity):
                 ATTR_CHILD_LOCK: state.child_lock,
                 ATTR_TRANS_LEVEL: state.trans_level,
                 ATTR_TARGET_HUMIDITY: state.target_humidity,
-            }
+            })
 
             if state.led_brightness:
                 self._state_attrs[
