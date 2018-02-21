@@ -24,6 +24,7 @@ DEFAULT_NAME = 'Xiaomi Miio Device'
 PLATFORM = 'xiaomi_miio'
 
 CONF_MODEL = 'model'
+MODEL_AIRPURIFIER_PRO = 'zhimi.airpurifier.v6'
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_HOST): cv.string,
@@ -84,6 +85,9 @@ SUPPORT_FLAGS_GENERIC = (SUPPORT_SET_SPEED | SUPPORT_SET_BUZZER |
 
 SUPPORT_FLAGS_AIRPURIFIER = (SUPPORT_FLAGS_GENERIC |
     SUPPORT_SET_LED | SUPPORT_SET_LED_BRIGHTNESS | SUPPORT_SET_FAVORITE_LEVEL)
+
+SUPPORT_FLAGS_AIRPURIFIER_PRO = (SUPPORT_SET_SPEED | SUPPORT_SET_CHILD_LOCK |
+    SUPPORT_SET_LED | SUPPORT_SET_FAVORITE_LEVEL)
 
 SUPPORT_FLAGS_AIRHUMIDIFIER = (SUPPORT_FLAGS_GENERIC |
     SUPPORT_SET_LED_BRIGHTNESS | SUPPORT_SET_TARGET_HUMIDITY)
@@ -387,6 +391,9 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
     @property
     def supported_features(self):
         """Flag supported features."""
+        if self._model == MODEL_AIRPURIFIER_PRO:
+            return SUPPORT_FLAGS_AIRPURIFIER_PRO
+
         return SUPPORT_FLAGS_AIRPURIFIER
 
     @asyncio.coroutine
@@ -433,6 +440,9 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
     def speed_list(self: ToggleEntity) -> list:
         """Get the list of available speeds."""
         from miio.airpurifier import OperationMode
+        if self._model == MODEL_AIRPURIFIER_PRO:
+            return [mode.name for mode in OperationMode if mode.name != 'Idle']
+
         return [mode.name for mode in OperationMode]
 
     @property
