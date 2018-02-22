@@ -59,15 +59,29 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 
 fan:
   - platform: xiaomi_miio
-    name: Xiaomi Air Purifier
+    name: Xiaomi Air Purifier 2
     host: 192.168.130.71
     token: b7c4a758c251955d2c24b1d9e41ce47d
+    model: zhimi.airpurifier.m1
+
+  - platform: xiaomi_miio
+    name: Xiaomi Air Purifier Pro
+    host: 192.168.130.73
+    token: 70924d6fa4b2d745185fa4660703a5c0
+    model: zhimi.airpurifier.v6
 
   - platform: xiaomi_miio
     name: Xiaomi Air Humidifier
     host: 192.168.130.72
     token: 2b00042f7481c7b056c4b410d28f33cf
+    model: zhimi.humidifier.v1
 ```
+
+Configuration variables:
+- **host** (*Required*): The IP of your light.
+- **token** (*Required*): The API token of your light.
+- **name** (*Optional*): The name of your light.
+- **model** (*Optional*): The model of your device. Valid values are `zhimi.airpurifier.m1`, `zhimi.airpurifier.m2`, `zhimi.airpurifier.ma1`, `zhimi.airpurifier.ma2`, `zhimi.airpurifier.sa1`, `zhimi.airpurifier.sa2`, `zhimi.airpurifier.v1`, `zhimi.airpurifier.v2`, `zhimi.airpurifier.v3`, `zhimi.airpurifier.v5`, `zhimi.airpurifier.v6`, `zhimi.humidifier.v1` and `zhimi.humidifier.ca1`. This setting can be used to bypass the device model detection and is recommended if your device isn't always available.
 
 ## Platform services
 
