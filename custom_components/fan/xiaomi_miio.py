@@ -24,7 +24,7 @@ DEFAULT_NAME = 'Xiaomi Miio Device'
 PLATFORM = 'xiaomi_miio'
 
 CONF_MODEL = 'model'
-MODEL_AIRPURIFIER_PRO = ['zhimi.airpurifier.v6', 'zhimi.airpurifier.v3']
+MODEL_AIRPURIFIER_PRO = 'zhimi.airpurifier.v6'
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_HOST): cv.string,
@@ -442,7 +442,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
             ATTR_SLEEP_MODE: None,
         }
 
-        if self._model in MODEL_AIRPURIFIER_PRO:
+        if self._model == MODEL_AIRPURIFIER_PRO:
             self._state_attrs.update({
                 ATTR_FILTER_RFID_PRODUCT_ID: None,
                 ATTR_FILTER_RFID_TAG: None,
@@ -457,7 +457,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
     @property
     def supported_features(self):
         """Flag supported features."""
-        if self._model in MODEL_AIRPURIFIER_PRO:
+        if self._model == MODEL_AIRPURIFIER_PRO:
             return SUPPORT_FLAGS_AIRPURIFIER_PRO
 
         return SUPPORT_FLAGS_AIRPURIFIER
@@ -499,7 +499,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
                 ATTR_TURBO_MODE_SUPPORTED: state.turbo_mode_supported,
             })
 
-            if self._model in MODEL_AIRPURIFIER_PRO:
+            if self._model == MODEL_AIRPURIFIER_PRO:
                 self._state_attrs.update({
                     ATTR_FILTER_RFID_PRODUCT_ID: state.filter_rfid_product_id,
                     ATTR_FILTER_RFID_TAG: state.filter_rfid_tag,
@@ -524,7 +524,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
     def speed_list(self: ToggleEntity) -> list:
         """Get the list of available speeds."""
         from miio.airpurifier import OperationMode
-        if self._model in MODEL_AIRPURIFIER_PRO:
+        if self._model == MODEL_AIRPURIFIER_PRO:
             return [mode.name for mode in OperationMode if mode.name != 'Idle']
 
         return [mode.name for mode in OperationMode]
