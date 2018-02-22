@@ -427,10 +427,8 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
             ATTR_FILTER_HOURS_USED: None,
             ATTR_FILTER_LIFE: None,
             ATTR_FAVORITE_LEVEL: None,
-            ATTR_BUZZER: None,
             ATTR_CHILD_LOCK: None,
             ATTR_LED: None,
-            ATTR_LED_BRIGHTNESS: None,
             ATTR_MOTOR_SPEED: None,
             ATTR_AVERAGE_AIR_QUALITY_INDEX: None,
             ATTR_PURIFY_VOLUME: None,
@@ -440,6 +438,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
             ATTR_EXTRA_FEATURES: None,
             ATTR_TURBO_MODE_SUPPORTED: None,
             ATTR_SLEEP_MODE: None,
+            ATTR_AUTO_DETECT: None,
         }
 
         if self._model == MODEL_AIRPURIFIER_PRO:
@@ -449,7 +448,11 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
                 ATTR_FILTER_TYPE: None,
                 ATTR_ILLUMINANCE: None,
                 ATTR_MOTOR2_SPEED: None,
-                ATTR_AUTO_DETECT: None,
+            })
+        else:
+            self._state_attrs.update({
+                ATTR_BUZZER: None,
+                ATTR_LED_BRIGHTNESS: None,
             })
 
         self._skip_update = False
@@ -486,7 +489,6 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
                 ATTR_FILTER_HOURS_USED: state.filter_hours_used,
                 ATTR_FILTER_LIFE: state.filter_life_remaining,
                 ATTR_FAVORITE_LEVEL: state.favorite_level,
-                ATTR_BUZZER: state.buzzer,
                 ATTR_CHILD_LOCK: state.child_lock,
                 ATTR_LED: state.led,
                 ATTR_MOTOR_SPEED: state.motor_speed,
@@ -497,6 +499,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
                 ATTR_SLEEP_LEARN_COUNT: state.sleep_mode_learn_count,
                 ATTR_EXTRA_FEATURES: state.extra_features,
                 ATTR_TURBO_MODE_SUPPORTED: state.turbo_mode_supported,
+                ATTR_AUTO_DETECT: state.auto_detect,
             })
 
             if self._model == MODEL_AIRPURIFIER_PRO:
@@ -505,18 +508,21 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
                     ATTR_FILTER_RFID_TAG: state.filter_rfid_tag,
                     ATTR_ILLUMINANCE: state.illuminance,
                     ATTR_MOTOR2_SPEED: state.motor2_speed,
-                    ATTR_AUTO_DETECT: state.auto_detect,
                 })
                 if state.filter_type:
                     self._state_attrs[
                         ATTR_FILTER_TYPE] = state.filter_type.value
+            else:
+                self._state_attrs.update({
+                    ATTR_BUZZER: state.buzzer,
+                })
+                if state.led_brightness:
+                    self._state_attrs[
+                        ATTR_LED_BRIGHTNESS] = state.led_brightness.value
 
             if state.sleep_mode:
                 self._state_attrs[ATTR_SLEEP_MODE] = state.sleep_mode.value
 
-            if state.led_brightness:
-                self._state_attrs[
-                    ATTR_LED_BRIGHTNESS] = state.led_brightness.value
 
         except DeviceException as ex:
             self._state = None
