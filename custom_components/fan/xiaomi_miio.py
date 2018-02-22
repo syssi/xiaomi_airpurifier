@@ -503,11 +503,13 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
                 self._state_attrs.update({
                     ATTR_FILTER_RFID_PRODUCT_ID: state.filter_rfid_product_id,
                     ATTR_FILTER_RFID_TAG: state.filter_rfid_tag,
-                    ATTR_FILTER_TYPE: state.filter_type,
                     ATTR_ILLUMINANCE: state.illuminance,
                     ATTR_MOTOR2_SPEED: state.motor2_speed,
                     ATTR_AUTO_DETECT: state.auto_detect,
                 })
+                if state.state.filter_type:
+                    self._state_attrs[
+                        ATTR_FILTER_TYPE] = state.filter_type.value
 
             if state.sleep_mode:
                 self._state_attrs[ATTR_SLEEP_MODE] = state.sleep_mode.value
