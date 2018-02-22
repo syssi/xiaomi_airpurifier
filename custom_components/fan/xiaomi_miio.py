@@ -507,7 +507,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
                     ATTR_MOTOR2_SPEED: state.motor2_speed,
                     ATTR_AUTO_DETECT: state.auto_detect,
                 })
-                if state.state.filter_type:
+                if state.filter_type:
                     self._state_attrs[
                         ATTR_FILTER_TYPE] = state.filter_type.value
 
