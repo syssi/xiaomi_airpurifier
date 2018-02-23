@@ -394,16 +394,17 @@ class XiaomiGenericDevice(FanEntity):
         return
 
     @asyncio.coroutine
-    def async_set_favorite_level(self, level: int = 1):
-        raise NotImplementedError()
+    def async_set_favorite_level(self, level: int):
+        """Set the favorite level."""
+        return
 
     @asyncio.coroutine
-    def async_set_led_brightness(self, brightness: int = 2):
+    def async_set_led_brightness(self, brightness: int):
         """Set the led brightness."""
         return
 
     @asyncio.coroutine
-    def async_set_target_humidity(self, humidity: int = 40):
+    def async_set_target_humidity(self, humidity: int):
         """Set the target humidity."""
         return
 
@@ -412,13 +413,10 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
     """Representation of a Xiaomi Air Purifier."""
 
     def __init__(self, name, device, model):
-        """Initialize the air purifier."""
-        self._name = name
-        self._device = device
-        self._model = model
+        """Initialize the plug switch."""
+        XiaomiGenericDevice.__init__(self, name, device, model)
 
-        self._state = None
-        self._state_attrs = {
+        self._state_attrs.update({
             ATTR_MODEL: self._model,
             ATTR_AIR_QUALITY_INDEX: None,
             ATTR_TEMPERATURE: None,
@@ -439,7 +437,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
             ATTR_TURBO_MODE_SUPPORTED: None,
             ATTR_SLEEP_MODE: None,
             ATTR_AUTO_DETECT: None,
-        }
+        })
 
         if self.supported_features == SUPPORT_FLAGS_AIRPURIFIER_PRO:
             self._state_attrs.update({
@@ -455,8 +453,6 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
 
         if self.supported_features & SUPPORT_SET_LED_BRIGHTNESS == 1:
             self._state_attrs[ATTR_LED_BRIGHTNESS] = None
-
-        self._skip_update = False
 
     @property
     def supported_features(self):
@@ -551,8 +547,12 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
     @asyncio.coroutine
     def async_set_speed(self: ToggleEntity, speed: str) -> None:
         """Set the speed of the fan."""
-        _LOGGER.debug("Setting the operation mode to: %s", speed)
+        if self.supported_features & SUPPORT_SET_SPEED == 0:
+            return
+
         from miio.airpurifier import OperationMode
+
+        _LOGGER.debug("Setting the operation mode to: %s", speed)
 
         yield from self._try_command(
             "Setting operation mode of the miio device failed.",
@@ -581,10 +581,10 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
     @asyncio.coroutine
     def async_set_led_brightness(self, brightness: int = 2):
         """Set the led brightness."""
-        from miio.airpurifier import LedBrightness
-
         if self.supported_features & SUPPORT_SET_LED_BRIGHTNESS == 0:
             return
+
+        from miio.airpurifier import LedBrightness
 
         yield from self._try_command(
             "Setting the led brightness of the miio device failed.",
@@ -675,13 +675,10 @@ class XiaomiAirHumidifier(XiaomiGenericDevice, FanEntity):
     """Representation of a Xiaomi Air Humidifier."""
 
     def __init__(self, name, device, model):
-        """Initialize the air humidifier."""
-        self._name = name
-        self._device = device
-        self._model = model
+        """Initialize the plug switch."""
+        XiaomiGenericDevice.__init__(self, name, device, model)
 
-        self._state = None
-        self._state_attrs = {
+        self._state_attrs.update({
             ATTR_MODEL: self._model,
             ATTR_TEMPERATURE: None,
             ATTR_HUMIDITY: None,
@@ -691,8 +688,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice, FanEntity):
             ATTR_CHILD_LOCK: None,
             ATTR_TRANS_LEVEL: None,
             ATTR_TARGET_HUMIDITY: None,
-        }
-        self._skip_update = False
+        })
 
     @property
     def supported_features(self):
@@ -752,8 +748,12 @@ class XiaomiAirHumidifier(XiaomiGenericDevice, FanEntity):
     @asyncio.coroutine
     def async_set_speed(self: ToggleEntity, speed: str) -> None:
         """Set the speed of the fan."""
-        _LOGGER.debug("Setting the operation mode to: " + speed)
+        if self.supported_features & SUPPORT_SET_SPEED == 0:
+            return
+
         from miio.airhumidifier import OperationMode
+
+        _LOGGER.debug("Setting the operation mode to: " + speed)
 
         yield from self._try_command(
             "Setting operation mode of the miio device failed.",
@@ -762,10 +762,10 @@ class XiaomiAirHumidifier(XiaomiGenericDevice, FanEntity):
     @asyncio.coroutine
     def async_set_led_brightness(self, brightness: int = 2):
         """Set the led brightness."""
-        from miio.airhumidifier import LedBrightness
-
         if self.supported_features & SUPPORT_SET_LED_BRIGHTNESS == 0:
             return
+
+        from miio.airhumidifier import LedBrightness
 
         yield from self._try_command(
             "Setting the led brightness of the miio device failed.",
