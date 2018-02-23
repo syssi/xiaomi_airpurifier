@@ -441,7 +441,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
             ATTR_AUTO_DETECT: None,
         }
 
-        if self._model == MODEL_AIRPURIFIER_PRO:
+        if self.supported_features == SUPPORT_FLAGS_AIRPURIFIER_PRO:
             self._state_attrs.update({
                 ATTR_FILTER_RFID_PRODUCT_ID: None,
                 ATTR_FILTER_RFID_TAG: None,
@@ -449,11 +449,12 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
                 ATTR_ILLUMINANCE: None,
                 ATTR_MOTOR2_SPEED: None,
             })
-        else:
-            self._state_attrs.update({
-                ATTR_BUZZER: None,
-                ATTR_LED_BRIGHTNESS: None,
-            })
+
+        if self.supported_features & SUPPORT_SET_BUZZER == 1:
+            self._state_attrs[ATTR_BUZZER] = None
+
+        if self.supported_features & SUPPORT_SET_LED_BRIGHTNESS == 1:
+            self._state_attrs[ATTR_LED_BRIGHTNESS] = None
 
         self._skip_update = False
 
@@ -502,7 +503,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
                 ATTR_AUTO_DETECT: state.auto_detect,
             })
 
-            if self._model == MODEL_AIRPURIFIER_PRO:
+            if self.supported_features == SUPPORT_FLAGS_AIRPURIFIER_PRO:
                 self._state_attrs.update({
                     ATTR_FILTER_RFID_PRODUCT_ID: state.filter_rfid_product_id,
                     ATTR_FILTER_RFID_TAG: state.filter_rfid_tag,
@@ -512,17 +513,17 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
                 if state.filter_type:
                     self._state_attrs[
                         ATTR_FILTER_TYPE] = state.filter_type.value
-            else:
-                self._state_attrs.update({
-                    ATTR_BUZZER: state.buzzer,
-                })
-                if state.led_brightness:
-                    self._state_attrs[
-                        ATTR_LED_BRIGHTNESS] = state.led_brightness.value
+
+            if self.supported_features & SUPPORT_SET_BUZZER == 1:
+                self._state_attrs[ATTR_BUZZER] = state.buzzer
+
+            if self.supported_features & SUPPORT_SET_LED_BRIGHTNESS == 1 and \
+                    state.led_brightness:
+                self._state_attrs[
+                    ATTR_LED_BRIGHTNESS] = state.led_brightness.value
 
             if state.sleep_mode:
                 self._state_attrs[ATTR_SLEEP_MODE] = state.sleep_mode.value
-
 
         except DeviceException as ex:
             self._state = None
@@ -532,7 +533,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
     def speed_list(self: ToggleEntity) -> list:
         """Get the list of available speeds."""
         from miio.airpurifier import OperationMode
-        if self._model == MODEL_AIRPURIFIER_PRO:
+        if self.supported_features == SUPPORT_FLAGS_AIRPURIFIER_PRO:
             return [mode.name for mode in OperationMode if mode.name != 'Idle']
 
         return [mode.name for mode in OperationMode]
