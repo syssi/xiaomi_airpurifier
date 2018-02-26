@@ -556,7 +556,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
 
         yield from self._try_command(
             "Setting operation mode of the miio device failed.",
-            self._device.set_mode, OperationMode(speed))
+            self._device.set_mode, OperationMode[speed.title()])
 
     @asyncio.coroutine
     def async_set_led_on(self):
@@ -757,7 +757,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice, FanEntity):
 
         yield from self._try_command(
             "Setting operation mode of the miio device failed.",
-            self._device.set_mode, OperationMode(speed))
+            self._device.set_mode, OperationMode[speed.title()])
 
     @asyncio.coroutine
     def async_set_led_brightness(self, brightness: int = 2):
