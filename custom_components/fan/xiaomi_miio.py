@@ -99,19 +99,28 @@ SUPPORT_RESET_FILTER = 2048
 SUPPORT_SET_EXTRA_FEATURES = 4096
 SUPPORT_SET_TARGET_HUMIDITY = 8192
 
-SUPPORT_FLAGS_GENERIC = (SUPPORT_SET_SPEED | SUPPORT_SET_BUZZER |
-    SUPPORT_SET_CHILD_LOCK)
+SUPPORT_FLAGS_GENERIC = (SUPPORT_SET_SPEED |
+                         SUPPORT_SET_BUZZER |
+                         SUPPORT_SET_CHILD_LOCK)
 
 SUPPORT_FLAGS_AIRPURIFIER = (SUPPORT_FLAGS_GENERIC |
-    SUPPORT_SET_LED | SUPPORT_SET_LED_BRIGHTNESS | SUPPORT_SET_FAVORITE_LEVEL |
-    SUPPORT_SET_LEARN_MODE | SUPPORT_RESET_FILTER | SUPPORT_SET_EXTRA_FEATURES)
+                             SUPPORT_SET_LED |
+                             SUPPORT_SET_LED_BRIGHTNESS |
+                             SUPPORT_SET_FAVORITE_LEVEL |
+                             SUPPORT_SET_LEARN_MODE |
+                             SUPPORT_RESET_FILTER |
+                             SUPPORT_SET_EXTRA_FEATURES)
 
-SUPPORT_FLAGS_AIRPURIFIER_PRO = (SUPPORT_SET_SPEED | SUPPORT_SET_CHILD_LOCK |
-    SUPPORT_SET_LED | SUPPORT_SET_FAVORITE_LEVEL | SUPPORT_SET_AUTO_DETECT |
-    SUPPORT_SET_VOLUME)
+SUPPORT_FLAGS_AIRPURIFIER_PRO = (SUPPORT_SET_SPEED |
+                                 SUPPORT_SET_CHILD_LOCK |
+                                 SUPPORT_SET_LED |
+                                 SUPPORT_SET_FAVORITE_LEVEL |
+                                 SUPPORT_SET_AUTO_DETECT |
+                                 SUPPORT_SET_VOLUME)
 
 SUPPORT_FLAGS_AIRHUMIDIFIER = (SUPPORT_FLAGS_GENERIC |
-    SUPPORT_SET_LED_BRIGHTNESS | SUPPORT_SET_TARGET_HUMIDITY)
+                               SUPPORT_SET_LED_BRIGHTNESS |
+                               SUPPORT_SET_TARGET_HUMIDITY)
 
 SERVICE_SET_BUZZER_ON = 'xiaomi_miio_set_buzzer_on'
 SERVICE_SET_BUZZER_OFF = 'xiaomi_miio_set_buzzer_off'
@@ -383,26 +392,31 @@ class XiaomiGenericDevice(FanEntity):
             "Turning the child lock of the miio device off failed.",
             self._device.set_child_lock, False)
 
+    # pylint: disable=no-self-use
     @asyncio.coroutine
     def async_set_led_on(self):
         """Turn the led on."""
         return
 
+    # pylint: disable=no-self-use
     @asyncio.coroutine
     def async_set_led_off(self):
         """Turn the led off."""
         return
 
+    # pylint: disable=no-self-use
     @asyncio.coroutine
     def async_set_favorite_level(self, level: int):
         """Set the favorite level."""
         return
 
+    # pylint: disable=no-self-use
     @asyncio.coroutine
     def async_set_led_brightness(self, brightness: int):
         """Set the led brightness."""
         return
 
+    # pylint: disable=no-self-use
     @asyncio.coroutine
     def async_set_target_humidity(self, humidity: int):
         """Set the target humidity."""
@@ -753,7 +767,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice, FanEntity):
 
         from miio.airhumidifier import OperationMode
 
-        _LOGGER.debug("Setting the operation mode to: " + speed)
+        _LOGGER.debug("Setting the operation mode to: %s", speed)
 
         yield from self._try_command(
             "Setting operation mode of the miio device failed.",
