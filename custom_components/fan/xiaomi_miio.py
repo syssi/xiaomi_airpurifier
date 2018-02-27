@@ -21,7 +21,7 @@ import homeassistant.helpers.config_validation as cv
 _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_NAME = 'Xiaomi Miio Device'
-PLATFORM = 'xiaomi_miio'
+DATA_KEY = 'fan.xiaomi_miio'
 
 CONF_MODEL = 'model'
 MODEL_AIRPURIFIER_PRO = 'zhimi.airpurifier.v6'
@@ -43,8 +43,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
          'zhimi.airpurifier.v5',
          'zhimi.airpurifier.v6',
          'zhimi.humidifier.v1',
-         'zhimi.humidifier.ca1',
-         ]),
+         'zhimi.humidifier.ca1']),
 })
 
 REQUIREMENTS = ['python-miio>=0.3.6']
@@ -203,8 +202,8 @@ SERVICE_TO_METHOD = {
 def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
     """Set up the miio fan device from config."""
     from miio import Device, DeviceException
-    if PLATFORM not in hass.data:
-        hass.data[PLATFORM] = {}
+    if DATA_KEY not in hass.data:
+        hass.data[DATA_KEY] = {}
 
     host = config.get(CONF_HOST)
     name = config.get(CONF_NAME)
@@ -240,7 +239,7 @@ def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
             'and provide the following data: %s', model)
         return False
 
-    hass.data[PLATFORM][host] = device
+    hass.data[DATA_KEY][host] = device
     async_add_devices([device], update_before_add=True)
 
     @asyncio.coroutine
@@ -251,10 +250,10 @@ def async_setup_platform(hass, config, async_add_devices, discovery_info=None):
                   if key != ATTR_ENTITY_ID}
         entity_ids = service.data.get(ATTR_ENTITY_ID)
         if entity_ids:
-            devices = [device for device in hass.data[PLATFORM].values() if
+            devices = [device for device in hass.data[DATA_KEY].values() if
                        device.entity_id in entity_ids]
         else:
-            devices = hass.data[PLATFORM].values()
+            devices = hass.data[DATA_KEY].values()
 
         update_tasks = []
         for device in devices:
