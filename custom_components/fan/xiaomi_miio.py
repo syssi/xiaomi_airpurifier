@@ -367,7 +367,7 @@ class XiaomiGenericDevice(FanEntity):
     def _extract_value_from_attribute(state, attribute):
         from enum import Enum
 
-        value = state.getattr(attribute)
+        value = getattr(state, attribute)
         if isinstance(value, Enum):
             return value.value
         else:
