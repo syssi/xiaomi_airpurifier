@@ -84,6 +84,52 @@ ATTR_TRANS_LEVEL = 'trans_level'
 ATTR_FEATURES = 'features'
 ATTR_VOLUME = 'volume'
 
+# Map attributes to properties of the state object
+AVAILABLE_ATTRIBUTES_AIRPURIFIER_COMMON = {
+    ATTR_TEMPERATURE: 'temperature',
+    ATTR_HUMIDITY: 'humidity',
+    ATTR_AIR_QUALITY_INDEX: 'aqi',
+    ATTR_MODE: 'mode',
+    ATTR_FILTER_HOURS_USED: 'filter_hours_used',
+    ATTR_FILTER_LIFE: 'filter_life_remaining',
+    ATTR_FAVORITE_LEVEL: 'favorite_level',
+    ATTR_CHILD_LOCK: 'child_lock',
+    ATTR_LED: 'led',
+    ATTR_MOTOR_SPEED: 'motor_speed',
+    ATTR_AVERAGE_AIR_QUALITY_INDEX: 'average_aqi',
+    ATTR_PURIFY_VOLUME: 'purify_volume',
+    ATTR_LEARN_MODE: 'learn_mode',
+    ATTR_SLEEP_TIME: 'sleep_time',
+    ATTR_SLEEP_LEARN_COUNT: 'sleep_mode_learn_count',
+    ATTR_EXTRA_FEATURES: 'extra_features',
+    ATTR_TURBO_MODE_SUPPORTED: 'turbo_mode_supported',
+    ATTR_AUTO_DETECT: 'auto_detect',
+}
+
+AVAILABLE_ATTRIBUTES_AIRPURIFIER = AVAILABLE_ATTRIBUTES_AIRPURIFIER_COMMON
+AVAILABLE_ATTRIBUTES_AIRPURIFIER.update({
+    ATTR_BUZZER: 'buzzer',
+    ATTR_LED_BRIGHTNESS: 'led_brightness',
+})
+
+AVAILABLE_ATTRIBUTES_AIRPURIFIERPRO = AVAILABLE_ATTRIBUTES_AIRPURIFIER_COMMON
+AVAILABLE_ATTRIBUTES_AIRPURIFIERPRO.update({
+    ATTR_FILTER_RFID_PRODUCT_ID: 'filter_rfid_product_id',
+    ATTR_FILTER_RFID_TAG: 'filter_rfid_tag',
+    ATTR_ILLUMINANCE: 'illuminance',
+    ATTR_MOTOR2_SPEED: 'motor2_speed',
+})
+
+AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER = {
+    ATTR_TEMPERATURE: 'temperature',
+    ATTR_HUMIDITY: 'humidity',
+    ATTR_MODE: 'mode',
+    ATTR_BUZZER: 'buzzer',
+    ATTR_CHILD_LOCK: 'child_lock',
+    ATTR_TRANS_LEVEL: 'trans_level',
+    ATTR_TARGET_HUMIDITY: 'target_humidity',
+}
+
 SUCCESS = ['ok']
 
 SUPPORT_SET_BUZZER = 8
@@ -279,7 +325,9 @@ class XiaomiGenericDevice(FanEntity):
         self._device = device
         self._model = model
         self._state = None
-        self._state_attrs = {}
+        self._state_attrs = {
+            ATTR_MODEL: self._model,
+        }
         self._skip_update = False
 
     @property
@@ -429,43 +477,12 @@ class XiaomiAirPurifier(XiaomiGenericDevice, FanEntity):
         """Initialize the plug switch."""
         XiaomiGenericDevice.__init__(self, name, device, model)
 
-        self._state_attrs.update({
-            ATTR_MODEL: self._model,
-            ATTR_AIR_QUALITY_INDEX: None,
-            ATTR_TEMPERATURE: None,
-            ATTR_HUMIDITY: None,
-            ATTR_MODE: None,
-            ATTR_FILTER_HOURS_USED: None,
-            ATTR_FILTER_LIFE: None,
-            ATTR_FAVORITE_LEVEL: None,
-            ATTR_CHILD_LOCK: None,
-            ATTR_LED: None,
-            ATTR_MOTOR_SPEED: None,
-            ATTR_AVERAGE_AIR_QUALITY_INDEX: None,
-            ATTR_PURIFY_VOLUME: None,
-            ATTR_LEARN_MODE: None,
-            ATTR_SLEEP_TIME: None,
-            ATTR_SLEEP_LEARN_COUNT: None,
-            ATTR_EXTRA_FEATURES: None,
-            ATTR_TURBO_MODE_SUPPORTED: None,
-            ATTR_SLEEP_MODE: None,
-            ATTR_AUTO_DETECT: None,
-        })
-
         if self.supported_features == SUPPORT_FLAGS_AIRPURIFIER_PRO:
-            self._state_attrs.update({
-                ATTR_FILTER_RFID_PRODUCT_ID: None,
-                ATTR_FILTER_RFID_TAG: None,
-                ATTR_FILTER_TYPE: None,
-                ATTR_ILLUMINANCE: None,
-                ATTR_MOTOR2_SPEED: None,
-            })
-
-        if self.supported_features & SUPPORT_SET_BUZZER == 1:
-            self._state_attrs[ATTR_BUZZER] = None
-
-        if self.supported_features & SUPPORT_SET_LED_BRIGHTNESS == 1:
-            self._state_attrs[ATTR_LED_BRIGHTNESS] = None
+            self._state_attrs.update({attribute: None for attribute in
+                                      AVAILABLE_ATTRIBUTES_AIRPURIFIERPRO})
+        else:
+            self._state_attrs.update({attribute: None for attribute in
+                                      AVAILABLE_ATTRIBUTES_AIRPURIFIER})
 
     @property
     def supported_features(self):
@@ -691,17 +708,8 @@ class XiaomiAirHumidifier(XiaomiGenericDevice, FanEntity):
         """Initialize the plug switch."""
         XiaomiGenericDevice.__init__(self, name, device, model)
 
-        self._state_attrs.update({
-            ATTR_MODEL: self._model,
-            ATTR_TEMPERATURE: None,
-            ATTR_HUMIDITY: None,
-            ATTR_MODE: None,
-            ATTR_BUZZER: None,
-            ATTR_LED_BRIGHTNESS: None,
-            ATTR_CHILD_LOCK: None,
-            ATTR_TRANS_LEVEL: None,
-            ATTR_TARGET_HUMIDITY: None,
-        })
+        self._state_attrs.update({attribute: None for attribute in
+                                  AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER})
 
     @property
     def supported_features(self):
