@@ -747,7 +747,6 @@ class XiaomiAirHumidifier(XiaomiGenericDevice, FanEntity):
 
         return [mode.name for mode in OperationMode]
 
-
     @property
     def speed(self):
         """Return the current speed."""
