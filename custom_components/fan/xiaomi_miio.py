@@ -46,7 +46,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
          'zhimi.humidifier.ca1']),
 })
 
-REQUIREMENTS = ['python-miio>=0.3.9']
+REQUIREMENTS = ['python-miio>=0.3.8']
 
 ATTR_MODEL = 'model'
 
