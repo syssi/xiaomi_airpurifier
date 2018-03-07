@@ -50,6 +50,7 @@ REQUIREMENTS = ['python-miio>=0.3.9']
 
 ATTR_MODEL = 'model'
 
+# Air Purifier
 ATTR_TEMPERATURE = 'temperature'
 ATTR_HUMIDITY = 'humidity'
 ATTR_AIR_QUALITY_INDEX = 'aqi'
@@ -75,21 +76,23 @@ ATTR_LEARN_MODE = 'learn_mode'
 ATTR_SLEEP_TIME = 'sleep_time'
 ATTR_SLEEP_LEARN_COUNT = 'sleep_mode_learn_count'
 ATTR_EXTRA_FEATURES = 'extra_features'
+ATTR_FEATURES = 'features'
 ATTR_TURBO_MODE_SUPPORTED = 'turbo_mode_supported'
 ATTR_AUTO_DETECT = 'auto_detect'
 ATTR_SLEEP_MODE = 'sleep_mode'
+ATTR_VOLUME = 'volume'
+ATTR_USE_TIME = 'use_time'
+ATTR_BUTTON_PRESSED = 'button_pressed'
 
+# Air Humidifier
 ATTR_TARGET_HUMIDITY = 'target_humidity'
 ATTR_TRANS_LEVEL = 'trans_level'
-ATTR_FEATURES = 'features'
-ATTR_VOLUME = 'volume'
+ATTR_HARDWARE_VERSION = 'hardware_version'
 
+# Air Humidifier CA
 ATTR_SPEED = 'speed'
 ATTR_DEPTH = 'depth'
 ATTR_DRY = 'dry'
-ATTR_USE_TIME = 'use_time'
-ATTR_HARDWARE_VERSION = 'hardware_version'
-ATTR_BUTTON_PRESSED = 'button_pressed'
 
 # Map attributes to properties of the state object
 AVAILABLE_ATTRIBUTES_AIRPURIFIER_COMMON = {
@@ -111,6 +114,8 @@ AVAILABLE_ATTRIBUTES_AIRPURIFIER_COMMON = {
     ATTR_EXTRA_FEATURES: 'extra_features',
     ATTR_TURBO_MODE_SUPPORTED: 'turbo_mode_supported',
     ATTR_AUTO_DETECT: 'auto_detect',
+    ATTR_USE_TIME: 'use_time',
+    ATTR_BUTTON_PRESSED: 'button_pressed',
 }
 
 AVAILABLE_ATTRIBUTES_AIRPURIFIER = {
@@ -139,6 +144,9 @@ AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER = {
     ATTR_TRANS_LEVEL: 'trans_level',
     ATTR_TARGET_HUMIDITY: 'target_humidity',
     ATTR_LED_BRIGHTNESS: 'led_brightness',
+    ATTR_BUTTON_PRESSED: 'button_pressed',
+    ATTR_USE_TIME: 'use_time',
+    ATTR_HARDWARE_VERSION: 'hardware_version',
 }
 
 AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA = {
@@ -146,9 +154,6 @@ AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA = {
     ATTR_SPEED: 'speed',
     ATTR_DEPTH: 'depth',
     ATTR_DRY: 'dry',
-    ATTR_USE_TIME: 'use_time',
-    ATTR_HARDWARE_VERSION: 'hardware_version',
-    ATTR_BUTTON_PRESSED: 'button_pressed'
 }
 
 SUCCESS = ['ok']
