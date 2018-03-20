@@ -85,6 +85,15 @@ Configuration variables:
 
 ## Platform services
 
+#### Service `fan.set_speed`
+
+Set the fan speed/operation mode.
+
+| Service data attribute    | Optional | Description                                                          |
+|---------------------------|----------|----------------------------------------------------------------------|
+| `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.               |
+| `speed`                   |       no | Fan speed. Valid values are 'Auto', 'Silent', 'Favorite' and 'Idle'. |
+
 #### Service `fan.xiaomi_miio_set_buzzer_on` (Air Purifier Pro excluded)
 
 Turn the buzzer on.
