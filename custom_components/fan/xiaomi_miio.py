@@ -5,6 +5,7 @@ For more details about this platform, please refer to the documentation
 https://home-assistant.io/components/fan.xiaomi_miio/
 """
 import asyncio
+from enum import Enum
 from functools import partial
 import logging
 
@@ -26,6 +27,7 @@ CONF_MODEL = 'model'
 MODEL_AIRPURIFIER_PRO = 'zhimi.airpurifier.v6'
 MODEL_AIRPURIFIER_V3 = 'zhimi.airpurifier.v3'
 MODEL_AIRHUMIDIFIER_V1 = 'zhimi.humidifier.v1'
+MODEL_AIRHUMIDIFIER_CA = 'zhimi.humidifier.ca1'
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_HOST): cv.string,
@@ -190,46 +192,45 @@ OPERATION_MODES_AIRPURIFIER_V3 = ['Auto', 'Silent', 'Favorite', 'Idle',
 
 SUCCESS = ['ok']
 
-SUPPORT_SET_BUZZER = 8
-SUPPORT_SET_LED = 16
-SUPPORT_SET_CHILD_LOCK = 32
-SUPPORT_SET_LED_BRIGHTNESS = 64
-SUPPORT_SET_FAVORITE_LEVEL = 128
-SUPPORT_SET_AUTO_DETECT = 256
-SUPPORT_SET_LEARN_MODE = 512
-SUPPORT_SET_VOLUME = 1024
-SUPPORT_RESET_FILTER = 2048
-SUPPORT_SET_EXTRA_FEATURES = 4096
-SUPPORT_SET_TARGET_HUMIDITY = 8192
-SUPPORT_SET_DRY = 16384
+FEATURE_SET_BUZZER = 1
+FEATURE_SET_LED = 2
+FEATURE_SET_CHILD_LOCK = 4
+FEATURE_SET_LED_BRIGHTNESS = 8
+FEATURE_SET_FAVORITE_LEVEL = 16
+FEATURE_SET_AUTO_DETECT = 32
+FEATURE_SET_LEARN_MODE = 64
+FEATURE_SET_VOLUME = 128
+FEATURE_RESET_FILTER = 256
+FEATURE_SET_EXTRA_FEATURES = 512
+FEATURE_SET_TARGET_HUMIDITY = 1024
+FEATURE_SET_DRY = 2048
 
-SUPPORT_FLAGS_GENERIC = (SUPPORT_SET_SPEED |
-                         SUPPORT_SET_BUZZER |
-                         SUPPORT_SET_CHILD_LOCK)
+FEATURE_FLAGS_GENERIC = (FEATURE_SET_BUZZER |
+                         FEATURE_SET_CHILD_LOCK)
 
-SUPPORT_FLAGS_AIRPURIFIER = (SUPPORT_FLAGS_GENERIC |
-                             SUPPORT_SET_LED |
-                             SUPPORT_SET_LED_BRIGHTNESS |
-                             SUPPORT_SET_FAVORITE_LEVEL |
-                             SUPPORT_SET_LEARN_MODE |
-                             SUPPORT_RESET_FILTER |
-                             SUPPORT_SET_EXTRA_FEATURES)
+FEATURE_FLAGS_AIRPURIFIER = (FEATURE_FLAGS_GENERIC |
+                             FEATURE_SET_LED |
+                             FEATURE_SET_LED_BRIGHTNESS |
+                             FEATURE_SET_FAVORITE_LEVEL |
+                             FEATURE_SET_LEARN_MODE |
+                             FEATURE_RESET_FILTER |
+                             FEATURE_SET_EXTRA_FEATURES)
 
-SUPPORT_FLAGS_AIRPURIFIER_PRO = (SUPPORT_SET_SPEED |
-                                 SUPPORT_SET_CHILD_LOCK |
-                                 SUPPORT_SET_LED |
-                                 SUPPORT_SET_FAVORITE_LEVEL |
-                                 SUPPORT_SET_AUTO_DETECT |
-                                 SUPPORT_SET_VOLUME)
+FEATURE_FLAGS_AIRPURIFIER_PRO = (FEATURE_SET_CHILD_LOCK |
+                                 FEATURE_SET_LED |
+                                 FEATURE_SET_FAVORITE_LEVEL |
+                                 FEATURE_SET_AUTO_DETECT |
+                                 FEATURE_SET_VOLUME)
 
-SUPPORT_FLAGS_AIRPURIFIER_V3 = (SUPPORT_FLAGS_GENERIC | SUPPORT_SET_LED)
+FEATURE_FLAGS_AIRPURIFIER_V3 = (FEATURE_FLAGS_GENERIC |
+                                FEATURE_SET_LED)
 
-SUPPORT_FLAGS_AIRHUMIDIFIER = (SUPPORT_FLAGS_GENERIC |
-                               SUPPORT_SET_LED_BRIGHTNESS |
-                               SUPPORT_SET_TARGET_HUMIDITY)
+FEATURE_FLAGS_AIRHUMIDIFIER = (FEATURE_FLAGS_GENERIC |
+                               FEATURE_SET_LED_BRIGHTNESS |
+                               FEATURE_SET_TARGET_HUMIDITY)
 
-SUPPORT_FLAGS_AIRHUMIDIFIER_CA = (SUPPORT_FLAGS_AIRHUMIDIFIER |
-                                  SUPPORT_SET_DRY)
+FEATURE_FLAGS_AIRHUMIDIFIER_CA = (FEATURE_FLAGS_AIRHUMIDIFIER |
+                                  FEATURE_SET_DRY)
 
 SERVICE_SET_BUZZER_ON = 'xiaomi_miio_set_buzzer_on'
 SERVICE_SET_BUZZER_OFF = 'xiaomi_miio_set_buzzer_off'
@@ -325,12 +326,14 @@ async def async_setup_platform(hass, config, async_add_devices,
     model = config.get(CONF_MODEL)
 
     _LOGGER.info("Initializing with host %s (token %s...)", host, token[:5])
+    unique_id = None
 
     if model is None:
         try:
             miio_device = Device(host, token)
             device_info = miio_device.info()
             model = device_info.model
+            unique_id = "{}-{}".format(model, device_info.mac_address)
             _LOGGER.info("%s %s %s detected",
                          model,
                          device_info.firmware_version,
@@ -341,11 +344,11 @@ async def async_setup_platform(hass, config, async_add_devices,
     if model.startswith('zhimi.airpurifier.'):
         from miio import AirPurifier
         air_purifier = AirPurifier(host, token)
-        device = XiaomiAirPurifier(name, air_purifier, model)
+        device = XiaomiAirPurifier(name, air_purifier, model, unique_id)
     elif model.startswith('zhimi.humidifier.'):
         from miio import AirHumidifier
         air_humidifier = AirHumidifier(host, token)
-        device = XiaomiAirHumidifier(name, air_humidifier, model)
+        device = XiaomiAirHumidifier(name, air_humidifier, model, unique_id)
     else:
         _LOGGER.error(
             'Unsupported device found! Please create an issue at '
@@ -370,6 +373,8 @@ async def async_setup_platform(hass, config, async_add_devices,
 
         update_tasks = []
         for device in devices:
+            if not hasattr(device, method['method']):
+                continue
             await getattr(device, method['method'])(**params)
             update_tasks.append(device.async_update_ha_state(True))
 
@@ -386,16 +391,19 @@ async def async_setup_platform(hass, config, async_add_devices,
 class XiaomiGenericDevice(FanEntity):
     """Representation of a generic Xiaomi device."""
 
-    def __init__(self, name, device, model):
+    def __init__(self, name, device, model, unique_id):
         """Initialize the generic Xiaomi device."""
         self._name = name
         self._device = device
         self._model = model
+        self._unique_id = unique_id
+
+        self._available = False
         self._state = None
         self._state_attrs = {
             ATTR_MODEL: self._model,
         }
-        self._additional_supported_features = SUPPORT_FLAGS_GENERIC
+        self._device_features = FEATURE_FLAGS_GENERIC
         self._skip_update = False
 
     @property
@@ -409,6 +417,11 @@ class XiaomiGenericDevice(FanEntity):
         return True
 
     @property
+    def unique_id(self):
+        """Return an unique ID."""
+        return self._unique_id
+
+    @property
     def name(self):
         """Return the name of the device if any."""
         return self._name
@@ -416,7 +429,7 @@ class XiaomiGenericDevice(FanEntity):
     @property
     def available(self):
         """Return true when state is known."""
-        return self._state is not None
+        return self._available
 
     @property
     def device_state_attributes(self):
@@ -430,8 +443,6 @@ class XiaomiGenericDevice(FanEntity):
 
     @staticmethod
     def _extract_value_from_attribute(state, attribute):
-        from enum import Enum
-
         value = getattr(state, attribute)
         if isinstance(value, Enum):
             return value.value
@@ -450,6 +461,7 @@ class XiaomiGenericDevice(FanEntity):
             return result == SUCCESS
         except DeviceException as exc:
             _LOGGER.error(mask_error, exc)
+            self._available = False
             return False
 
     async def async_turn_on(self, speed: str = None,
@@ -477,7 +489,7 @@ class XiaomiGenericDevice(FanEntity):
 
     async def async_set_buzzer_on(self):
         """Turn the buzzer on."""
-        if self._additional_supported_features & SUPPORT_SET_BUZZER == 0:
+        if self._device_features & FEATURE_SET_BUZZER == 0:
             return
 
         await self._try_command(
@@ -486,7 +498,7 @@ class XiaomiGenericDevice(FanEntity):
 
     async def async_set_buzzer_off(self):
         """Turn the buzzer off."""
-        if self._additional_supported_features & SUPPORT_SET_BUZZER == 0:
+        if self._device_features & FEATURE_SET_BUZZER == 0:
             return
 
         await self._try_command(
@@ -495,7 +507,7 @@ class XiaomiGenericDevice(FanEntity):
 
     async def async_set_child_lock_on(self):
         """Turn the child lock on."""
-        if self._additional_supported_features & SUPPORT_SET_CHILD_LOCK == 0:
+        if self._device_features & FEATURE_SET_CHILD_LOCK == 0:
             return
 
         await self._try_command(
@@ -504,68 +516,36 @@ class XiaomiGenericDevice(FanEntity):
 
     async def async_set_child_lock_off(self):
         """Turn the child lock off."""
-        if self._additional_supported_features & SUPPORT_SET_CHILD_LOCK == 0:
+        if self._device_features & FEATURE_SET_CHILD_LOCK == 0:
             return
 
         await self._try_command(
             "Turning the child lock of the miio device off failed.",
             self._device.set_child_lock, False)
 
-    # pylint: disable=no-self-use
-    async def async_set_led_on(self):
-        """Turn the led on."""
-        return
-
-    # pylint: disable=no-self-use
-    async def async_set_led_off(self):
-        """Turn the led off."""
-        return
-
-    # pylint: disable=no-self-use
-    async def async_set_favorite_level(self, level: int):
-        """Set the favorite level."""
-        return
-
-    # pylint: disable=no-self-use
-    async def async_set_led_brightness(self, brightness: int):
-        """Set the led brightness."""
-        return
-
-    # pylint: disable=no-self-use
-    async def async_set_target_humidity(self, humidity: int):
-        """Set the target humidity."""
-        return
-
-    # pylint: disable=no-self-use
-    async def async_set_dry_on(self):
-        """Turn the dry mode on."""
-        return
-
-    # pylint: disable=no-self-use
-    async def async_set_dry_off(self):
-        """Turn the dry mode off."""
-        return
-
 
 class XiaomiAirPurifier(XiaomiGenericDevice):
     """Representation of a Xiaomi Air Purifier."""
 
-    def __init__(self, name, device, model):
+    def __init__(self, name, device, model, unique_id):
         """Initialize the plug switch."""
-        XiaomiGenericDevice.__init__(self, name, device, model)
+        super().__init__(name, device, model, unique_id)
 
         if self._model == MODEL_AIRPURIFIER_PRO:
-            self._additional_supported_features = SUPPORT_FLAGS_AIRPURIFIER_PRO
-            self._state_attrs.update({attribute: None for attribute in
-                                      AVAILABLE_ATTRIBUTES_AIRPURIFIER_PRO})
+            self._device_features = FEATURE_FLAGS_AIRPURIFIER_PRO
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_PRO
+            self._speed_list = OPERATION_MODES_AIRPURIFIER_PRO
         elif self._model == MODEL_AIRPURIFIER_V3:
-            self._additional_supported_features = SUPPORT_FLAGS_AIRPURIFIER_V3
-            self._state_attrs.update({attribute: None for attribute in
-                                      AVAILABLE_ATTRIBUTES_AIRPURIFIER_V3})
+            self._device_features = FEATURE_FLAGS_AIRPURIFIER_V3
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_V3
+            self._speed_list = OPERATION_MODES_AIRPURIFIER_V3
         else:
-            self._additional_supported_features = SUPPORT_FLAGS_AIRPURIFIER
-            self._state_attrs.update({attribute: None for attribute in
-                                      AVAILABLE_ATTRIBUTES_AIRPURIFIER})
+            self._device_features = FEATURE_FLAGS_AIRPURIFIER
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER
+            self._speed_list = OPERATION_MODES_AIRPURIFIER
+
+        self._state_attrs.update(
+            {attribute: None for attribute in self._available_attributes})
 
     async def async_update(self):
         """Fetch state from the device."""
@@ -581,37 +561,20 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
                 self._device.status)
             _LOGGER.debug("Got new state: %s", state)
 
+            self._available = True
             self._state = state.is_on
-
-            if self._model == MODEL_AIRPURIFIER_PRO:
-                self._state_attrs.update(
-                    {key: self._extract_value_from_attribute(state, value)
-                     for key, value in
-                     AVAILABLE_ATTRIBUTES_AIRPURIFIER_PRO.items()})
-            elif self._model == MODEL_AIRPURIFIER_V3:
-                self._state_attrs.update(
-                    {key: self._extract_value_from_attribute(state, value)
-                     for key, value in
-                     AVAILABLE_ATTRIBUTES_AIRPURIFIER_V3.items()})
-            else:
-                self._state_attrs.update(
-                    {key: self._extract_value_from_attribute(state, value)
-                     for key, value in
-                     AVAILABLE_ATTRIBUTES_AIRPURIFIER.items()})
+            self._state_attrs.update(
+                {key: self._extract_value_from_attribute(state, value) for
+                 key, value in self._available_attributes.items()})
 
         except DeviceException as ex:
-            self._state = None
+            self._available = False
             _LOGGER.error("Got exception while fetching the state: %s", ex)
 
     @property
     def speed_list(self) -> list:
         """Get the list of available speeds."""
-        if self._model == MODEL_AIRPURIFIER_PRO:
-            return OPERATION_MODES_AIRPURIFIER_PRO
-        elif self._model == MODEL_AIRPURIFIER_V3:
-            return OPERATION_MODES_AIRPURIFIER_V3
-
-        return OPERATION_MODES_AIRPURIFIER
+        return self.speed_list
 
     @property
     def speed(self):
@@ -638,7 +601,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
 
     async def async_set_led_on(self):
         """Turn the led on."""
-        if self._additional_supported_features & SUPPORT_SET_LED == 0:
+        if self._device_features & FEATURE_SET_LED == 0:
             return
 
         await self._try_command(
@@ -647,7 +610,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
 
     async def async_set_led_off(self):
         """Turn the led off."""
-        if self._additional_supported_features & SUPPORT_SET_LED == 0:
+        if self._device_features & FEATURE_SET_LED == 0:
             return
 
         await self._try_command(
@@ -656,8 +619,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
 
     async def async_set_led_brightness(self, brightness: int = 2):
         """Set the led brightness."""
-        if self._additional_supported_features & \
-                SUPPORT_SET_LED_BRIGHTNESS == 0:
+        if self._device_features & FEATURE_SET_LED_BRIGHTNESS == 0:
             return
 
         from miio.airpurifier import LedBrightness
@@ -668,8 +630,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
 
     async def async_set_favorite_level(self, level: int = 1):
         """Set the favorite level."""
-        if self._additional_supported_features & \
-                SUPPORT_SET_FAVORITE_LEVEL == 0:
+        if self._device_features & FEATURE_SET_FAVORITE_LEVEL == 0:
             return
 
         await self._try_command(
@@ -678,7 +639,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
 
     async def async_set_auto_detect_on(self):
         """Turn the auto detect on."""
-        if self._additional_supported_features & SUPPORT_SET_AUTO_DETECT == 0:
+        if self._device_features & FEATURE_SET_AUTO_DETECT == 0:
             return
 
         await self._try_command(
@@ -687,7 +648,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
 
     async def async_set_auto_detect_off(self):
         """Turn the auto detect off."""
-        if self._additional_supported_features & SUPPORT_SET_AUTO_DETECT == 0:
+        if self._device_features & FEATURE_SET_AUTO_DETECT == 0:
             return
 
         await self._try_command(
@@ -696,7 +657,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
 
     async def async_set_learn_mode_on(self):
         """Turn the learn mode on."""
-        if self._additional_supported_features & SUPPORT_SET_LEARN_MODE == 0:
+        if self._device_features & FEATURE_SET_LEARN_MODE == 0:
             return
 
         await self._try_command(
@@ -705,7 +666,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
 
     async def async_set_learn_mode_off(self):
         """Turn the learn mode off."""
-        if self._additional_supported_features & SUPPORT_SET_LEARN_MODE == 0:
+        if self._device_features & FEATURE_SET_LEARN_MODE == 0:
             return
 
         await self._try_command(
@@ -714,7 +675,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
 
     async def async_set_volume(self, volume: int = 50):
         """Set the sound volume."""
-        if self._additional_supported_features & SUPPORT_SET_VOLUME == 0:
+        if self._device_features & FEATURE_SET_VOLUME == 0:
             return
 
         await self._try_command(
@@ -723,8 +684,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
 
     async def async_set_extra_features(self, features: int = 1):
         """Set the extra features."""
-        if self._additional_supported_features & \
-                SUPPORT_SET_EXTRA_FEATURES == 0:
+        if self._device_features & FEATURE_SET_EXTRA_FEATURES == 0:
             return
 
         await self._try_command(
@@ -733,7 +693,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
 
     async def async_reset_filter(self):
         """Reset the filter lifetime and usage."""
-        if self._additional_supported_features & SUPPORT_RESET_FILTER == 0:
+        if self._device_features & FEATURE_RESET_FILTER == 0:
             return
 
         await self._try_command(
@@ -744,13 +704,24 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
 class XiaomiAirHumidifier(XiaomiGenericDevice):
     """Representation of a Xiaomi Air Humidifier."""
 
-    def __init__(self, name, device, model):
+    def __init__(self, name, device, model, unique_id):
         """Initialize the plug switch."""
-        XiaomiGenericDevice.__init__(self, name, device, model)
+        from miio.airpurifier import OperationMode
 
-        self._additional_supported_features = SUPPORT_FLAGS_AIRHUMIDIFIER
-        self._state_attrs.update({attribute: None for attribute in
-                                  AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER})
+        super().__init__(name, device, model, unique_id)
+
+        if self._model == MODEL_AIRHUMIDIFIER_CA:
+            self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_CA
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA
+            self._speed_list = [mode.name for mode in OperationMode if
+                                mode.name != 'Auto']
+        else:
+            self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER
+            self._speed_list = [mode.name for mode in OperationMode]
+
+        self._state_attrs.update(
+            {attribute: None for attribute in self._available_attributes})
 
     async def async_update(self):
         """Fetch state from the device."""
@@ -762,27 +733,22 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
             return
 
         try:
-            state = await self.hass.async_add_job(
-                self._device.status)
+            state = await self.hass.async_add_job(self._device.status)
             _LOGGER.debug("Got new state: %s", state)
 
+            self._available = True
             self._state = state.is_on
-
             self._state_attrs.update(
                 {key: self._extract_value_from_attribute(state, value) for
-                 key, value in AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER.items()})
+                 key, value in self._available_attributes.items()})
 
         except DeviceException as ex:
-            self._state = None
+            self._available = False
             _LOGGER.error("Got exception while fetching the state: %s", ex)
 
     def speed_list(self) -> list:
         """Get the list of available speeds."""
-        from miio.airpurifier import OperationMode
-        if self._model == MODEL_AIRHUMIDIFIER_V1:
-            return [mode.name for mode in OperationMode if mode.name != 'Auto']
-
-        return [mode.name for mode in OperationMode]
+        return self._speed_list
 
     @property
     def speed(self):
@@ -809,8 +775,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
 
     async def async_set_led_brightness(self, brightness: int = 2):
         """Set the led brightness."""
-        if self._additional_supported_features & \
-                SUPPORT_SET_LED_BRIGHTNESS == 0:
+        if self._device_features & FEATURE_SET_LED_BRIGHTNESS == 0:
             return
 
         from miio.airhumidifier import LedBrightness
@@ -821,8 +786,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
 
     async def async_set_target_humidity(self, humidity: int = 40):
         """Set the target humidity."""
-        if self._additional_supported_features & \
-                SUPPORT_SET_TARGET_HUMIDITY == 0:
+        if self._device_features & FEATURE_SET_TARGET_HUMIDITY == 0:
             return
 
         await self._try_command(
@@ -831,7 +795,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
 
     async def async_set_dry_on(self):
         """Turn the dry mode on."""
-        if self._additional_supported_features & SUPPORT_SET_DRY == 0:
+        if self._device_features & FEATURE_SET_DRY == 0:
             return
 
         await self._try_command(
@@ -840,7 +804,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
 
     async def async_set_dry_off(self):
         """Turn the dry mode off."""
-        if self._additional_supported_features & SUPPORT_SET_DRY == 0:
+        if self._device_features & FEATURE_SET_DRY == 0:
             return
 
         await self._try_command(
