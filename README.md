@@ -8,30 +8,108 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 
 ## Features
 
-### Air Purifier
+### Air Purifier 2
 
-* On, Off
+* Power (on, off)
 * Operation modes (auto, silent, favorite, idle)
 * Buzzer (on, off)
 * Child lock (on, off)
 * LED (on, off), LED brightness (bright, dim, off)
 * Favorite Level (0...16)
 * Attributes
-  - power
-  - aqi
-  - average_aqi
-  - humidity
+  - model
   - temperature
+  - humidity
+  - aqi
   - mode
+  - filter_hours_used
+  - filter_life_remaining
   - favorite_level
+  - child_lock
   - led
+  - motor_speed
+  - average_aqi
+  - purify_volume
+  - learn_mode
+  - sleep_time
+  - sleep_mode_learn_count
+  - extra_features
+  - turbo_mode_supported
+  - auto_detect
+  - use_time
+  - button_pressed
+  - buzzer
   - led_brightness
+  - sleep_mode
+
+
+### Air Purifier Pro
+
+* Power (on, off)
+* Operation modes (auto, silent, favorite)
+* Child lock (on, off)
+* LED (on, off)
+* Favorite Level (0...16)
+* Attributes
+  - model
+  - temperature
+  - humidity
+  - aqi
+  - mode
+  - filter_hours_used
+  - filter_life_remaining
+  - favorite_level
+  - child_lock
+  - led
+  - motor_speed
+  - average_aqi
+  - purify_volume
+  - learn_mode
+  - sleep_time
+  - sleep_mode_learn_count
+  - extra_features
+  - turbo_mode_supported
+  - auto_detect
+  - use_time
+  - button_pressed
+  - filter_rfid_product_id
+  - filter_rfid_tag
+  - filter_type
+  - illuminance
+  - motor2_speed
+  - volume
+
+### Air Purifier 3
+
+* Power (on, off)
+* Operation modes (auto, silent, favorite, idle, medium, high, strong)
+* Child lock (on, off)
+* LED (on, off)
+* Attributes
+  - model
+  - aqi
+  - mode
+  - led
   - buzzer
   - child_lock
-  - purify_volume
-  - filter_life_remaining
+  - illuminance
   - filter_hours_used
+  - filter_life_remaining
   - motor_speed
+  - average_aqi
+  - volume
+  - motor2_speed
+  - filter_rfid_product_id
+  - filter_rfid_tag
+  - filter_type
+  - purify_volume
+  - learn_mode
+  - sleep_time
+  - sleep_mode_learn_count
+  - extra_features
+  - auto_detect
+  - use_time
+  - button_pressed
 
 ### Air Humidifier
 
@@ -42,15 +120,44 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 * LED brightness (bright, dim, off)
 * Target humidity (30, 40, 50, 60, 70, 80)
 * Attributes
-  - power
-  - humidity
+  - model
   - temperature
+  - humidity
   - mode
-  - led_brightness
   - buzzer
   - child_lock
   - trans_level
   - target_humidity
+  - led_brightness
+  - button_pressed
+  - use_time
+  - hardware_version
+
+### Air Humidifier CA
+
+* On, Off
+* Operation modes (silent, medium, high, auto)
+* Buzzer (on, off)
+* Child lock (on, off)
+* LED brightness (bright, dim, off)
+* Target humidity (30, 40, 50, 60, 70, 80)
+* Dry mode (on, off)
+* Attributes
+  - model
+  - temperature
+  - humidity
+  - mode
+  - buzzer
+  - child_lock
+  - trans_level
+  - target_humidity
+  - led_brightness
+  - button_pressed
+  - use_time
+  - hardware_version
+  - speed
+  - depth
+  - dry
 
 ## Setup
 
@@ -226,3 +333,19 @@ Set the extra features.
 |---------------------------|----------|---------------------------------------------------------|
 | `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.  |
 | `features`                |       no | Integer, known values are 0 and 1.                      |
+
+#### Service `fan.xiaomi_miio_set_dry_on` (Air Purifier V3 only)
+
+Turn the dry mode on.
+
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.  |
+
+#### Service `fan.xiaomi_miio_set_dry_off` (Air Purifier V3 only)
+
+Turn the dry mode off.
+
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.  |
