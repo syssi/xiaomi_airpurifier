@@ -267,15 +267,6 @@ Set the favorite level of the operation mode "favorite".
 | `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.  |
 | `level`                   |       no | Level, between 0 and 16.                                |
 
-#### Service `fan.xiaomi_miio_set_target_humidity` (Air Humidifier only)
-
-Set the target humidity.
-
-| Service data attribute    | Optional | Description                                                     |
-|---------------------------|----------|-----------------------------------------------------------------|
-| `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.          |
-| `humidity`                |       no | Target humidity. Allowed values are 30, 40, 50, 60, 70 and 80   |
-
 #### Service `fan.xiaomi_miio_set_auto_detect_on` (Air Purifier Pro only)
 
 Turn the auto detect on.
@@ -334,7 +325,16 @@ Set the extra features.
 | `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.  |
 | `features`                |       no | Integer, known values are 0 and 1.                      |
 
-#### Service `fan.xiaomi_miio_set_dry_on` (Air Purifier V3 only)
+#### Service `fan.xiaomi_miio_set_target_humidity` (Air Humidifier only)
+
+Set the target humidity.
+
+| Service data attribute    | Optional | Description                                                     |
+|---------------------------|----------|-----------------------------------------------------------------|
+| `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.          |
+| `humidity`                |       no | Target humidity. Allowed values are 30, 40, 50, 60, 70 and 80   |
+
+#### Service `fan.xiaomi_miio_set_dry_on` (Air Humidifier CA only)
 
 Turn the dry mode on.
 
@@ -342,7 +342,7 @@ Turn the dry mode on.
 |---------------------------|----------|---------------------------------------------------------|
 | `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.  |
 
-#### Service `fan.xiaomi_miio_set_dry_off` (Air Purifier V3 only)
+#### Service `fan.xiaomi_miio_set_dry_off` (Air Humidifier CA only)
 
 Turn the dry mode off.
 
