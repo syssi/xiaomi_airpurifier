@@ -162,7 +162,7 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 ## Setup
 
 ```yaml
-# confugration.yaml
+# configuration.yaml
 
 fan:
   - platform: xiaomi_miio
