@@ -1,6 +1,6 @@
 # Xiaomi Mi Air Purifier & Xiaomi Mi Air Humidifier
 
-This is a custom component for home assistant to integrate the Xiaomi Mi Air Purifier 2, Air Purifier 2S, Air Purifier Pro and Air Humidifier.
+This is a custom component for home assistant to integrate the Xiaomi Mi Air Purifier 2, Air Purifier 2S, Air Purifier Pro, Air Humidifier and Air Fresh.
 
 Please follow the instructions on [Retrieving the Access Token](https://home-assistant.io/components/xiaomi/#retrieving-the-access-token) to get the API token to use in the configuration.yaml file.
 
@@ -159,6 +159,32 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
   - depth
   - dry
 
+### Air Fresh VA2
+
+* Power (on, off)
+* Operation modes (auto, silent, interval, low, middle, strong)
+* Buzzer (on, off)
+* Child lock (on, off)
+* LED (on, off), LED brightness (bright, dim, off)
+* Attributes
+  - model
+  - aqi
+  - average_aqi
+  - temperature
+  - humidity
+  - co2
+  - mode
+  - led
+  - led_brightness
+  - buzzer
+  - child_lock
+  - filter_life_remaining
+  - filter_hours_used
+  - use_time
+  - motor_speed
+  - extra_features
+
+
 ## Setup
 
 ```yaml
@@ -182,13 +208,19 @@ fan:
     host: 192.168.130.72
     token: 2b00042f7481c7b056c4b410d28f33cf
     model: zhimi.humidifier.v1
+
+  - platform: xiaomi_miio
+    name: Xiaomi Air Fresh
+    host: 192.168.130.74
+    token: 91d89cf53c4090f4c653174f6737102f
+    model: zhimi.airfresh.va2
 ```
 
 Configuration variables:
 - **host** (*Required*): The IP of your light.
 - **token** (*Required*): The API token of your light.
 - **name** (*Optional*): The name of your light.
-- **model** (*Optional*): The model of your device. Valid values are `zhimi.airpurifier.m1`, `zhimi.airpurifier.m2`, `zhimi.airpurifier.ma1`, `zhimi.airpurifier.ma2`, `zhimi.airpurifier.sa1`, `zhimi.airpurifier.sa2`, `zhimi.airpurifier.v1`, `zhimi.airpurifier.v2`, `zhimi.airpurifier.v3`, `zhimi.airpurifier.v5`, `zhimi.airpurifier.v6`, `zhimi.humidifier.v1` and `zhimi.humidifier.ca1`. This setting can be used to bypass the device model detection and is recommended if your device isn't always available.
+- **model** (*Optional*): The model of your device. Valid values are `zhimi.airpurifier.m1`, `zhimi.airpurifier.m2`, `zhimi.airpurifier.ma1`, `zhimi.airpurifier.ma2`, `zhimi.airpurifier.sa1`, `zhimi.airpurifier.sa2`, `zhimi.airpurifier.v1`, `zhimi.airpurifier.v2`, `zhimi.airpurifier.v3`, `zhimi.airpurifier.v5`, `zhimi.airpurifier.v6`, `zhimi.humidifier.v1`, `zhimi.humidifier.ca1` and `zhimi.airfresh.va2`. This setting can be used to bypass the device model detection and is recommended if your device isn't always available.
 
 ## Platform services
 
@@ -308,7 +340,7 @@ Set the sound volume.
 | `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.  |
 | `volume`                  |       no | Volume, between 0 and 100.                              |
 
-#### Service `fan.xiaomi_miio_reset_filter` (Air Purifier 2 only)
+#### Service `fan.xiaomi_miio_reset_filter` (Air Purifier 2 and Air Fresh only)
 
 Reset the filter lifetime and usage.
 
@@ -316,7 +348,7 @@ Reset the filter lifetime and usage.
 |---------------------------|----------|---------------------------------------------------------|
 | `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.  |
 
-#### Service `fan.xiaomi_miio_set_extra_features` (Air Purifier only)
+#### Service `fan.xiaomi_miio_set_extra_features` (Air Purifier and Air Fresh only)
 
 Set the extra features.
 
