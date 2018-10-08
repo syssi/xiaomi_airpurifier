@@ -51,7 +51,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
          'zhimi.airfresh.va2']),
 })
 
-REQUIREMENTS = ['python-miio>=0.4.2']
+REQUIREMENTS = ['python-miio>=0.4.3']
 
 ATTR_MODEL = 'model'
 
@@ -171,22 +171,26 @@ AVAILABLE_ATTRIBUTES_AIRPURIFIER_V3 = {
     ATTR_BUTTON_PRESSED: 'button_pressed',
 }
 
-AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER = {
+AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON = {
     ATTR_TEMPERATURE: 'temperature',
     ATTR_HUMIDITY: 'humidity',
     ATTR_MODE: 'mode',
     ATTR_BUZZER: 'buzzer',
     ATTR_CHILD_LOCK: 'child_lock',
-    ATTR_TRANS_LEVEL: 'trans_level',
     ATTR_TARGET_HUMIDITY: 'target_humidity',
     ATTR_LED_BRIGHTNESS: 'led_brightness',
-    ATTR_BUTTON_PRESSED: 'button_pressed',
     ATTR_USE_TIME: 'use_time',
     ATTR_HARDWARE_VERSION: 'hardware_version',
 }
 
+AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER = {
+    **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON,
+    ATTR_TRANS_LEVEL: 'trans_level',
+    ATTR_BUTTON_PRESSED: 'button_pressed',
+}
+
 AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA = {
-    **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER,
+    **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON,
     ATTR_SPEED: 'speed',
     ATTR_DEPTH: 'depth',
     ATTR_DRY: 'dry',
@@ -379,7 +383,7 @@ async def async_setup_platform(hass, config, async_add_entities,
         device = XiaomiAirPurifier(name, air_purifier, model, unique_id)
     elif model.startswith('zhimi.humidifier.'):
         from miio import AirHumidifier
-        air_humidifier = AirHumidifier(host, token)
+        air_humidifier = AirHumidifier(host, token, model=model)
         device = XiaomiAirHumidifier(name, air_humidifier, model, unique_id)
     elif model.startswith('zhimi.airfresh.'):
         from miio import AirFresh
