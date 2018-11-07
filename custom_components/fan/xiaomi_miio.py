@@ -18,6 +18,8 @@ from homeassistant.const import (CONF_NAME, CONF_HOST, CONF_TOKEN,
 from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
 
+REQUIREMENTS = ['python-miio>=0.4.3', 'construct==2.9.45']
+
 _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_NAME = 'Xiaomi Miio Device'
@@ -46,12 +48,12 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
          'zhimi.airpurifier.v3',
          'zhimi.airpurifier.v5',
          'zhimi.airpurifier.v6',
+         'zhimi.airpurifier.mc1',
          'zhimi.humidifier.v1',
          'zhimi.humidifier.ca1',
-         'zhimi.airfresh.va2']),
+         'zhimi.airfresh.va2',
+         ]),
 })
-
-REQUIREMENTS = ['python-miio>=0.4.3']
 
 ATTR_MODEL = 'model'
 
@@ -493,7 +495,7 @@ class XiaomiGenericDevice(FanEntity):
         """Call a miio device command handling error messages."""
         from miio import DeviceException
         try:
-            result = await self.hass.async_add_job(
+            result = await self.hass.async_add_executor_job(
                 partial(func, *args, **kwargs))
 
             _LOGGER.debug("Response received from miio device: %s", result)
@@ -597,7 +599,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
             return
 
         try:
-            state = await self.hass.async_add_job(
+            state = await self.hass.async_add_executor_job(
                 self._device.status)
             _LOGGER.debug("Got new state: %s", state)
 
@@ -773,7 +775,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
             return
 
         try:
-            state = await self.hass.async_add_job(self._device.status)
+            state = await self.hass.async_add_executor_job(self._device.status)
             _LOGGER.debug("Got new state: %s", state)
 
             self._available = True
@@ -876,7 +878,7 @@ class XiaomiAirFresh(XiaomiGenericDevice):
             return
 
         try:
-            state = await self.hass.async_add_job(
+            state = await self.hass.async_add_executor_job(
                 self._device.status)
             _LOGGER.debug("Got new state: %s", state)
 
