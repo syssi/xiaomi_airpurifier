@@ -27,10 +27,22 @@ DATA_KEY = 'fan.xiaomi_miio'
 
 CONF_MODEL = 'model'
 MODEL_AIRPURIFIER_PRO = 'zhimi.airpurifier.v6'
+MODEL_AIRPURIFIER_V2 = 'zhimi.airpurifier.v2'
 MODEL_AIRPURIFIER_V3 = 'zhimi.airpurifier.v3'
+MODEL_AIRPURIFIER_V5 = 'zhimi.airpurifier.v5'
+MODEL_AIRPURIFIER_M1 = 'zhimi.airpurifier.m1'
+MODEL_AIRPURIFIER_M2 = 'zhimi.airpurifier.m2'
+MODEL_AIRPURIFIER_MA1 = 'zhimi.airpurifier.ma1'
+MODEL_AIRPURIFIER_MA2 = 'zhimi.airpurifier.ma2'
+MODEL_AIRPURIFIER_SA1 = 'zhimi.airpurifier.sa1'
+MODEL_AIRPURIFIER_SA2 = 'zhimi.airpurifier.sa2'
+MODEL_AIRPURIFIER_MC1 = 'zhimi.airpurifier.mc1'
+
 MODEL_AIRHUMIDIFIER_V1 = 'zhimi.humidifier.v1'
 MODEL_AIRHUMIDIFIER_CA = 'zhimi.humidifier.ca1'
+
 MODEL_AIRFRESH_VA2 = 'zhimi.airfresh.va2'
+
 MODEL_FAN_V2 = 'zhimi.fan.v2'
 MODEL_FAN_V3 = 'zhimi.fan.v3'
 MODEL_FAN_SA1 = 'zhimi.fan.sa1'
@@ -41,19 +53,19 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_TOKEN): vol.All(cv.string, vol.Length(min=32, max=32)),
     vol.Optional(CONF_NAME, default=DEFAULT_NAME): cv.string,
     vol.Optional(CONF_MODEL): vol.In(
-        ['zhimi.airpurifier.m1',
-         'zhimi.airpurifier.m2',
-         'zhimi.airpurifier.ma1',
-         'zhimi.airpurifier.ma2',
-         'zhimi.airpurifier.sa1',
-         'zhimi.airpurifier.sa2',
+        [MODEL_AIRPURIFIER_M1,
+         MODEL_AIRPURIFIER_M2,
+         MODEL_AIRPURIFIER_MA1,
+         MODEL_AIRPURIFIER_MA2,
+         MODEL_AIRPURIFIER_SA1,
+         MODEL_AIRPURIFIER_SA2,
          MODEL_AIRHUMIDIFIER_V1,
-         'zhimi.airpurifier.v2',
+         MODEL_AIRPURIFIER_V2,
          MODEL_AIRPURIFIER_V3,
-         'zhimi.airpurifier.v5',
+         MODEL_AIRPURIFIER_V5,
          MODEL_AIRPURIFIER_PRO,
-         'zhimi.airpurifier.mc1',
-         'zhimi.humidifier.v1',
+         MODEL_AIRPURIFIER_MC1,
+         MODEL_AIRHUMIDIFIER_V1,
          MODEL_AIRHUMIDIFIER_CA,
          MODEL_AIRFRESH_VA2,
          MODEL_FAN_V2,
