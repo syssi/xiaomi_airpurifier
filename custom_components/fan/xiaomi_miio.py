@@ -27,6 +27,7 @@ DATA_KEY = 'fan.xiaomi_miio'
 
 CONF_MODEL = 'model'
 MODEL_AIRPURIFIER_PRO = 'zhimi.airpurifier.v6'
+MODEL_AIRPURIFIER_V1 = 'zhimi.airpurifier.v1'
 MODEL_AIRPURIFIER_V2 = 'zhimi.airpurifier.v2'
 MODEL_AIRPURIFIER_V3 = 'zhimi.airpurifier.v3'
 MODEL_AIRPURIFIER_V5 = 'zhimi.airpurifier.v5'
@@ -60,6 +61,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
          MODEL_AIRPURIFIER_SA1,
          MODEL_AIRPURIFIER_SA2,
          MODEL_AIRHUMIDIFIER_V1,
+         MODEL_AIRPURIFIER_V1,
          MODEL_AIRPURIFIER_V2,
          MODEL_AIRPURIFIER_V3,
          MODEL_AIRPURIFIER_V5,
