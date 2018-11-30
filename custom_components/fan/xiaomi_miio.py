@@ -11,8 +11,8 @@ import logging
 
 import voluptuous as vol
 
-from homeassistant.components.fan import (FanEntity, PLATFORM_SCHEMA,
-                                          SUPPORT_SET_SPEED, DOMAIN, )
+from homeassistant.components.fan import (FanEntity, PLATFORM_SCHEMA, SUPPORT_SET_SPEED, DOMAIN, SPEED_OFF,
+                                          SUPPORT_OSCILLATE, SUPPORT_DIRECTION, ATTR_SPEED, )
 from homeassistant.const import (CONF_NAME, CONF_HOST, CONF_TOKEN,
                                  ATTR_ENTITY_ID, )
 from homeassistant.exceptions import PlatformNotReady
@@ -119,7 +119,6 @@ ATTR_TRANS_LEVEL = 'trans_level'
 ATTR_HARDWARE_VERSION = 'hardware_version'
 
 # Air Humidifier CA
-ATTR_SPEED = 'speed'
 ATTR_DEPTH = 'depth'
 ATTR_DRY = 'dry'
 
@@ -415,6 +414,11 @@ SERVICE_SCHEMA_TARGET_HUMIDITY = AIRPURIFIER_SERVICE_SCHEMA.extend({
         vol.All(vol.Coerce(int), vol.In([30, 40, 50, 60, 70, 80]))
 })
 
+SERVICE_SCHEMA_OSCILLATION_ANGLE = AIRPURIFIER_SERVICE_SCHEMA.extend({
+    vol.Required(ATTR_ANGLE):
+        vol.All(vol.Coerce(int), vol.In([30, 60, 90, 120]))
+})
+
 SERVICE_TO_METHOD = {
     SERVICE_SET_BUZZER_ON: {'method': 'async_set_buzzer_on'},
     SERVICE_SET_BUZZER_OFF: {'method': 'async_set_buzzer_off'},
@@ -494,7 +498,7 @@ async def async_setup_platform(hass, config, async_add_entities,
         device = XiaomiAirFresh(name, air_fresh, model, unique_id)
     elif model.startswith('zhimi.fan.'):
         from miio import Fan
-        air_fresh = Fan(host, token, model=model)
+        fan = Fan(host, token, model=model)
         device = XiaomiFan(name, fan, model, unique_id)
     else:
         _LOGGER.error(
