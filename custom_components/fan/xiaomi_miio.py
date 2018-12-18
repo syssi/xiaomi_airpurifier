@@ -31,6 +31,7 @@ MODEL_AIRPURIFIER_V1 = 'zhimi.airpurifier.v1'
 MODEL_AIRPURIFIER_V2 = 'zhimi.airpurifier.v2'
 MODEL_AIRPURIFIER_V3 = 'zhimi.airpurifier.v3'
 MODEL_AIRPURIFIER_V5 = 'zhimi.airpurifier.v5'
+MODEL_AIRPURIFIER_V7 = 'zhimi.airpurifier.v7'
 MODEL_AIRPURIFIER_M1 = 'zhimi.airpurifier.m1'
 MODEL_AIRPURIFIER_M2 = 'zhimi.airpurifier.m2'
 MODEL_AIRPURIFIER_MA1 = 'zhimi.airpurifier.ma1'
@@ -65,6 +66,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
          MODEL_AIRPURIFIER_V2,
          MODEL_AIRPURIFIER_V3,
          MODEL_AIRPURIFIER_V5,
+         MODEL_AIRPURIFIER_V7,
          MODEL_AIRPURIFIER_PRO,
          MODEL_AIRPURIFIER_MC1,
          MODEL_AIRHUMIDIFIER_V1,
