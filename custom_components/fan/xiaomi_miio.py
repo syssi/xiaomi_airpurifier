@@ -346,6 +346,7 @@ FEATURE_FLAGS_AIRPURIFIER_V3 = (FEATURE_FLAGS_GENERIC |
                                 FEATURE_SET_LED)
 
 FEATURE_FLAGS_AIRHUMIDIFIER = (FEATURE_FLAGS_GENERIC |
+                               FEATURE_SET_LED |
                                FEATURE_SET_LED_BRIGHTNESS |
                                FEATURE_SET_TARGET_HUMIDITY)
 
@@ -926,6 +927,24 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
         await self._try_command(
             "Setting operation mode of the miio device failed.",
             self._device.set_mode, OperationMode[speed.title()])
+
+    async def async_set_led_on(self):
+        """Turn the led on."""
+        if self._device_features & FEATURE_SET_LED == 0:
+            return
+
+        await self._try_command(
+            "Turning the led of the miio device off failed.",
+            self._device.set_led, True)
+
+    async def async_set_led_off(self):
+        """Turn the led off."""
+        if self._device_features & FEATURE_SET_LED == 0:
+            return
+
+        await self._try_command(
+            "Turning the led of the miio device off failed.",
+            self._device.set_led, False)
 
     async def async_set_led_brightness(self, brightness: int = 2):
         """Set the led brightness."""
