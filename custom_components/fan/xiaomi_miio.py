@@ -18,7 +18,7 @@ from homeassistant.const import (CONF_NAME, CONF_HOST, CONF_TOKEN,
 from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
 
-REQUIREMENTS = ['python-miio>=0.4.3', 'construct==2.9.45']
+REQUIREMENTS = ['python-miio>=0.4.4', 'construct==2.9.45']
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -61,7 +61,6 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
          MODEL_AIRPURIFIER_MA2,
          MODEL_AIRPURIFIER_SA1,
          MODEL_AIRPURIFIER_SA2,
-         MODEL_AIRHUMIDIFIER_V1,
          MODEL_AIRPURIFIER_V1,
          MODEL_AIRPURIFIER_V2,
          MODEL_AIRPURIFIER_V3,
