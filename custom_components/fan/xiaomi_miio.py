@@ -151,19 +151,19 @@ AVAILABLE_ATTRIBUTES_AIRPURIFIER_COMMON = {
     ATTR_LED: 'led',
     ATTR_MOTOR_SPEED: 'motor_speed',
     ATTR_AVERAGE_AIR_QUALITY_INDEX: 'average_aqi',
-    ATTR_PURIFY_VOLUME: 'purify_volume',
     ATTR_LEARN_MODE: 'learn_mode',
-    ATTR_SLEEP_TIME: 'sleep_time',
-    ATTR_SLEEP_LEARN_COUNT: 'sleep_mode_learn_count',
     ATTR_EXTRA_FEATURES: 'extra_features',
     ATTR_TURBO_MODE_SUPPORTED: 'turbo_mode_supported',
-    ATTR_AUTO_DETECT: 'auto_detect',
-    ATTR_USE_TIME: 'use_time',
     ATTR_BUTTON_PRESSED: 'button_pressed',
 }
 
 AVAILABLE_ATTRIBUTES_AIRPURIFIER = {
     **AVAILABLE_ATTRIBUTES_AIRPURIFIER_COMMON,
+    ATTR_PURIFY_VOLUME: 'purify_volume',
+    ATTR_SLEEP_TIME: 'sleep_time',
+    ATTR_SLEEP_LEARN_COUNT: 'sleep_mode_learn_count',
+    ATTR_AUTO_DETECT: 'auto_detect',
+    ATTR_USE_TIME: 'use_time',
     ATTR_BUZZER: 'buzzer',
     ATTR_LED_BRIGHTNESS: 'led_brightness',
     ATTR_SLEEP_MODE: 'sleep_mode',
@@ -171,6 +171,22 @@ AVAILABLE_ATTRIBUTES_AIRPURIFIER = {
 
 AVAILABLE_ATTRIBUTES_AIRPURIFIER_PRO = {
     **AVAILABLE_ATTRIBUTES_AIRPURIFIER_COMMON,
+    ATTR_PURIFY_VOLUME: 'purify_volume',
+    ATTR_SLEEP_TIME: 'sleep_time',
+    ATTR_SLEEP_LEARN_COUNT: 'sleep_mode_learn_count',
+    ATTR_AUTO_DETECT: 'auto_detect',
+    ATTR_USE_TIME: 'use_time',
+    ATTR_FILTER_RFID_PRODUCT_ID: 'filter_rfid_product_id',
+    ATTR_FILTER_RFID_TAG: 'filter_rfid_tag',
+    ATTR_FILTER_TYPE: 'filter_type',
+    ATTR_ILLUMINANCE: 'illuminance',
+    ATTR_MOTOR2_SPEED: 'motor2_speed',
+    ATTR_VOLUME: 'volume',
+}
+
+AVAILABLE_ATTRIBUTES_AIRPURIFIER_PRO_V7 = {
+    **AVAILABLE_ATTRIBUTES_AIRPURIFIER_COMMON,
+    # perhaps supported but unconfirmed
     ATTR_FILTER_RFID_PRODUCT_ID: 'filter_rfid_product_id',
     ATTR_FILTER_RFID_TAG: 'filter_rfid_tag',
     ATTR_FILTER_TYPE: 'filter_type',
@@ -299,6 +315,7 @@ FAN_SPEED_VALUES = {
 
 OPERATION_MODES_AIRPURIFIER = ['Auto', 'Silent', 'Favorite', 'Idle']
 OPERATION_MODES_AIRPURIFIER_PRO = ['Auto', 'Silent', 'Favorite']
+OPERATION_MODES_AIRPURIFIER_PRO_V7 = OPERATION_MODES_AIRPURIFIER_PRO
 OPERATION_MODES_AIRPURIFIER_V3 = ['Auto', 'Silent', 'Favorite', 'Idle',
                                   'Medium', 'High', 'Strong']
 OPERATION_MODES_AIRFRESH = ['Auto', 'Silent', 'Interval', 'Low',
@@ -323,11 +340,8 @@ FEATURE_SET_DRY = 2048
 FEATURE_SET_OSCILLATION_ANGLE = 4096
 FEATURE_SET_NATURAL_MODE = 8192
 
-
-FEATURE_FLAGS_GENERIC = (FEATURE_SET_BUZZER |
-                         FEATURE_SET_CHILD_LOCK)
-
-FEATURE_FLAGS_AIRPURIFIER = (FEATURE_FLAGS_GENERIC |
+FEATURE_FLAGS_AIRPURIFIER = (FEATURE_SET_BUZZER |
+                             FEATURE_SET_CHILD_LOCK |
                              FEATURE_SET_LED |
                              FEATURE_SET_LED_BRIGHTNESS |
                              FEATURE_SET_FAVORITE_LEVEL |
@@ -341,24 +355,32 @@ FEATURE_FLAGS_AIRPURIFIER_PRO = (FEATURE_SET_CHILD_LOCK |
                                  FEATURE_SET_AUTO_DETECT |
                                  FEATURE_SET_VOLUME)
 
-FEATURE_FLAGS_AIRPURIFIER_V3 = (FEATURE_FLAGS_GENERIC |
+FEATURE_FLAGS_AIRPURIFIER_PRO_V7 = (FEATURE_SET_CHILD_LOCK |
+                                    FEATURE_SET_LED |
+                                    FEATURE_SET_FAVORITE_LEVEL |
+                                    FEATURE_SET_VOLUME)
+
+FEATURE_FLAGS_AIRPURIFIER_V3 = (FEATURE_SET_BUZZER |
+                                FEATURE_SET_CHILD_LOCK |
                                 FEATURE_SET_LED)
 
-FEATURE_FLAGS_AIRHUMIDIFIER = (FEATURE_FLAGS_GENERIC |
-                               FEATURE_SET_LED |
+FEATURE_FLAGS_AIRHUMIDIFIER = (FEATURE_SET_BUZZER |
+                               FEATURE_SET_CHILD_LOCK |
                                FEATURE_SET_LED_BRIGHTNESS |
                                FEATURE_SET_TARGET_HUMIDITY)
 
 FEATURE_FLAGS_AIRHUMIDIFIER_CA = (FEATURE_FLAGS_AIRHUMIDIFIER |
                                   FEATURE_SET_DRY)
 
-FEATURE_FLAGS_AIRFRESH = (FEATURE_FLAGS_GENERIC |
+FEATURE_FLAGS_AIRFRESH = (FEATURE_SET_BUZZER |
+                          FEATURE_SET_CHILD_LOCK |
                           FEATURE_SET_LED |
                           FEATURE_SET_LED_BRIGHTNESS |
                           FEATURE_RESET_FILTER |
                           FEATURE_SET_EXTRA_FEATURES)
 
-FEATURE_FLAGS_FAN = (FEATURE_FLAGS_GENERIC |
+FEATURE_FLAGS_FAN = (FEATURE_SET_BUZZER |
+                     FEATURE_SET_CHILD_LOCK |
                      FEATURE_SET_LED_BRIGHTNESS |
                      FEATURE_SET_OSCILLATION_ANGLE |
                      FEATURE_SET_NATURAL_MODE)
