@@ -187,7 +187,6 @@ AVAILABLE_ATTRIBUTES_AIRPURIFIER_PRO = {
 
 AVAILABLE_ATTRIBUTES_AIRPURIFIER_PRO_V7 = {
     **AVAILABLE_ATTRIBUTES_AIRPURIFIER_COMMON,
-    # perhaps supported but unconfirmed
     ATTR_FILTER_RFID_PRODUCT_ID: 'filter_rfid_product_id',
     ATTR_FILTER_RFID_TAG: 'filter_rfid_tag',
     ATTR_FILTER_TYPE: 'filter_type',
