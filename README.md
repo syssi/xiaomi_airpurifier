@@ -247,7 +247,7 @@ fan:
     token: 91d89cf53c4090f4c653174f6737102f
     model: zhimi.airfresh.va2
 
-  - platform: xiaomi_miio_fan
+  - platform: xiaomi_miio
     name: Xiaomi Smart Fan
     host: 192.168.130.75
     token: b7c4a758c251955d2c24b1d9e41ce4ff
