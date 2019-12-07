@@ -2,7 +2,10 @@
     "domain": "xiaomi_miio",
     "name": "Xiaomi Mi Air Purifier and Xiaomi Mi Air Humidifier",
     "documentation": "https://github.com/syssi/xiaomi_airpurifier",
-    "requirements": ["construct==2.9.45", "python-miio>=0.4.7"],
+    "requirements": [
+        "construct==2.9.45",
+        "https://github.com/rytilahti/python-miio/archive/1a52117eed74cc81a966df55582fe66be8821490.zip#python-miio",
+    ],
     "dependencies": [],
     "codeowners": ["@syssi"],
 }
