@@ -159,6 +159,24 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
   - depth
   - dry
 
+### Air Humidifier MJJSQ (deerma.humidifier.mjjsq)
+
+* On, Off
+* Operation modes (low, medium, high, humidity)
+* Buzzer (on, off)
+* LED (on, off)
+* Target humidity (0...99)
+* Attributes
+  - model
+  - temperature
+  - humidity
+  - mode
+  - buzzer
+  - target_humidity
+  - led
+  - no_water
+  - water_tank_detached
+
 ### Air Fresh VA2
 
 * Power (on, off)

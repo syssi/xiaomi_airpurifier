@@ -47,6 +47,7 @@ MODEL_AIRPURIFIER_MC1 = "zhimi.airpurifier.mc1"
 
 MODEL_AIRHUMIDIFIER_V1 = "zhimi.humidifier.v1"
 MODEL_AIRHUMIDIFIER_CA = "zhimi.humidifier.ca1"
+MODEL_AIRHUMIDIFIER_MJJSQ = "deerma.humidifier.mjjsq"
 
 MODEL_AIRFRESH_VA2 = "zhimi.airfresh.va2"
 
@@ -77,6 +78,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_AIRPURIFIER_MC1,
                 MODEL_AIRHUMIDIFIER_V1,
                 MODEL_AIRHUMIDIFIER_CA,
+                MODEL_AIRHUMIDIFIER_MJJSQ,
                 MODEL_AIRFRESH_VA2,
                 MODEL_FAN_V2,
                 MODEL_FAN_V3,
@@ -237,17 +239,17 @@ AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON = {
     ATTR_HUMIDITY: "humidity",
     ATTR_MODE: "mode",
     ATTR_BUZZER: "buzzer",
-    ATTR_CHILD_LOCK: "child_lock",
     ATTR_TARGET_HUMIDITY: "target_humidity",
-    ATTR_LED_BRIGHTNESS: "led_brightness",
-    ATTR_USE_TIME: "use_time",
-    ATTR_HARDWARE_VERSION: "hardware_version",
 }
 
 AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER = {
     **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON,
     ATTR_TRANS_LEVEL: "trans_level",
     ATTR_BUTTON_PRESSED: "button_pressed",
+    ATTR_CHILD_LOCK: "child_lock",
+    ATTR_LED_BRIGHTNESS: "led_brightness",
+    ATTR_USE_TIME: "use_time",
+    ATTR_HARDWARE_VERSION: "hardware_version",
 }
 
 AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA = {
@@ -255,6 +257,17 @@ AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA = {
     ATTR_SPEED: "speed",
     ATTR_DEPTH: "depth",
     ATTR_DRY: "dry",
+    ATTR_CHILD_LOCK: "child_lock",
+    ATTR_LED_BRIGHTNESS: "led_brightness",
+    ATTR_USE_TIME: "use_time",
+    ATTR_HARDWARE_VERSION: "hardware_version",
+}
+
+AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ = {
+    **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON,
+    ATTR_LED: "led",
+    ATTR_NO_WATER: "no_water",
+    ATTR_WATER_TANK_DETACHED: "water_tank_detached",
 }
 
 AVAILABLE_ATTRIBUTES_AIRFRESH = {
@@ -390,6 +403,10 @@ FEATURE_FLAGS_AIRHUMIDIFIER = (
 )
 
 FEATURE_FLAGS_AIRHUMIDIFIER_CA = FEATURE_FLAGS_AIRHUMIDIFIER | FEATURE_SET_DRY
+
+FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ = (
+    FEATURE_SET_BUZZER | FEATURE_SET_LED | FEATURE_SET_TARGET_HUMIDITY
+)
 
 FEATURE_FLAGS_AIRFRESH = (
     FEATURE_SET_BUZZER
@@ -1095,6 +1112,48 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
             "Turning the dry mode of the miio device off failed.",
             self._device.set_dry,
             False,
+        )
+
+
+class XiaomiAirHumidifierMjjsq(XiaomiAirHumidifier):
+    """Representation of a Xiaomi Air Humidifier Mjjsq."""
+
+    def __init__(self, name, device, model, unique_id):
+        """Initialize the plug switch."""
+        from miio.airhumidifier_mjjsq import OperationMode
+
+        super().__init__(name, device, model, unique_id)
+
+        self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ
+        self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ
+        self._speed_list = [mode.name for mode in OperationModeMjjsq]
+        self._state_attrs.update(
+            {attribute: None for attribute in self._available_attributes}
+        )
+
+    @property
+    def speed(self):
+        """Return the current speed."""
+        if self._state:
+            from miio.airhumidifier_mjjsq import OperationMode
+
+            return OperationMode(self._state_attrs[ATTR_MODE]).name
+
+        return None
+
+    async def async_set_speed(self, speed: str) -> None:
+        """Set the speed of the fan."""
+        if self.supported_features & SUPPORT_SET_SPEED == 0:
+            return
+
+        from miio.airhumidifier_mjjsq import OperationMode
+
+        _LOGGER.debug("Setting the operation mode to: %s", speed)
+
+        await self._try_command(
+            "Setting operation mode of the miio device failed.",
+            self._device.set_mode,
+            OperationMode[speed.title()],
         )
 
 
