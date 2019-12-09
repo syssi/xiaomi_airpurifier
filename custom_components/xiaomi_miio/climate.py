@@ -125,28 +125,29 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     if DATA_KEY not in hass.data:
         hass.data[DATA_KEY] = {}
 
-    host = config.get(CONF_HOST)
-    name = config.get(CONF_NAME)
-    token = config.get(CONF_TOKEN)
+    host = config[CONF_HOST]
+    name = config[CONF_NAME]
+    token = config[CONF_TOKEN]
     model = config.get(CONF_MODEL)
 
     _LOGGER.info("Initializing with host %s (token %s...)", host, token[:5])
     unique_id = None
 
     if model is None:
+        miio_device = Device(host, token)
         try:
-            miio_device = Device(host, token)
             device_info = miio_device.info()
-            model = device_info.model
-            unique_id = "{}-{}".format(model, device_info.mac_address)
-            _LOGGER.info(
-                "%s %s %s detected",
-                model,
-                device_info.firmware_version,
-                device_info.hardware_version,
-            )
         except DeviceException:
             raise PlatformNotReady
+
+        model = device_info.model
+        unique_id = "{}-{}".format(model, device_info.mac_address)
+        _LOGGER.info(
+            "%s %s %s detected",
+            model,
+            device_info.firmware_version,
+            device_info.hardware_version,
+        )
 
     if model.startswith("nwt.derh."):
         from miio import AirDehumidifier
@@ -262,14 +263,14 @@ class XiaomiGenericDevice(ClimateDevice):
             result = await self.hass.async_add_executor_job(
                 partial(func, *args, **kwargs)
             )
-
-            _LOGGER.debug("Response received from miio device: %s", result)
-
-            return result == SUCCESS
         except DeviceException as exc:
             _LOGGER.error(mask_error, exc)
             self._available = False
             return False
+
+        _LOGGER.debug("Response received from miio device: %s", result)
+
+        return result == SUCCESS
 
     async def async_turn_on(self):
         """Turn the device on."""
@@ -409,21 +410,23 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
 
         try:
             state = await self.hass.async_add_executor_job(self._device.status)
-            _LOGGER.debug("Got new state: %s", state)
-
-            self._available = True
-            self._state = state.is_on
-            self._state_attrs.update(
-                {
-                    key: self._extract_value_from_attribute(state, value)
-                    for key, value in self._available_attributes.items()
-                }
-            )
-            self._state_attrs[ATTR_TEMPERATURE] = None
-            self._state_attrs[ATTR_HUMIDITY] = self._state_attrs[ATTR_TARGET_HUMIDITY]
         except DeviceException as ex:
             self._available = False
             _LOGGER.error("Got exception while fetching the state: %s", ex)
+            return
+
+        _LOGGER.debug("Got new state: %s", state)
+
+        self._available = True
+        self._state = state.is_on
+        self._state_attrs.update(
+            {
+                key: self._extract_value_from_attribute(state, value)
+                for key, value in self._available_attributes.items()
+            }
+        )
+        self._state_attrs[ATTR_TEMPERATURE] = None
+        self._state_attrs[ATTR_HUMIDITY] = self._state_attrs[ATTR_TARGET_HUMIDITY]
 
     @property
     def temperature_unit(self):
