@@ -177,6 +177,31 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
   - no_water
   - water_tank_detached
 
+### Air Dehumidifier (nwt.derh.wdh318efw1)
+
+* HVAC mode (dry, off)
+* Preset mode (on, auto, dryCloth)
+* Target humidity (40, 50, 60)
+* Fan mode (sleep, low, medium, high, strong)
+* Buzzer (on, off)
+* Child lock (on, off)
+* LED (on, off)
+* Attributes
+  - model
+  - temperature
+  - humidity
+  - mode
+  - buzzer
+  - child_lock
+  - target_humidity
+  - led
+  - fan_speed
+  - tank_full
+  - compressor_status
+  - defrost_status
+  - fan_st
+  - alarm
+
 ### Air Fresh VA2
 
 * Power (on, off)
@@ -270,6 +295,11 @@ fan:
     host: 192.168.130.75
     token: b7c4a758c251955d2c24b1d9e41ce4ff
 
+climate:
+  - platform: xiaomi_miio
+    name: Xiaomi Air Dehumidifier
+    host: 192.168.130.76
+    token: 86c4c41dc7af0e0520e170c8a1f92f62
 ```
 
 Configuration variables:
