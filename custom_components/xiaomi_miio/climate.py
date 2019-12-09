@@ -1,37 +1,37 @@
 """Support for Xiaomi Mi Air Dehumidifier."""
 import asyncio
-import logging
 from enum import Enum
 from functools import partial
+import logging
 
 import voluptuous as vol
 
-import homeassistant.helpers.config_validation as cv
-from homeassistant.components.climate import ClimateDevice, PLATFORM_SCHEMA, DOMAIN
+from homeassistant.components.climate import DOMAIN, PLATFORM_SCHEMA, ClimateDevice
 from homeassistant.components.climate.const import (
-    HVAC_MODE_DRY,
-    HVAC_MODE_OFF,
-    ATTR_HVAC_MODES,
     ATTR_CURRENT_HUMIDITY,
-    ATTR_HUMIDITY,
-    ATTR_MIN_HUMIDITY,
-    ATTR_MAX_HUMIDITY,
     ATTR_FAN_MODE,
     ATTR_FAN_MODES,
+    ATTR_HUMIDITY,
+    ATTR_HVAC_MODES,
+    ATTR_MAX_HUMIDITY,
+    ATTR_MIN_HUMIDITY,
     ATTR_PRESET_MODE,
     ATTR_PRESET_MODES,
-    SUPPORT_TARGET_HUMIDITY,
+    HVAC_MODE_DRY,
+    HVAC_MODE_OFF,
     SUPPORT_FAN_MODE,
     SUPPORT_PRESET_MODE,
+    SUPPORT_TARGET_HUMIDITY,
 )
 from homeassistant.const import (
-    CONF_NAME,
-    CONF_HOST,
-    CONF_TOKEN,
     ATTR_ENTITY_ID,
+    CONF_HOST,
+    CONF_NAME,
+    CONF_TOKEN,
     TEMP_CELSIUS,
 )
 from homeassistant.exceptions import PlatformNotReady
+import homeassistant.helpers.config_validation as cv
 
 _LOGGER = logging.getLogger(__name__)
 

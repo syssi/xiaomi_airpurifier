@@ -12,16 +12,16 @@ import logging
 import voluptuous as vol
 
 from homeassistant.components.fan import (
-    FanEntity,
-    PLATFORM_SCHEMA,
-    SUPPORT_SET_SPEED,
-    DOMAIN,
-    SPEED_OFF,
-    SUPPORT_OSCILLATE,
-    SUPPORT_DIRECTION,
     ATTR_SPEED,
+    DOMAIN,
+    PLATFORM_SCHEMA,
+    SPEED_OFF,
+    SUPPORT_DIRECTION,
+    SUPPORT_OSCILLATE,
+    SUPPORT_SET_SPEED,
+    FanEntity,
 )
-from homeassistant.const import CONF_NAME, CONF_HOST, CONF_TOKEN, ATTR_ENTITY_ID
+from homeassistant.const import ATTR_ENTITY_ID, CONF_HOST, CONF_NAME, CONF_TOKEN
 from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
 
@@ -133,6 +133,10 @@ ATTR_HARDWARE_VERSION = "hardware_version"
 # Air Humidifier CA
 ATTR_DEPTH = "depth"
 ATTR_DRY = "dry"
+
+# Air Humidifier MJJSQ
+ATTR_NO_WATER = "no_water"
+ATTR_WATER_TANK_DETACHED = "water_tank_detached"
 
 # Air Fresh
 ATTR_CO2 = "co2"
@@ -1126,7 +1130,7 @@ class XiaomiAirHumidifierMjjsq(XiaomiAirHumidifier):
 
         self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ
         self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ
-        self._speed_list = [mode.name for mode in OperationModeMjjsq]
+        self._speed_list = [mode.name for mode in OperationMode]
         self._state_attrs.update(
             {attribute: None for attribute in self._available_attributes}
         )
