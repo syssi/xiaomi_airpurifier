@@ -29,7 +29,7 @@ _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_NAME = "Xiaomi Miio Device"
 DEFAULT_RETRIES = 20
-DATA_KEY = "fan.xiaomi_miio"
+DATA_KEY = "fan.xiaomi_miio_airpurifier"
 
 CONF_MODEL = "model"
 CONF_RETRIES = "retries"

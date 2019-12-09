@@ -36,7 +36,7 @@ import homeassistant.helpers.config_validation as cv
 _LOGGER = logging.getLogger(__name__)
 
 DEFAULT_NAME = "Xiaomi Miio Device"
-DATA_KEY = "fan.xiaomi_miio"
+DATA_KEY = "fan.xiaomi_miio_airpurifier"
 
 CONF_MODEL = "model"
 MODEL_AIRDEHUMIDIFIER_V1 = "nwt.derh.wdh318efw1"

@@ -266,37 +266,37 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 # configuration.yaml
 
 fan:
-  - platform: xiaomi_miio
+  - platform: xiaomi_miio_airpurifier
     name: Xiaomi Air Purifier 2
     host: 192.168.130.71
     token: b7c4a758c251955d2c24b1d9e41ce47d
     model: zhimi.airpurifier.m1
 
-  - platform: xiaomi_miio
+  - platform: xiaomi_miio_airpurifier
     name: Xiaomi Air Purifier Pro
     host: 192.168.130.73
     token: 70924d6fa4b2d745185fa4660703a5c0
     model: zhimi.airpurifier.v6
 
-  - platform: xiaomi_miio
+  - platform: xiaomi_miio_airpurifier
     name: Xiaomi Air Humidifier
     host: 192.168.130.72
     token: 2b00042f7481c7b056c4b410d28f33cf
     model: zhimi.humidifier.v1
 
-  - platform: xiaomi_miio
+  - platform: xiaomi_miio_airpurifier
     name: Xiaomi Air Fresh
     host: 192.168.130.74
     token: 91d89cf53c4090f4c653174f6737102f
     model: zhimi.airfresh.va2
 
-  - platform: xiaomi_miio
+  - platform: xiaomi_miio_airpurifier
     name: Xiaomi Smart Fan
     host: 192.168.130.75
     token: b7c4a758c251955d2c24b1d9e41ce4ff
 
 climate:
-  - platform: xiaomi_miio
+  - platform: xiaomi_miio_airpurifier
     name: Xiaomi Air Dehumidifier
     host: 192.168.130.76
     token: 86c4c41dc7af0e0520e170c8a1f92f62
