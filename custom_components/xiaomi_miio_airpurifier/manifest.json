@@ -1,5 +1,5 @@
 {
-  "domain": "xiaomi_miio",
+  "domain": "xiaomi_miio_airpurifier",
   "name": "Xiaomi Mi Air Purifier and Xiaomi Mi Air Humidifier",
   "documentation": "https://github.com/syssi/xiaomi_airpurifier",
   "requirements": [
