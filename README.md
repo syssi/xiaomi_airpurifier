@@ -324,17 +324,20 @@ sensor:
       airpurifier_temperature:
         friendly_name: Air Purifier Temperature
         value_template: '{{ states.fan.xiaomi_air_purifier.attributes.temperature }}'
+        unit_of_measurement: '°C'
       airpurifier_humidity:
         friendly_name: Air Purifier Humidity
         value_template: '{{ states.fan.xiaomi_air_purifier.attributes.humidity }}'
+        unit_of_measurement: '%'
 
       airhumidifier_temperature:
         friendly_name: Air Humidifier Temperature
         value_template: '{{ states.fan.xiaomi_air_humidifier.attributes.temperature }}'
+        unit_of_measurement: '°C'
       airhumidifier_humidity:
         friendly_name: Air Humidifier Humidity
         value_template: '{{ states.fan.xiaomi_air_humidifier.attributes.humidity }}'
-
+        unit_of_measurement: '%'
 ```
 
 ## Platform services
