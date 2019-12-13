@@ -1190,6 +1190,7 @@ class XiaomiAirHumidifierMjjsq(XiaomiAirHumidifier):
         self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ
         self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ
         self._speed_list = [mode.name for mode in OperationMode]
+        self._state_attrs = {ATTR_MODEL: self._model}
         self._state_attrs.update(
             {attribute: None for attribute in self._available_attributes}
         )
