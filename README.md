@@ -308,6 +308,35 @@ Configuration variables:
 - **name** (*Optional*): The name of your light.
 - **model** (*Optional*): The model of your device. Valid values are `zhimi.airpurifier.m1`, `zhimi.airpurifier.m2`, `zhimi.airpurifier.ma1`, `zhimi.airpurifier.ma2`, `zhimi.airpurifier.sa1`, `zhimi.airpurifier.sa2`, `zhimi.airpurifier.v1`, `zhimi.airpurifier.v2`, `zhimi.airpurifier.v3`, `zhimi.airpurifier.v5`, `zhimi.airpurifier.v6`, `zhimi.airpurifier.mc1`, `zhimi.humidifier.v1`, `zhimi.humidifier.ca1`, `zhimi.airfresh.va2`, `zhimi.fan.v2`, `zhimi.fan.v3`, `zhimi.fan.sa1` and `zhimi.fan.za1`. This setting can be used to bypass the device model detection and is recommended if your device isn't always available.
 
+## Template sensor example
+
+If your entity has another name the value `xiaomi_air_purifier` and `xiaomi_air_humidifier` must be updated.
+
+```
+# configuration.yaml
+
+sensor:
+  - platform: template
+    sensors:
+      airpurifier_aqi:
+        friendly_name: Air Purifier Air Quality Index
+        value_template: '{{ states.fan.xiaomi_air_purifier.attributes.aqi }}'
+      airpurifier_temperature:
+        friendly_name: Air Purifier Temperature
+        value_template: '{{ states.fan.xiaomi_air_purifier.attributes.temperature }}'
+      airpurifier_humidity:
+        friendly_name: Air Purifier Humidity
+        value_template: '{{ states.fan.xiaomi_air_purifier.attributes.humidity }}'
+
+      airhumidifier_temperature:
+        friendly_name: Air Humidifier Temperature
+        value_template: '{{ states.fan.xiaomi_air_humidifier.attributes.temperature }}'
+      airhumidifier_humidity:
+        friendly_name: Air Humidifier Humidity
+        value_template: '{{ states.fan.xiaomi_air_humidifier.attributes.humidity }}'
+
+```
+
 ## Platform services
 
 #### Service `fan.set_speed`
