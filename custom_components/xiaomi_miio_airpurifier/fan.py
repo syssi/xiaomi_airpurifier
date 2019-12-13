@@ -605,6 +605,11 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
         air_humidifier = AirHumidifier(host, token, model=model)
         device = XiaomiAirHumidifier(name, air_humidifier, model, unique_id)
+    elif model == MODEL_AIRHUMIDIFIER_MJJSQ:
+        from miio import AirHumidifierMjjsq
+
+        air_humidifier = AirHumidifierMjjsq(host, token, model=model)
+        device = XiaomiAirHumidifierMjjsq(name, air_humidifier, model, unique_id)
     elif model.startswith("zhimi.airfresh."):
         from miio import AirFresh
 
