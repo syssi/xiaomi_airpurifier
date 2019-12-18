@@ -482,7 +482,7 @@ Set the target humidity.
 | Service data attribute    | Optional | Description                                                     |
 |---------------------------|----------|-----------------------------------------------------------------|
 | `entity_id`               |      yes | Only act on a specific air purifier. Else targets all.          |
-| `humidity`                |       no | Target humidity. Allowed values are 30, 40, 50, 60, 70 and 80   |
+| `humidity`                |       no | Target humidity. The allowed values varies by model.            |
 
 #### Service `fan.xiaomi_miio_set_dry_on` (Air Humidifier CA only)
 
