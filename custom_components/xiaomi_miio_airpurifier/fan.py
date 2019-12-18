@@ -513,11 +513,7 @@ SERVICE_SCHEMA_EXTRA_FEATURES = AIRPURIFIER_SERVICE_SCHEMA.extend(
 )
 
 SERVICE_SCHEMA_TARGET_HUMIDITY = AIRPURIFIER_SERVICE_SCHEMA.extend(
-    {
-        vol.Required(ATTR_HUMIDITY): vol.All(
-            vol.Coerce(int), vol.In([30, 40, 50, 60, 70, 80])
-        )
-    }
+    {vol.Required(ATTR_HUMIDITY): vol.All(vol.Coerce(int), vol.Clamp(min=0, max=99))}
 )
 
 SERVICE_SCHEMA_OSCILLATION_ANGLE = AIRPURIFIER_SERVICE_SCHEMA.extend(
