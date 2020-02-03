@@ -431,6 +431,7 @@ FEATURE_RESET_FILTER = 256
 FEATURE_SET_EXTRA_FEATURES = 512
 FEATURE_SET_TARGET_HUMIDITY = 1024
 FEATURE_SET_DRY = 2048
+FEATURE_SET_FAN_LEVEL = 16384
 
 # Smart Fan
 FEATURE_SET_OSCILLATION_ANGLE = 4096
@@ -472,6 +473,7 @@ FEATURE_FLAGS_AIRPURIFIER_MIOT = (
     | FEATURE_SET_LED
     | FEATURE_SET_LED_BRIGHTNESS
     | FEATURE_SET_FAVORITE_LEVEL
+    | FEATURE_SET_FAN_LEVEL
     # | FEATURE_SET_EXTRA_FEATURES
 )
 FEATURE_FLAGS_AIRHUMIDIFIER = (
@@ -531,6 +533,7 @@ SERVICE_SET_EXTRA_FEATURES = "xiaomi_miio_set_extra_features"
 SERVICE_SET_TARGET_HUMIDITY = "xiaomi_miio_set_target_humidity"
 SERVICE_SET_DRY_ON = "xiaomi_miio_set_dry_on"
 SERVICE_SET_DRY_OFF = "xiaomi_miio_set_dry_off"
+SERVICE_SET_FAN_LEVEL = "xiaomi_miio_set_fan_level"
 
 # Smart Fan
 SERVICE_SET_OSCILLATION_ANGLE = "xiaomi_miio_set_oscillation_angle"
@@ -561,6 +564,10 @@ SERVICE_SCHEMA_TARGET_HUMIDITY = AIRPURIFIER_SERVICE_SCHEMA.extend(
 
 SERVICE_SCHEMA_OSCILLATION_ANGLE = AIRPURIFIER_SERVICE_SCHEMA.extend(
     {vol.Required(ATTR_ANGLE): vol.All(vol.Coerce(int), vol.In([30, 60, 90, 120]))}
+)
+
+SERVICE_SCHEMA_FAN_LEVEL = AIRPURIFIER_SERVICE_SCHEMA.extend(
+    {vol.Required(ATTR_LEVEL): vol.All(vol.Coerce(int), vol.Clamp(min=1, max=3))}
 )
 
 SERVICE_TO_METHOD = {
@@ -600,6 +607,10 @@ SERVICE_TO_METHOD = {
     },
     SERVICE_SET_NATURAL_MODE_ON: {"method": "async_set_natural_mode_on"},
     SERVICE_SET_NATURAL_MODE_OFF: {"method": "async_set_natural_mode_off"},
+    SERVICE_SET_FAN_LEVEL: {
+        "method": "async_set_fan_level",
+        "schema": SERVICE_SCHEMA_FAN_LEVEL,
+    },
 }
 
 
@@ -1128,6 +1139,16 @@ class XiaomiAirPurifierMiot(XiaomiAirPurifier):
             LedBrightness(brightness),
         )
 
+    async def async_set_fan_level(self, level: int = 1):
+        """Set the fan level."""
+        if self._device_features & FEATURE_SET_FAN_LEVEL == 0:
+            return
+
+        await self._try_command(
+            "Setting the fan level of the miio device failed.",
+            self._device.set_fan_level,
+            level,
+        )
 class XiaomiAirHumidifier(XiaomiGenericDevice):
     """Representation of a Xiaomi Air Humidifier."""
 
