@@ -467,7 +467,6 @@ FEATURE_FLAGS_AIRPURIFIER_V3 = (
 )
 
 FEATURE_FLAGS_AIRPURIFIER_MIOT = (
-    #TODO check
     FEATURE_SET_BUZZER
     | FEATURE_SET_CHILD_LOCK
     | FEATURE_SET_LED
@@ -1114,6 +1113,19 @@ class XiaomiAirPurifierMiot(XiaomiAirPurifier):
             "Setting operation mode of the miio device failed.",
             self._device.set_mode,
             OperationMode[speed.title()],
+        )
+
+    async def async_set_led_brightness(self, brightness: int = 2):
+        """Set the led brightness."""
+        if self._device_features & FEATURE_SET_LED_BRIGHTNESS == 0:
+            return
+
+        from miio.airpurifier_miot import LedBrightness
+
+        await self._try_command(
+            "Setting the led brightness of the miio device failed.",
+            self._device.set_led_brightness,
+            LedBrightness(brightness),
         )
 
 class XiaomiAirHumidifier(XiaomiGenericDevice):
