@@ -260,6 +260,11 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
   - battery_state (zhimi.fan.v2 only)
 
 
+## Install
+
+You can install this custom component by adding this repository ([https://github.com/syssi/xiaomi_airpurifier](https://github.com/syssi/xiaomi_airpurifier/)) to [HACS](https://hacs.xyz/) in the settings menu of HACS first. You will find the custom component in the integration menu afterwards, look for 'Xiaomi Mi Air Purifier and Xiaomi Mi Air Humidifier Integration'. Alternatively, you can install it manually by copying the custom_component folder to your Home Assistant configuration folder.
+
+
 ## Setup
 
 ```yaml
