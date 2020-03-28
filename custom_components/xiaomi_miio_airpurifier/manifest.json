@@ -4,7 +4,7 @@
   "documentation": "https://github.com/syssi/xiaomi_airpurifier",
   "requirements": [
     "construct==2.9.45",
-    "python-miio>=0.4.8"
+    "python-miio>=0.4.9"
   ],
   "dependencies": [],
   "codeowners": [
