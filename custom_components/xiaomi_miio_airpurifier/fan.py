@@ -263,7 +263,7 @@ AVAILABLE_ATTRIBUTES_AIRPURIFIER_MIOT = {
     ATTR_HUMIDITY: "humidity",
     ATTR_AIR_QUALITY_INDEX: "aqi",
     ATTR_MODE: "mode",
-    ATTR_FAN_LEVEL:  "fan_level",
+    ATTR_FAN_LEVEL: "fan_level",
     ATTR_FILTER_HOURS_USED: "filter_hours_used",
     ATTR_FILTER_LIFE: "filter_life_remaining",
     ATTR_FAVORITE_LEVEL: "favorite_level",
@@ -413,7 +413,7 @@ OPERATION_MODES_AIRPURIFIER_MIOT = [
     "Auto",
     "Silent",
     "Favorite",
-    "Fan" # TODO: Manual?
+    "Fan",  # TODO: Manual?
 ]
 OPERATION_MODES_AIRFRESH = ["Auto", "Silent", "Interval", "Low", "Middle", "Strong"]
 
@@ -646,9 +646,9 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             raise PlatformNotReady
 
     if model in [
-            MODEL_AIRPURIFIER_MA4,
-            MODEL_AIRPURIFIER_MB3,
-            ]:
+        MODEL_AIRPURIFIER_MA4,
+        MODEL_AIRPURIFIER_MB3,
+    ]:
         from miio import AirPurifierMiot
 
         air_purifier = AirPurifierMiot(host, token)
@@ -1086,6 +1086,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
             self._device.reset_filter,
         )
 
+
 class XiaomiAirPurifierMiot(XiaomiAirPurifier):
     """Representation of a MIoT Xiaomi Air Purifier."""
 
@@ -1149,6 +1150,8 @@ class XiaomiAirPurifierMiot(XiaomiAirPurifier):
             self._device.set_fan_level,
             level,
         )
+
+
 class XiaomiAirHumidifier(XiaomiGenericDevice):
     """Representation of a Xiaomi Air Humidifier."""
 
