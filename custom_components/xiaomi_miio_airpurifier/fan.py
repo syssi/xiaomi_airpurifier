@@ -258,7 +258,6 @@ AVAILABLE_ATTRIBUTES_AIRPURIFIER_V3 = {
 }
 
 AVAILABLE_ATTRIBUTES_AIRPURIFIER_MIOT = {
-    # set fav rpm
     ATTR_TEMPERATURE: "temperature",
     ATTR_HUMIDITY: "humidity",
     ATTR_AIR_QUALITY_INDEX: "aqi",
@@ -278,7 +277,6 @@ AVAILABLE_ATTRIBUTES_AIRPURIFIER_MIOT = {
     ATTR_FILTER_RFID_PRODUCT_ID: "filter_rfid_product_id",
     ATTR_FILTER_RFID_TAG: "filter_rfid_tag",
     ATTR_FILTER_TYPE: "filter_type",
-    # ATTR_EXTRA_FEATURES: "extra_features"
 }
 
 AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON = {
@@ -413,7 +411,7 @@ OPERATION_MODES_AIRPURIFIER_MIOT = [
     "Auto",
     "Silent",
     "Favorite",
-    "Fan",  # TODO: Manual?
+    "Fan",
 ]
 OPERATION_MODES_AIRFRESH = ["Auto", "Silent", "Interval", "Low", "Middle", "Strong"]
 
@@ -474,7 +472,6 @@ FEATURE_FLAGS_AIRPURIFIER_MIOT = (
     | FEATURE_SET_LED_BRIGHTNESS
     | FEATURE_SET_FAVORITE_LEVEL
     | FEATURE_SET_FAN_LEVEL
-    # | FEATURE_SET_EXTRA_FEATURES
 )
 FEATURE_FLAGS_AIRHUMIDIFIER = (
     FEATURE_SET_BUZZER
