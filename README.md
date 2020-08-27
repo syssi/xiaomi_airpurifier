@@ -111,6 +111,34 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
   - use_time
   - button_pressed
 
+### Air Purifier 3H
+
+* Power (on, off)
+* Operation modes (auto, silent, favorite, fan)
+* Child lock (on, off)
+* LED (on, off)
+* Attributes
+  - model
+  - temperature
+  - humidity
+  - aqi
+  - mode
+  - fan_level
+  - filter_hours_used
+  - filter_life_remaining
+  - favorite_level
+  - child_lock
+  - led
+  - buzzer
+  - led_brightness
+  - motor_speed
+  - average_aqi
+  - filter_rfid_product_id
+  - filter_rfid_tag
+  - filter_type
+  - purify_volume
+  - use_time
+
 ### Air Humidifier
 
 * On, Off
@@ -547,3 +575,13 @@ Turn the natural mode off.
 | Service data attribute    | Optional | Description                                                          |
 |---------------------------|----------|----------------------------------------------------------------------|
 | `entity_id`               |      yes | Only act on a specific xiaomi miio entity. Else targets all.         |
+
+#### Service `fan.xiaomi_miio_set_fan_level` (Air Purifier 3H only)
+
+Set the level when on fan mode
+
+| Service data attribute    | Optional | Description                                                          |
+|---------------------------|----------|----------------------------------------------------------------------|
+| `entity_id`               |      yes | Only act on a specific xiaomi miio entity. Else targets all.         |
+| `level`                   |       no | Valid values are `1`, `2` and `3`.                                   |
+
