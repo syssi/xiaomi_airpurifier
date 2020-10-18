@@ -6,176 +6,357 @@ Please follow the instructions on [Retrieving the Access Token](https://home-ass
 
 Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all the work.
 
+## Supported devices
+
+| Name                   | Model                  | Model no. |
+| ---------------------- | ---------------------- | --------- |
+| Air Purifier           | zhimi.airpurifier.v1   | |
+| Air Purifier 2         | zhimi.airpurifier.v2   | FJY4006CN |
+| Air Purifier V3        | zhimi.airpurifier.v3   | |
+| Air Purifier V5        | zhimi.airpurifier.v5   | |
+| Air Purifier Pro       | zhimi.airpurifier.v6   | |
+| Air Purifier Pro V7    | zhimi.airpurifier.v7   | |
+| Air Purifier 2 (mini)  | zhimi.airpurifier.m1   | |
+| Air Purifier (mini)    | zhimi.airpurifier.m2   | |
+| Air Purifier MA1       | zhimi.airpurifier.ma1  | |
+| Air Purifier MA2       | zhimi.airpurifier.ma2  | |
+| Air Purifier 2S        | zhimi.airpurifier.mc1  | |
+| Air Purifier Super     | zhimi.airpurifier.sa1  | |
+| Air Purifier Super 2   | zhimi.airpurifier.sa2  | |
+| Air Purifier 3 (2019)  | zhimi.airpurifier.ma4  | |
+| Air Purifier 3H (2019) | zhimi.airpurifier.mb3  | |
+| Air Humidifier         | zhimi.humidifier.v1    | |
+| Air Humidifier CA1     | zhimi.humidifier.ca1   | |
+| Air Humidifier CB1     | zhimi.humidifier.cb1   | |
+| Air Humidifier MJJSQ   | deerma.humidifier.mjjsq   | |
+| Air Humidifier JSQ1    | deerma.humidifier.jsq1    | |
+| Air Fresh VA2          | zhimi.airfresh.va2     | |
+| Pedestal Fan Fan V2    | zhimi.fan.v2           | |
+| Pedestal Fan Fan V3    | zhimi.fan.v3           | |
+| Pedestal Fan Fan SA1   | zhimi.fan.sa1          | |
+| Pedestal Fan Fan ZA1   | zhimi.fan.za1          | |
+| Pedestal Fan Fan ZA3   | zhimi.fan.za3          | |
+| Pedestal Fan Fan ZA4   | zhimi.fan.za4          | |
+| Pedestal Fan Fan P5    | dmaker.fan.p5          | |
+ 
+
 ## Features
 
-### Air Purifier 2
+### Air Purifier 2 et al.
 
-* Power (on, off)
-* Operation modes (auto, silent, favorite, idle)
-* Buzzer (on, off)
-* Child lock (on, off)
-* LED (on, off), LED brightness (bright, dim, off)
-* Favorite Level (0...16)
-* Attributes
-  - model
-  - temperature
-  - humidity
-  - aqi
-  - mode
-  - filter_hours_used
-  - filter_life_remaining
-  - favorite_level
-  - child_lock
-  - led
-  - motor_speed
-  - average_aqi
-  - purify_volume
-  - learn_mode
-  - sleep_time
-  - sleep_mode_learn_count
-  - extra_features
-  - turbo_mode_supported
-  - auto_detect
-  - use_time
-  - button_pressed
-  - buzzer
-  - led_brightness
-  - sleep_mode
+- Power (on, off)
+- Operation modes (auto, silent, favorite, idle)
+- Buzzer (on, off)
+- Child lock (on, off)
+- LED (on, off), LED brightness (bright, dim, off)
+- Favorite Level (0...16)
+- Attributes
+  - `model`
+  - `temperature`
+  - `humidity`
+  - `aqi`
+  - `mode`
+  - `filter_hours_used`
+  - `filter_life_remaining`
+  - `favorite_level`
+  - `child_lock`
+  - `led`
+  - `motor_speed`
+  - `average_aqi`
+  - `purify_volume`
+  - `learn_mode`
+  - `sleep_time`
+  - `sleep_mode_learn_count`
+  - `extra_features`
+  - `turbo_mode_supported`
+  - `auto_detect`
+  - `use_time`
+  - `button_pressed`
+  - `buzzer`
+  - `led_brightness`
+  - `sleep_mode`
 
+### Air Purifier Pro (zhimi.airpurifier.v6)
 
-### Air Purifier Pro
+- Power (on, off)
+- Operation modes (auto, silent, favorite)
+- Child lock (on, off)
+- LED (on, off)
+- Favorite Level (0...16)
+- Attributes
+  - `model`
+  - `temperature`
+  - `humidity`
+  - `aqi`
+  - `mode`
+  - `filter_hours_used`
+  - `filter_life_remaining`
+  - `favorite_level`
+  - `child_lock`
+  - `led`
+  - `motor_speed`
+  - `average_aqi`
+  - `purify_volume`
+  - `learn_mode`
+  - `sleep_time`
+  - `sleep_mode_learn_count`
+  - `extra_features`
+  - `turbo_mode_supported`
+  - `auto_detect`
+  - `use_time`
+  - `button_pressed`
+  - `filter_rfid_product_id`
+  - `filter_rfid_tag`
+  - `filter_type`
+  - `illuminance`
+  - `motor2_speed`
+  - `volume`
 
-* Power (on, off)
-* Operation modes (auto, silent, favorite)
-* Child lock (on, off)
-* LED (on, off)
-* Favorite Level (0...16)
-* Attributes
-  - model
-  - temperature
-  - humidity
-  - aqi
-  - mode
-  - filter_hours_used
-  - filter_life_remaining
-  - favorite_level
-  - child_lock
-  - led
-  - motor_speed
-  - average_aqi
-  - purify_volume
-  - learn_mode
-  - sleep_time
-  - sleep_mode_learn_count
-  - extra_features
-  - turbo_mode_supported
-  - auto_detect
-  - use_time
-  - button_pressed
-  - filter_rfid_product_id
-  - filter_rfid_tag
-  - filter_type
-  - illuminance
-  - motor2_speed
-  - volume
+### Air Purifier Pro V7 (zhimi.airpurifier.v7)
 
-### Air Purifier 3
+- Power (on, off)
+- Operation modes (auto, silent, favorite)
+- Child lock (on, off)
+- LED (on, off)
+- Favorite Level (0...16)
+- Attributes
+  - `model`
+  - `temperature`
+  - `humidity`
+  - `aqi`
+  - `mode`
+  - `filter_hours_used`
+  - `filter_life_remaining`
+  - `favorite_level`
+  - `child_lock`
+  - `led`
+  - `motor_speed`
+  - `average_aqi`
+  - `learn_mode`
+  - `extra_features`
+  - `turbo_mode_supported`
+  - `button_pressed`
+  - `filter_rfid_product_id`
+  - `filter_rfid_tag`
+  - `filter_type`
+  - `illuminance`
+  - `motor2_speed`
+  - `volume`
 
-* Power (on, off)
-* Operation modes (auto, silent, favorite, idle, medium, high, strong)
-* Child lock (on, off)
-* LED (on, off)
-* Attributes
-  - model
-  - aqi
-  - mode
-  - led
-  - buzzer
-  - child_lock
-  - illuminance
-  - filter_hours_used
-  - filter_life_remaining
-  - motor_speed
-  - average_aqi
-  - volume
-  - motor2_speed
-  - filter_rfid_product_id
-  - filter_rfid_tag
-  - filter_type
-  - purify_volume
-  - learn_mode
-  - sleep_time
-  - sleep_mode_learn_count
-  - extra_features
-  - auto_detect
-  - use_time
-  - button_pressed
+### Air Purifier 2S (zhimi.airpurifier.mc1)
 
-### Air Humidifier
+- Power (on, off)
+- Operation modes (auto, silent, favorite)
+- Buzzer (on, off)
+- Child lock (on, off)
+- LED (on, off)
+- Favorite Level (0...16)
+- Attributes
+  - `model`
+  - `temperature`
+  - `humidity`
+  - `aqi`
+  - `mode`
+  - `filter_hours_used`
+  - `filter_life_remaining`
+  - `favorite_level`
+  - `child_lock`
+  - `led`
+  - `motor_speed`
+  - `average_aqi`
+  - `learn_mode`
+  - `extra_features`
+  - `turbo_mode_supported`
+  - `button_pressed`
+  - `filter_rfid_product_id`
+  - `filter_rfid_tag`
+  - `filter_type`
+  - `illuminance`
+  - `buzzer`
 
-* On, Off
-* Operation modes (silent, medium, high)
-* Buzzer (on, off)
-* Child lock (on, off)
-* LED brightness (bright, dim, off)
-* Target humidity (30, 40, 50, 60, 70, 80)
-* Attributes
-  - model
-  - temperature
-  - humidity
-  - mode
-  - buzzer
-  - child_lock
-  - trans_level
-  - target_humidity
-  - led_brightness
-  - button_pressed
-  - use_time
-  - hardware_version
+### Air Purifier 3/3H (2019) (zhimi.airpurifier.ma4/zhimi.airpurifier.mb3)
 
-### Air Humidifier CA
+This model uses newer MiOT communication protocol.
 
-* On, Off
-* Operation modes (silent, medium, high, auto)
-* Buzzer (on, off)
-* Child lock (on, off)
-* LED brightness (bright, dim, off)
-* Target humidity (30, 40, 50, 60, 70, 80)
-* Dry mode (on, off)
-* Attributes
-  - model
-  - temperature
-  - humidity
-  - mode
-  - buzzer
-  - child_lock
-  - trans_level
-  - target_humidity
-  - led_brightness
-  - button_pressed
-  - use_time
-  - hardware_version
-  - speed
-  - depth
-  - dry
+- Power (on, off)
+- Operation modes (auto, silent, favorite, fan)
+- Buzzer (on, off)
+- Child lock (on, off)
+- LED (on, off)
+- Favorite Level (0...16)
+- Fan Level (1...3)
+- Attributes
+  - `model`
+  - `temperature`
+  - `humidity`
+  - `aqi`
+  - `mode`
+  - `filter_hours_used`
+  - `filter_life_remaining`
+  - `favorite_level`
+  - `child_lock`
+  - `led`
+  - `motor_speed`
+  - `average_aqi`
+  - `purify_volume`
+  - `use_time`
+  - `buzzer`
+  - `led_brightness`
+  - `filter_rfid_product_id`
+  - `filter_rfid_tag`
+  - `filter_type`
+  - `fan_level`
+
+### Air Purifier V3 (zhimi.airpurifier.v3)
+
+- Power (on, off)
+- Operation modes (auto, silent, favorite, idle, medium, high, strong)
+- Child lock (on, off)
+- LED (on, off)
+- Attributes
+  - `model`
+  - `aqi`
+  - `mode`
+  - `led`
+  - `buzzer`
+  - `child_lock`
+  - `illuminance`
+  - `filter_hours_used`
+  - `filter_life_remaining`
+  - `motor_speed`
+  - `average_aqi`
+  - `volume`
+  - `motor2_speed`
+  - `filter_rfid_product_id`
+  - `filter_rfid_tag`
+  - `filter_type`
+  - `purify_volume`
+  - `learn_mode`
+  - `sleep_time`
+  - `sleep_mode_learn_count`
+  - `extra_features`
+  - `auto_detect`
+  - `use_time`
+  - `button_pressed`
+
+### Air Humidifier (zhimi.humidifier.v1)
+
+- On, Off
+- Operation modes (silent, medium, high, strong)
+- Buzzer (on, off)
+- Child lock (on, off)
+- LED (on, off), LED brightness (bright, dim, off)
+- Target humidity (30, 40, 50, 60, 70, 80)
+- Attributes
+  - `model`
+  - `temperature`
+  - `humidity`
+  - `mode`
+  - `buzzer`
+  - `child_lock`
+  - `trans_level`
+  - `target_humidity`
+  - `led_brightness`
+  - `button_pressed`
+  - `use_time`
+  - `hardware_version`
+
+### Air Humidifier CA (zhimi.humidifier.ca1)
+
+- On, Off
+- Operation modes (silent, medium, high, auto)
+- Buzzer (on, off)
+- Child lock (on, off)
+- LED (on, off), LED brightness (bright, dim, off)
+- Target humidity (30, 40, 50, 60, 70, 80)
+- Dry mode (on, off)
+- Attributes
+  - `model`
+  - `temperature`
+  - `humidity`
+  - `mode`
+  - `buzzer`
+  - `child_lock`
+  - `trans_level`
+  - `target_humidity`
+  - `led_brightness`
+  - `button_pressed`
+  - `use_time`
+  - `hardware_version`
+  - `motor_speed`
+  - `depth`
+  - `dry`
+
+### Air Humidifier CB (zhimi.humidifier.cb1)
+
+- On, Off
+- Operation modes (silent, medium, high, auto)
+- Buzzer (on, off)
+- Child lock (on, off)
+- LED (on, off), LED brightness (bright, dim, off)
+- Target humidity (30, 40, 50, 60, 70, 80)
+- Dry mode (on, off)
+- Attributes
+  - `speed`
+  - `speed_list`
+  - `model`
+  - `temperature`
+  - `humidity`
+  - `mode`
+  - `buzzer`
+  - `child_lock`
+  - `target_humidity`
+  - `led_brightness`
+  - `use_time`
+  - `hardware_version`
+  - `motor_speed`
+  - `depth`
+  - `dry`
+  - `supported_features`
+
+### Air Fresh VA2
+
+- Power (on, off)
+- Operation modes (auto, silent, interval, low, middle, strong)
+- Buzzer (on, off)
+- Child lock (on, off)
+- LED (on, off), LED brightness (bright, dim, off)
+- Attributes
+  - `model`
+  - `aqi`
+  - `average_aqi`
+  - `temperature`
+  - `humidity`
+  - `co2`
+  - `mode`
+  - `led`
+  - `led_brightness`
+  - `buzzer`
+  - `child_lock`
+  - `filter_life_remaining`
+  - `filter_hours_used`
+  - `use_time`
+  - `motor_speed`
+  - `extra_features`
+
 
 ### Air Humidifier MJJSQ and JSQ1 (deerma.humidifier.mjjsq, deerma.humidifier.jsq1)
 
-* On, Off
+* Power (on, off)
 * Operation modes (low, medium, high, humidity)
 * Buzzer (on, off)
 * LED (on, off)
 * Target humidity (0...99)
 * Attributes
-  - model
-  - temperature
-  - humidity
-  - mode
-  - buzzer
-  - target_humidity
-  - led
-  - no_water
-  - water_tank_detached
+  - `model`
+  - `temperature`
+  - `humidity`
+  - `mode`
+  - `buzzer`
+  - `target_humidity`
+  - `led`
+  - `no_water`
+  - `water_tank_detached`
 
 ### Air Dehumidifier (nwt.derh.wdh318efw1)
 
@@ -187,45 +368,21 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 * Child lock (on, off)
 * LED (on, off)
 * Attributes
-  - model
-  - temperature
-  - humidity
-  - mode
-  - buzzer
-  - child_lock
-  - target_humidity
-  - led
-  - fan_speed
-  - tank_full
-  - compressor_status
-  - defrost_status
-  - fan_st
-  - alarm
+  - `model`
+  - `temperature`
+  - `humidity`
+  - `mode`
+  - `buzzer`
+  - `child_lock`
+  - `target_humidity`
+  - `led`
+  - `fan_speed`
+  - `tank_full`
+  - `compressor_status`
+  - `defrost_status`
+  - `fan_st`
+  - `alarm`
 
-### Air Fresh VA2
-
-* Power (on, off)
-* Operation modes (auto, silent, interval, low, middle, strong)
-* Buzzer (on, off)
-* Child lock (on, off)
-* LED (on, off), LED brightness (bright, dim, off)
-* Attributes
-  - model
-  - aqi
-  - average_aqi
-  - temperature
-  - humidity
-  - co2
-  - mode
-  - led
-  - led_brightness
-  - buzzer
-  - child_lock
-  - filter_life_remaining
-  - filter_hours_used
-  - use_time
-  - motor_speed
-  - extra_features
 
 ### Pedestal Fan
 
@@ -238,26 +395,26 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 * Child lock (on, off)
 * LED brightness (bright, dim, off)
 * Attributes
-  - model
-  - temperature (zhimi.fan.v2 and v3 only)
-  - humidity (zhimi.fan.v2 and v3 only)
-  - led_brightness
-  - buzzer
-  - child_lock
-  - natural_level
-  - oscillate
-  - delay_off_countdown
-  - speed
-  - direct_speed
-  - natural_speed
-  - angle
-  - use_time
-  - ac_power
-  - battery (zhimi.fan.v2 and v3 only)
-  - battery_charge (zhimi.fan.v2 & v3 only)
-  - button_pressed (zhimi.fan.v2 & v3 only)
-  - led (zhimi.fan.v2 only)
-  - battery_state (zhimi.fan.v2 only)
+  - `model`
+  - `temperature` (zhimi.fan.v2 and v3 only)
+  - `humidity` (zhimi.fan.v2 and v3 only)
+  - `led_brightness`
+  - `buzzer`
+  - `child_lock`
+  - `natural_level`
+  - `oscillate`
+  - `delay_off_countdown`
+  - `speed`
+  - `direct_speed`
+  - `natural_speed`
+  - `angle`
+  - `use_time`
+  - `ac_power`
+  - `battery` (zhimi.fan.v2 and v3 only)
+  - `battery_charge` (zhimi.fan.v2 & v3 only)
+  - `button_pressed` (zhimi.fan.v2 & v3 only)
+  - `led` (zhimi.fan.v2 only)
+  - `battery_state` (zhimi.fan.v2 only)
 
 
 ## Install
