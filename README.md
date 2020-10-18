@@ -617,6 +617,15 @@ Turn the child lock off.
 |---------------------------|----------|---------------------------------------------------------|
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.          |
 
+#### Service `xiaomi_miio_airpurifier._fan_set_delay_off`
+
+Set the scheduled turn off time. Supported values are 0, 60, 120, 180, 240, 300, 360, 420, 480 minutes. When 0 is passed, delay_off is disabled.
+
+| Service data attribute    | Optional | Description                                                                                                          |
+|---------------------------|----------|----------------------------------------------------------------------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                                                                       |
+| `delay_off_countdown`     |       no | Time in minutes. Valid values are `0`, `60`, `120`, `180`, `240`, `300`, `240`, `300`, `360`, `420`, `480` minutes.  |
+
 #### Service `xiaomi_miio_airpurifier.fan_set_led_brightness` (Air Purifier Pro excluded)
 
 Set the led brightness. Supported values are 0 (Bright), 1 (Dim), 2 (Off).

@@ -461,6 +461,7 @@ AVAILABLE_ATTRIBUTES_FAN_P5 = {
     ATTR_LED: "led",
     ATTR_BUZZER: "buzzer",
     ATTR_CHILD_LOCK: "child_lock",
+    ATTR_RAW_SPEED: "speed",
 }
 
 FAN_SPEED_LEVEL1 = "Level 1"
@@ -655,6 +656,7 @@ SERVICE_SET_DRY_ON = "fan_set_dry_on"
 SERVICE_SET_DRY_OFF = "fan_set_dry_off"
 
 # Smart Fan
+SERVICE_SET_DELAY_OFF = "fan_set_delay_off"
 SERVICE_SET_OSCILLATION_ANGLE = "fan_set_oscillation_angle"
 SERVICE_SET_NATURAL_MODE_ON = "fan_set_natural_mode_on"
 SERVICE_SET_NATURAL_MODE_OFF = "fan_set_natural_mode_off"
@@ -695,6 +697,14 @@ SERVICE_SCHEMA_MOTOR_SPEED = AIRPURIFIER_SERVICE_SCHEMA.extend(
 
 SERVICE_SCHEMA_OSCILLATION_ANGLE = AIRPURIFIER_SERVICE_SCHEMA.extend(
     {vol.Required(ATTR_ANGLE): vol.All(vol.Coerce(int), vol.In([30, 60, 90, 120]))}
+)
+
+SERVICE_SCHEMA_DELAY_OFF = AIRPURIFIER_SERVICE_SCHEMA.extend(
+    {
+        vol.Required(ATTR_DELAY_OFF_COUNTDOWN): vol.All(
+            vol.Coerce(int), vol.In([0, 60, 120, 180, 240, 300, 360, 420, 480])
+        )
+    }
 )
 
 SERVICE_TO_METHOD = {
@@ -739,6 +749,10 @@ SERVICE_TO_METHOD = {
     SERVICE_SET_OSCILLATION_ANGLE: {
         "method": "async_set_oscillation_angle",
         "schema": SERVICE_SCHEMA_OSCILLATION_ANGLE,
+    },
+    SERVICE_SET_DELAY_OFF: {
+        "method": "async_set_delay_off",
+        "schema": SERVICE_SCHEMA_DELAY_OFF,
     },
     SERVICE_SET_NATURAL_MODE_ON: {"method": "async_set_natural_mode_on"},
     SERVICE_SET_NATURAL_MODE_OFF: {"method": "async_set_natural_mode_off"},
@@ -861,6 +875,7 @@ class XiaomiGenericDevice(FanEntity):
         self._device = device
         self._model = model
         self._unique_id = unique_id
+        self._retry = 0
         self._retries = retries
 
         self._available = False
@@ -1794,6 +1809,15 @@ class XiaomiFan(XiaomiGenericDevice):
             "Setting angle of the miio device failed.", self._device.set_angle, angle
         )
 
+    async def async_set_delay_off(self, delay_off_countdown: int) -> None:
+        """Set scheduled off timer in minutes."""
+
+        await self._try_command(
+            "Setting delay off miio device failed.",
+            self._device.delay_off,
+            delay_off_countdown * 60,
+        )
+
     async def async_set_led_brightness(self, brightness: int = 2):
         """Set the led brightness."""
         if self._device_features & FEATURE_SET_LED_BRIGHTNESS == 0:
@@ -1829,7 +1853,7 @@ class XiaomiFanP5(XiaomiFan):
         """Initialize the fan entity."""
         super().__init__(name, device, model, unique_id, retries)
 
-        self._device_features = FEATURE_FLAGS_FAN
+        self._device_features = FEATURE_FLAGS_FAN_P5
         self._available_attributes = AVAILABLE_ATTRIBUTES_FAN_P5
         self._speed_list = list(FAN_SPEED_LIST)
         self._speed = None
@@ -1932,4 +1956,13 @@ class XiaomiFanP5(XiaomiFan):
             "Turning on natural mode of the miio device failed.",
             self._device.set_mode,
             FanOperationMode.Normal,
+        )
+
+    async def async_set_delay_off(self, delay_off_countdown: int) -> None:
+        """Set scheduled off timer in minutes."""
+
+        await self._try_command(
+            "Setting delay off miio device failed.",
+            self._device.delay_off,
+            delay_off_countdown,
         )
