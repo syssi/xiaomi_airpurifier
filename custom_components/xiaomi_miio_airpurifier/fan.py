@@ -25,6 +25,10 @@ from miio.airhumidifier import (  # pylint: disable=import-error, import-error
     LedBrightness as AirhumidifierLedBrightness,
     OperationMode as AirhumidifierOperationMode,
 )
+from miio.airhumidifier import (  # pylint: disable=import-error, import-error
+    LedBrightness as AirhumidifierJsqLedBrightness,
+    OperationMode as AirhumidifierJsqOperationMode,
+)
 from miio.airhumidifier_miot import (  # pylint: disable=import-error, import-error
     LedBrightness as AirhumidifierMiotLedBrightness,
     OperationMode as AirhumidifierMiotOperationMode,
@@ -1614,7 +1618,9 @@ class XiaomiAirHumidifierJsq(XiaomiAirHumidifier):
     def led_brightness(self):
         """Return the current brightness."""
         if self._state:
-            return AirhumidifierJsqLedBrightness(self._state_attrs[ATTR_LED_BRIGHTNESS]).name
+            return AirhumidifierJsqLedBrightness(
+                self._state_attrs[ATTR_LED_BRIGHTNESS]
+            ).name
 
         return None
 
