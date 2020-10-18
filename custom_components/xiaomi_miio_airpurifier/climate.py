@@ -342,7 +342,7 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
 
     def __init__(self, name, device, model, unique_id):
         """Initialize the plug switch."""
-        from miio.airdehumidifier import OperationMode, FanSpeed
+        from miio.airdehumidifier import FanSpeed, OperationMode
 
         super().__init__(name, device, model, unique_id)
 
@@ -480,7 +480,7 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
     @property
     def fan_mode(self):
         """Return the fan setting."""
-        from miio.airdehumidifier import OperationMode, FanSpeed
+        from miio.airdehumidifier import FanSpeed, OperationMode
 
         if self.preset_mode == OperationMode.DryCloth.name:
             return None
@@ -524,7 +524,7 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
 
     async def async_set_fan_mode(self, fan_mode: str):
         """Set new target fan mode."""
-        from miio.airdehumidifier import OperationMode, FanSpeed
+        from miio.airdehumidifier import FanSpeed, OperationMode
 
         if self.preset_mode != OperationMode.DryCloth.name:
             await self._try_command(
