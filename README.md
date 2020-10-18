@@ -27,6 +27,7 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 | Air Purifier 3H (2019) | zhimi.airpurifier.mb3  | |
 | Air Humidifier         | zhimi.humidifier.v1    | |
 | Air Humidifier CA1     | zhimi.humidifier.ca1   | |
+| Air Humidifier CA4     | zhimi.humidifier.ca4   | |
 | Air Humidifier CB1     | zhimi.humidifier.cb1   | |
 | Air Humidifier MJJSQ   | deerma.humidifier.mjjsq   | |
 | Air Humidifier JSQ1    | deerma.humidifier.jsq1    | |
@@ -314,6 +315,34 @@ This model uses newer MiOT communication protocol.
   - `depth`
   - `dry`
 
+### Air Humidifier CA4 (zhimi.humidifier.ca4)
+
+- On, Off
+- Operation modes (auto, low, mid, high)
+- Buzzer (on, off)
+- Child lock (on, off)
+- LED brightness (off, dim, bright)
+- Target humidity (30 - 80)
+- Dry mode (on, off)
+- Motor speed rpm (200 - 2000)
+- Attributes
+  - `model`
+  - `temperature`
+  - `humidity`
+  - `mode`
+  - `buzzer`
+  - `child_lock`
+  - `target_humidity`
+  - `led_brightness`
+  - `use_time`
+  - `actual_speed`
+  - `button_pressed`
+  - `dry`
+  - `fahrenheit`
+  - `motor_speed`
+  - `power_time`
+  - `water_level`
+
 ### Air Humidifier CB (zhimi.humidifier.cb1)
 
 - On, Off
@@ -495,7 +524,7 @@ Configuration variables:
 - **host** (*Required*): The IP of your light.
 - **token** (*Required*): The API token of your light.
 - **name** (*Optional*): The name of your light.
-- **model** (*Optional*): The model of your device. Valid values are `zhimi.airpurifier.m1`, `zhimi.airpurifier.m2`, `zhimi.airpurifier.ma1`, `zhimi.airpurifier.ma2`, `zhimi.airpurifier.sa1`, `zhimi.airpurifier.sa2`, `zhimi.airpurifier.v1`, `zhimi.airpurifier.v2`, `zhimi.airpurifier.v3`, `zhimi.airpurifier.v5`, `zhimi.airpurifier.v6`, `zhimi.airpurifier.mc1`, `zhimi.humidifier.v1`, `zhimi.humidifier.ca1`, `zhimi.airfresh.va2`, `zhimi.fan.v2`, `zhimi.fan.v3`, `zhimi.fan.sa1` and `zhimi.fan.za1`. This setting can be used to bypass the device model detection and is recommended if your device isn't always available.
+- **model** (*Optional*): The model of your device. This setting can be used to bypass the device model detection and is recommended if your device isn't always available.
 
 ## Template sensor example
 
@@ -731,3 +760,12 @@ Turn the natural mode off.
 | Service data attribute    | Optional | Description                                                          |
 |---------------------------|----------|----------------------------------------------------------------------|
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
+
+### Service `xiaomi_miio.fan_set_motor_speed` (Air Humidifier CA4)
+
+Set motor speed RPM.
+
+| Service data attribute    | Optional | Description                                                          |
+|---------------------------|----------|----------------------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
+| `motor_speed`             |       no | Motor speed RPM. Allowed values are between 200 and 2000             |
