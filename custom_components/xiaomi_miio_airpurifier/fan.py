@@ -111,6 +111,7 @@ MODEL_AIRHUMIDIFIER_JSQ1 = "deerma.humidifier.jsq1"
 MODEL_AIRHUMIDIFIER_JSQ001 = "shuii.humidifier.jsq001"
 
 MODEL_AIRFRESH_VA2 = "zhimi.airfresh.va2"
+MODEL_AIRFRESH_VA4 = "zhimi.airfresh.va4"
 
 MODEL_FAN_V2 = "zhimi.fan.v2"
 MODEL_FAN_V3 = "zhimi.fan.v3"
@@ -154,6 +155,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_AIRHUMIDIFIER_JSQ1,
                 MODEL_AIRHUMIDIFIER_JSQ001,
                 MODEL_AIRFRESH_VA2,
+                MODEL_AIRFRESH_VA4,
                 MODEL_FAN_V2,
                 MODEL_FAN_V3,
                 MODEL_FAN_SA1,
@@ -231,6 +233,7 @@ ATTR_LID_OPENED = "lid_opened"
 
 # Air Fresh
 ATTR_CO2 = "co2"
+ATTR_PTC = "ptc"
 
 # Smart Fan
 ATTR_NATURAL_SPEED = "natural_speed"
@@ -457,6 +460,8 @@ AVAILABLE_ATTRIBUTES_AIRFRESH = {
     ATTR_EXTRA_FEATURES: "extra_features",
 }
 
+AVAILABLE_ATTRIBUTES_AIRFRESH_VA4 = {**AVAILABLE_ATTRIBUTES_AIRFRESH, ATTR_PTC: "ptc"}
+
 AVAILABLE_ATTRIBUTES_FAN = {
     ATTR_ANGLE: "angle",
     ATTR_RAW_SPEED: "speed",
@@ -651,7 +656,6 @@ FEATURE_FLAGS_AIRFRESH = (
     | FEATURE_RESET_FILTER
     | FEATURE_SET_EXTRA_FEATURES
 )
-
 
 FEATURE_FLAGS_FAN = (
     FEATURE_SET_BUZZER
@@ -1628,6 +1632,7 @@ class XiaomiAirHumidifierJsq(XiaomiAirHumidifier):
         return None
 
 
+# TODO: Add set_ptc service for zhimi.airfresh.va4
 class XiaomiAirFresh(XiaomiGenericDevice):
     """Representation of a Xiaomi Air Fresh."""
 
@@ -1635,8 +1640,12 @@ class XiaomiAirFresh(XiaomiGenericDevice):
         """Initialize the miio device."""
         super().__init__(name, device, model, unique_id)
 
+        if self._model == MODEL_AIRFRESH_VA4:
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRFRESH_VA4
+        else:
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRFRESH
+
         self._device_features = FEATURE_FLAGS_AIRFRESH
-        self._available_attributes = AVAILABLE_ATTRIBUTES_AIRFRESH
         self._speed_list = OPERATION_MODES_AIRFRESH
         self._state_attrs.update(
             {attribute: None for attribute in self._available_attributes}

@@ -32,6 +32,7 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 | Air Humidifier MJJSQ   | deerma.humidifier.mjjsq   | |
 | Air Humidifier JSQ1    | deerma.humidifier.jsq1    | |
 | Air Fresh VA2          | zhimi.airfresh.va2     | |
+| Air Fresh VA4          | zhimi.airfresh.va4     | |
 | Pedestal Fan Fan V2    | zhimi.fan.v2           | |
 | Pedestal Fan Fan V3    | zhimi.fan.v3           | |
 | Pedestal Fan Fan SA1   | zhimi.fan.sa1          | |
@@ -392,7 +393,7 @@ This model uses newer MiOT communication protocol.
   - `no_water`
   - `lid_opened`
 
-### Air Fresh VA2
+### Air Fresh VA2 and VA4 (zhimi.airfresh.va2, zhimi.airfresh.va4)
 
 - Power (on, off)
 - Operation modes (auto, silent, interval, low, middle, strong)
@@ -416,6 +417,7 @@ This model uses newer MiOT communication protocol.
   - `use_time`
   - `motor_speed`
   - `extra_features`
+  - `ptc_sate` (zhimi.airfresh.va4 only)
 
 
 ### Air Humidifier MJJSQ and JSQ1 (deerma.humidifier.mjjsq, deerma.humidifier.jsq1)
