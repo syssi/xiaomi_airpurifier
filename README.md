@@ -111,34 +111,6 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
   - use_time
   - button_pressed
 
-### Air Purifier 3H
-
-* Power (on, off)
-* Operation modes (auto, silent, favorite, fan)
-* Child lock (on, off)
-* LED (on, off)
-* Attributes
-  - model
-  - temperature
-  - humidity
-  - aqi
-  - mode
-  - fan_level
-  - filter_hours_used
-  - filter_life_remaining
-  - favorite_level
-  - child_lock
-  - led
-  - buzzer
-  - led_brightness
-  - motor_speed
-  - average_aqi
-  - filter_rfid_product_id
-  - filter_rfid_tag
-  - filter_type
-  - purify_volume
-  - use_time
-
 ### Air Humidifier
 
 * On, Off
