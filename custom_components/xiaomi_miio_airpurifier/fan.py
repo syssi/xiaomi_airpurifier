@@ -1566,7 +1566,6 @@ class XiaomiAirHumidifierJsq(XiaomiAirHumidifier):
 
     def __init__(self, name, device, model, unique_id):
         """Initialize the plug switch."""
-
         super().__init__(name, device, model, unique_id)
 
         self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_JSQ
@@ -1576,11 +1575,6 @@ class XiaomiAirHumidifierJsq(XiaomiAirHumidifier):
         self._state_attrs.update(
             {attribute: None for attribute in self._available_attributes}
         )
-
-    @property
-    def supported_features(self) -> int:
-        """Supported features."""
-        return SUPPORT_SET_SPEED | SUPPORT_OSCILLATE | SUPPORT_DIRECTION
 
     @property
     def speed(self):
