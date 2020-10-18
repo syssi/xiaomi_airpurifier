@@ -23,6 +23,9 @@ from miio.airhumidifier import (  # pylint: disable=import-error, import-error
     LedBrightness as AirhumidifierLedBrightness,
     OperationMode as AirhumidifierOperationMode,
 )
+from miio.airhumidifier_mjjsq import (  # pylint: disable=import-error, import-error
+    OperationMode as AirhumidifierMjjsqOperationMode,
+)
 from miio.airpurifier import (  # pylint: disable=import-error, import-error
     LedBrightness as AirpurifierLedBrightness,
     OperationMode as AirpurifierOperationMode,
@@ -30,9 +33,6 @@ from miio.airpurifier import (  # pylint: disable=import-error, import-error
 from miio.airpurifier_miot import (  # pylint: disable=import-error, import-error
     LedBrightness as AirpurifierMiotLedBrightness,
     OperationMode as AirpurifierMiotOperationMode,
-)
-from miio.airpurifier_mjjsq import (  # pylint: disable=import-error, import-error
-    OperationMode as AirpurifierMjjsqOperationMode,
 )
 from miio.fan import (  # pylint: disable=import-error, import-error
     LedBrightness as FanLedBrightness,
@@ -801,12 +801,13 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 class XiaomiGenericDevice(FanEntity):
     """Representation of a generic Xiaomi device."""
 
-    def __init__(self, name, device, model, unique_id):
+    def __init__(self, name, device, model, unique_id, retries):
         """Initialize the generic Xiaomi device."""
         self._name = name
         self._device = device
         self._model = model
         self._unique_id = unique_id
+        self._retries = retries
 
         self._available = False
         self._state = None
@@ -1349,7 +1350,7 @@ class XiaomiAirHumidifierMjjsq(XiaomiAirHumidifier):
 
         self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ_AND_JSQ1
         self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ_AND_JSQ1
-        self._speed_list = [mode.name for mode in AirpurifierMjjsqOperationMode]
+        self._speed_list = [mode.name for mode in AirhumidifierMjjsqOperationMode]
         self._state_attrs = {ATTR_MODEL: self._model}
         self._state_attrs.update(
             {attribute: None for attribute in self._available_attributes}
@@ -1359,7 +1360,7 @@ class XiaomiAirHumidifierMjjsq(XiaomiAirHumidifier):
     def speed(self):
         """Return the current speed."""
         if self._state:
-            return AirpurifierMjjsqOperationMode(self._state_attrs[ATTR_MODE]).name
+            return AirhumidifierMjjsqOperationMode(self._state_attrs[ATTR_MODE]).name
 
         return None
 
@@ -1373,7 +1374,7 @@ class XiaomiAirHumidifierMjjsq(XiaomiAirHumidifier):
         await self._try_command(
             "Setting operation mode of the miio device failed.",
             self._device.set_mode,
-            AirpurifierMjjsqOperationMode[speed.title()],
+            AirhumidifierMjjsqOperationMode[speed.title()],
         )
 
 
