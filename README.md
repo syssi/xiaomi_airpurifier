@@ -778,3 +778,12 @@ Set motor speed RPM.
 |---------------------------|----------|----------------------------------------------------------------------|
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
 | `motor_speed`             |       no | Motor speed RPM. Allowed values are between 200 and 2000             |
+
+#### Service `xiaomi_miio.fan_set_fan_level` (Air Purifier 3H only)
+
+Set the level when on fan mode
+
+| Service data attribute    | Optional | Description                                                          |
+|---------------------------|----------|----------------------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
+| `level`                   |       no | Valid values are `1`, `2` and `3`.                                   |
