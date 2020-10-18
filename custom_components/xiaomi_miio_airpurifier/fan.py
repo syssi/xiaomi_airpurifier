@@ -80,8 +80,6 @@ MODEL_AIRPURIFIER_M1 = "zhimi.airpurifier.m1"
 MODEL_AIRPURIFIER_M2 = "zhimi.airpurifier.m2"
 MODEL_AIRPURIFIER_MA1 = "zhimi.airpurifier.ma1"
 MODEL_AIRPURIFIER_MA2 = "zhimi.airpurifier.ma2"
-MODEL_AIRPURIFIER_MA4 = "zhimi.airpurifier.ma4"
-MODEL_AIRPURIFIER_MB3 = "zhimi.airpurifier.mb3"
 MODEL_AIRPURIFIER_SA1 = "zhimi.airpurifier.sa1"
 MODEL_AIRPURIFIER_SA2 = "zhimi.airpurifier.sa2"
 MODEL_AIRPURIFIER_2S = "zhimi.airpurifier.mc1"
@@ -121,8 +119,6 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_AIRPURIFIER_M2,
                 MODEL_AIRPURIFIER_MA1,
                 MODEL_AIRPURIFIER_MA2,
-                MODEL_AIRPURIFIER_MA4,
-                MODEL_AIRPURIFIER_MB3,
                 MODEL_AIRPURIFIER_SA1,
                 MODEL_AIRPURIFIER_SA2,
                 MODEL_AIRPURIFIER_2S,
@@ -213,12 +209,7 @@ ATTR_DIRECT_SPEED = "direct_speed"
 ATTR_SPEED_LEVEL = "speed_level"
 ATTR_RAW_SPEED = "raw_speed"
 
-PURIFIER_MIOT = [
-    MODEL_AIRPURIFIER_MA4,
-    MODEL_AIRPURIFIER_MB3,
-    MODEL_AIRPURIFIER_3,
-    MODEL_AIRPURIFIER_3H,
-]
+PURIFIER_MIOT = [MODEL_AIRPURIFIER_3, MODEL_AIRPURIFIER_3H]
 
 # Map attributes to properties of the state object
 AVAILABLE_ATTRIBUTES_AIRPURIFIER_COMMON = {
@@ -306,28 +297,6 @@ AVAILABLE_ATTRIBUTES_AIRPURIFIER_3 = {
     ATTR_FILTER_RFID_TAG: "filter_rfid_tag",
     ATTR_FILTER_TYPE: "filter_type",
     ATTR_FAN_LEVEL: "fan_level",
-}
-
-AVAILABLE_ATTRIBUTES_AIRPURIFIER_MA4_AND_MB3 = {
-    ATTR_TEMPERATURE: "temperature",
-    ATTR_HUMIDITY: "humidity",
-    ATTR_AIR_QUALITY_INDEX: "aqi",
-    ATTR_MODE: "mode",
-    ATTR_FAN_LEVEL: "fan_level",
-    ATTR_FILTER_HOURS_USED: "filter_hours_used",
-    ATTR_FILTER_LIFE: "filter_life_remaining",
-    ATTR_FAVORITE_LEVEL: "favorite_level",
-    ATTR_CHILD_LOCK: "child_lock",
-    ATTR_LED: "led",
-    ATTR_MOTOR_SPEED: "motor_speed",
-    ATTR_AVERAGE_AIR_QUALITY_INDEX: "average_aqi",
-    ATTR_PURIFY_VOLUME: "purify_volume",
-    ATTR_USE_TIME: "use_time",
-    ATTR_BUZZER: "buzzer",
-    ATTR_LED_BRIGHTNESS: "led_brightness",
-    ATTR_FILTER_RFID_PRODUCT_ID: "filter_rfid_product_id",
-    ATTR_FILTER_RFID_TAG: "filter_rfid_tag",
-    ATTR_FILTER_TYPE: "filter_type",
 }
 
 AVAILABLE_ATTRIBUTES_AIRPURIFIER_V3 = {
@@ -488,7 +457,6 @@ OPERATION_MODES_AIRPURIFIER_V3 = [
     "High",
     "Strong",
 ]
-OPERATION_MODES_AIRPURIFIER_MA4_AND_MB3 = ["Auto", "Silent", "Favorite", "Fan"]
 OPERATION_MODES_AIRFRESH = ["Auto", "Silent", "Interval", "Low", "Middle", "Strong"]
 
 SUCCESS = ["ok"]
@@ -557,14 +525,6 @@ FEATURE_FLAGS_AIRPURIFIER_V3 = (
     FEATURE_SET_BUZZER | FEATURE_SET_CHILD_LOCK | FEATURE_SET_LED
 )
 
-FEATURE_FLAGS_AIRPURIFIER_MA4_AND_MB3 = (
-    FEATURE_SET_BUZZER
-    | FEATURE_SET_CHILD_LOCK
-    | FEATURE_SET_LED
-    | FEATURE_SET_LED_BRIGHTNESS
-    | FEATURE_SET_FAVORITE_LEVEL
-    | FEATURE_SET_FAN_LEVEL
-)
 FEATURE_FLAGS_AIRHUMIDIFIER = (
     FEATURE_SET_BUZZER
     | FEATURE_SET_CHILD_LOCK
@@ -974,12 +934,6 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
             self._device_features = FEATURE_FLAGS_AIRPURIFIER_3
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_3
             self._speed_list = OPERATION_MODES_AIRPURIFIER_3
-        elif (
-            self._model == MODEL_AIRPURIFIER_MA4 or self._model == MODEL_AIRPURIFIER_MB3
-        ):
-            self._device_features = FEATURE_FLAGS_AIRPURIFIER_MA4_AND_MB3
-            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_MA4_AND_MB3
-            self._speed_list = OPERATION_MODES_AIRPURIFIER_MA4_AND_MB3
         elif self._model == MODEL_AIRPURIFIER_V3:
             self._device_features = FEATURE_FLAGS_AIRPURIFIER_V3
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_V3
