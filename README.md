@@ -76,6 +76,33 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
   - `led_brightness`
   - `sleep_mode`
 
+### Air Purifier 2H (zhimi.airpurifier.mc2)
+
+- Power (on, off)
+- Operation modes (auto, silent, favorite, idle)
+- Buzzer (on, off)
+- Child lock (on, off)
+- LED (on, off), LED brightness (bright, dim, off)
+- Favorite Level (0...16)
+- Attributes
+  - `model`
+  - `temperature`
+  - `humidity`
+  - `aqi`
+  - `mode`
+  - `filter_hours_used`
+  - `filter_life_remaining`
+  - `favorite_level`
+  - `child_lock`
+  - `led`
+  - `motor_speed`
+  - `average_aqi`
+  - `learn_mode`
+  - `extra_features`
+  - `turbo_mode_supported`
+  - `buzzer`
+  - `led_brightness`
+
 ### Air Purifier Pro (zhimi.airpurifier.v6)
 
 - Power (on, off)
