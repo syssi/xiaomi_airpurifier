@@ -370,6 +370,25 @@ This model uses newer MiOT communication protocol.
   - `dry`
   - `supported_features`
 
+### Zero Fog Humidifier (shuii.humidifier.jsq001)
+
+- Power (on, off)
+- Operation modes (Intelligent, Level1, Level2, Level3, Level4)
+- Buzzer (on, off)
+- Child lock (on, off)
+- LED (on, off), LED brightness (high, low, off)
+- Attributes
+  - `model`
+  - `temperature`
+  - `humidity`
+  - `mode`
+  - `buzzer`
+  - `child_lock`
+  - `led`
+  - `led_brightness`
+  - `no_water`
+  - `lid_opened`
+
 ### Air Fresh VA2
 
 - Power (on, off)

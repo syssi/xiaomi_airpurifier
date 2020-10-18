@@ -9,6 +9,7 @@ from miio import (  # pylint: disable=import-error
     AirHumidifier,
     AirHumidifierMiot,
     AirHumidifierMjjsq,
+    AirHumidifierJsq,
     AirPurifier,
     AirPurifierMiot,
     Device,
@@ -23,6 +24,10 @@ from miio.airfresh import (  # pylint: disable=import-error, import-error
 from miio.airhumidifier import (  # pylint: disable=import-error, import-error
     LedBrightness as AirhumidifierLedBrightness,
     OperationMode as AirhumidifierOperationMode,
+)
+from miio.airhumidifier import (  # pylint: disable=import-error, import-error
+    LedBrightness as AirhumidifierJsqLedBrightness,
+    OperationMode as AirhumidifierJsqOperationMode,
 )
 from miio.airhumidifier_miot import (  # pylint: disable=import-error, import-error
     LedBrightness as AirhumidifierMiotLedBrightness,
@@ -102,6 +107,7 @@ MODEL_AIRHUMIDIFIER_CA4 = "zhimi.humidifier.ca4"
 MODEL_AIRHUMIDIFIER_CB1 = "zhimi.humidifier.cb1"
 MODEL_AIRHUMIDIFIER_MJJSQ = "deerma.humidifier.mjjsq"
 MODEL_AIRHUMIDIFIER_JSQ1 = "deerma.humidifier.jsq1"
+MODEL_AIRHUMIDIFIER_JSQ001 = "shuii.humidifier.jsq001"
 
 MODEL_AIRFRESH_VA2 = "zhimi.airfresh.va2"
 
@@ -142,6 +148,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_AIRHUMIDIFIER_CB1,
                 MODEL_AIRHUMIDIFIER_MJJSQ,
                 MODEL_AIRHUMIDIFIER_JSQ1,
+                MODEL_AIRHUMIDIFIER_JSQ001,
                 MODEL_AIRFRESH_VA2,
                 MODEL_FAN_V2,
                 MODEL_FAN_V3,
@@ -211,6 +218,9 @@ ATTR_FAULT = "fault"
 # Air Humidifier MJJSQ and JSQ1
 ATTR_NO_WATER = "no_water"
 ATTR_WATER_TANK_DETACHED = "water_tank_detached"
+
+# Air Humidifier JSQ001
+ATTR_LID_OPENED = "lid_opened"
 
 # Air Fresh
 ATTR_CO2 = "co2"
@@ -371,11 +381,11 @@ AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON = {
     ATTR_HUMIDITY: "humidity",
     ATTR_MODE: "mode",
     ATTR_BUZZER: "buzzer",
-    ATTR_TARGET_HUMIDITY: "target_humidity",
 }
 
 AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER = {
     **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON,
+    ATTR_TARGET_HUMIDITY: "target_humidity",
     ATTR_TRANS_LEVEL: "trans_level",
     ATTR_BUTTON_PRESSED: "button_pressed",
     ATTR_CHILD_LOCK: "child_lock",
@@ -386,6 +396,7 @@ AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER = {
 
 AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA_AND_CB = {
     **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON,
+    ATTR_TARGET_HUMIDITY: "target_humidity",
     ATTR_MOTOR_SPEED: "motor_speed",
     ATTR_DEPTH: "depth",
     ATTR_DRY: "dry",
@@ -410,6 +421,15 @@ AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ_AND_JSQ1 = {
     ATTR_LED: "led",
     ATTR_NO_WATER: "no_water",
     ATTR_WATER_TANK_DETACHED: "water_tank_detached",
+}
+
+AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ = {
+    **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON,
+    ATTR_CHILD_LOCK: "child_lock",
+    ATTR_LED: "led",
+    ATTR_LED_BRIGHTNESS: "led_brightness",
+    ATTR_NO_WATER: "no_water",
+    ATTR_LID_OPENED: "lid_opened",
 }
 
 AVAILABLE_ATTRIBUTES_AIRFRESH = {
@@ -608,6 +628,14 @@ FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ_AND_JSQ1 = (
     FEATURE_SET_BUZZER | FEATURE_SET_LED | FEATURE_SET_TARGET_HUMIDITY
 )
 
+FEATURE_FLAGS_AIRHUMIDIFIER_JSQ = (
+    FEATURE_SET_BUZZER
+    | FEATURE_SET_LED
+    | SUPPORT_SET_SPEED
+    | FEATURE_SET_LED_BRIGHTNESS
+    | FEATURE_SET_CHILD_LOCK
+)
+
 FEATURE_FLAGS_AIRFRESH = (
     FEATURE_SET_BUZZER
     | FEATURE_SET_CHILD_LOCK
@@ -803,6 +831,9 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     elif model in [MODEL_AIRHUMIDIFIER_MJJSQ, MODEL_AIRHUMIDIFIER_JSQ1]:
         air_humidifier = AirHumidifierMjjsq(host, token, model=model)
         device = XiaomiAirHumidifierMjjsq(name, air_humidifier, model, unique_id)
+    elif model == MODEL_AIRHUMIDIFIER_JSQ001:
+        air_humidifier = AirHumidifierJsq(host, token, model=model)
+        device = XiaomiAirHumidifierJsq(name, air_humidifier, model, unique_id)
     elif model.startswith("zhimi.airfresh."):
         air_fresh = AirFresh(host, token)
         device = XiaomiAirFresh(name, air_fresh, model, unique_id)
@@ -1527,6 +1558,64 @@ class XiaomiAirHumidifierMjjsq(XiaomiAirHumidifier):
             self._device.set_mode,
             AirhumidifierMjjsqOperationMode[speed.title()],
         )
+
+
+class XiaomiAirHumidifierJsq(XiaomiAirHumidifier):
+    """Representation of a Xiaomi Air Humidifier Jsq001."""
+
+    def __init__(self, name, device, model, unique_id):
+        """Initialize the plug switch."""
+        super().__init__(name, device, model, unique_id)
+
+        self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_JSQ
+        self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ
+        self._speed_list = [mode.name for mode in AirhumidifierJsqOperationMode]
+        self._state_attrs = {ATTR_MODEL: self._model}
+        self._state_attrs.update(
+            {attribute: None for attribute in self._available_attributes}
+        )
+
+    @property
+    def speed(self):
+        """Return the current speed."""
+        if self._state:
+            return AirhumidifierJsqOperationMode(self._state_attrs[ATTR_MODE]).name
+
+        return None
+
+    async def async_set_speed(self, speed: str) -> None:
+        """Set the speed of the fan."""
+        if self.supported_features & SUPPORT_SET_SPEED == 0:
+            return
+
+        _LOGGER.debug("Setting the operation mode to: %s", speed)
+
+        await self._try_command(
+            "Setting operation mode of the miio device failed.",
+            self._device.set_mode,
+            AirhumidifierJsqOperationMode[speed.title()],
+        )
+
+    async def async_set_led_brightness(self, brightness: int = 0):
+        """Set the led brightness."""
+        if self._device_features & FEATURE_SET_LED_BRIGHTNESS == 0:
+            return
+
+        await self._try_command(
+            "Setting the led brightness of the miio device failed.",
+            self._device.set_led_brightness,
+            AirhumidifierJsqLedBrightness(brightness),
+        )
+
+    @property
+    def led_brightness(self):
+        """Return the current brightness."""
+        if self._state:
+            return AirhumidifierJsqLedBrightness(
+                self._state_attrs[ATTR_LED_BRIGHTNESS]
+            ).name
+
+        return None
 
 
 class XiaomiAirFresh(XiaomiGenericDevice):
