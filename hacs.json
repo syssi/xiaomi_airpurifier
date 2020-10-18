@@ -1,5 +1,5 @@
 {
-  "name": "Xiaomi Mi Air Purifier and Xiaomi Mi Air Humidifier Integration",
+  "name": "Xiaomi Mi Air Purifier, Air Humidifier, Air Fresh and Pedestal Fan Integration",
   "content_in_root": false,
   "render_readme": true,
   "iot_class": "local_polling"
