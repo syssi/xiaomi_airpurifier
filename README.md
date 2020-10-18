@@ -548,12 +548,12 @@ Turn the natural mode off.
 |---------------------------|----------|----------------------------------------------------------------------|
 | `entity_id`               |      yes | Only act on a specific xiaomi miio entity. Else targets all.         |
 
-#### Service `fan.xiaomi_miio_set_fan_level` (Air Purifier 3H only)
+#### Service `xiaomi_miio.fan_set_fan_level` (Air Purifier 3H only)
 
 Set the level when on fan mode
 
 | Service data attribute    | Optional | Description                                                          |
 |---------------------------|----------|----------------------------------------------------------------------|
-| `entity_id`               |      yes | Only act on a specific xiaomi miio entity. Else targets all.         |
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
 | `level`                   |       no | Valid values are `1`, `2` and `3`.                                   |
 
