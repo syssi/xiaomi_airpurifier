@@ -159,7 +159,7 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
   - depth
   - dry
 
-### Air Humidifier MJJSQ (deerma.humidifier.mjjsq)
+### Air Humidifier MJJSQ and JSQ1 (deerma.humidifier.mjjsq, deerma.humidifier.jsq1)
 
 * On, Off
 * Operation modes (low, medium, high, humidity)

@@ -54,6 +54,7 @@ MODEL_AIRHUMIDIFIER_V1 = "zhimi.humidifier.v1"
 MODEL_AIRHUMIDIFIER_CA1 = "zhimi.humidifier.ca1"
 MODEL_AIRHUMIDIFIER_CB1 = "zhimi.humidifier.cb1"
 MODEL_AIRHUMIDIFIER_MJJSQ = "deerma.humidifier.mjjsq"
+MODEL_AIRHUMIDIFIER_JSQ1 = "deerma.humidifier.jsq1"
 
 MODEL_AIRFRESH_VA2 = "zhimi.airfresh.va2"
 
@@ -91,6 +92,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_AIRHUMIDIFIER_CA1,
                 MODEL_AIRHUMIDIFIER_CB1,
                 MODEL_AIRHUMIDIFIER_MJJSQ,
+                MODEL_AIRHUMIDIFIER_JSQ1,
                 MODEL_AIRFRESH_VA2,
                 MODEL_FAN_V2,
                 MODEL_FAN_V3,
@@ -152,7 +154,7 @@ ATTR_MOTOR_SPEED = "motor_speed"
 ATTR_DEPTH = "depth"
 ATTR_DRY = "dry"
 
-# Air Humidifier MJJSQ
+# Air Humidifier MJJSQ and JSQ1
 ATTR_NO_WATER = "no_water"
 ATTR_WATER_TANK_DETACHED = "water_tank_detached"
 
@@ -308,7 +310,7 @@ AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA_AND_CB = {
     ATTR_HARDWARE_VERSION: "hardware_version",
 }
 
-AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ = {
+AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ_AND_JSQ1 = {
     **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON,
     ATTR_LED: "led",
     ATTR_NO_WATER: "no_water",
@@ -407,12 +409,7 @@ OPERATION_MODES_AIRPURIFIER_V3 = [
     "High",
     "Strong",
 ]
-OPERATION_MODES_AIRPURIFIER_MIOT = [
-    "Auto",
-    "Silent",
-    "Favorite",
-    "Fan",
-]
+OPERATION_MODES_AIRPURIFIER_MIOT = ["Auto", "Silent", "Favorite", "Fan"]
 OPERATION_MODES_AIRFRESH = ["Auto", "Silent", "Interval", "Low", "Middle", "Strong"]
 
 SUCCESS = ["ok"]
@@ -482,7 +479,7 @@ FEATURE_FLAGS_AIRHUMIDIFIER = (
 
 FEATURE_FLAGS_AIRHUMIDIFIER_CA_AND_CB = FEATURE_FLAGS_AIRHUMIDIFIER | FEATURE_SET_DRY
 
-FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ = (
+FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ_AND_JSQ1 = (
     FEATURE_SET_BUZZER | FEATURE_SET_LED | FEATURE_SET_TARGET_HUMIDITY
 )
 
@@ -642,10 +639,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         except DeviceException:
             raise PlatformNotReady
 
-    if model in [
-        MODEL_AIRPURIFIER_MA4,
-        MODEL_AIRPURIFIER_MB3,
-    ]:
+    if model in [MODEL_AIRPURIFIER_MA4, MODEL_AIRPURIFIER_MB3]:
         from miio import AirPurifierMiot
 
         air_purifier = AirPurifierMiot(host, token)
@@ -660,7 +654,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
         air_humidifier = AirHumidifier(host, token, model=model)
         device = XiaomiAirHumidifier(name, air_humidifier, model, unique_id)
-    elif model == MODEL_AIRHUMIDIFIER_MJJSQ:
+    elif model in [MODEL_AIRHUMIDIFIER_MJJSQ, MODEL_AIRHUMIDIFIER_JSQ1]:
         from miio import AirHumidifierMjjsq
 
         air_humidifier = AirHumidifierMjjsq(host, token, model=model)
@@ -1307,8 +1301,8 @@ class XiaomiAirHumidifierMjjsq(XiaomiAirHumidifier):
 
         super().__init__(name, device, model, unique_id)
 
-        self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ
-        self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ
+        self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ_AND_JSQ1
+        self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ_AND_JSQ1
         self._speed_list = [mode.name for mode in OperationMode]
         self._state_attrs = {ATTR_MODEL: self._model}
         self._state_attrs.update(
