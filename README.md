@@ -31,6 +31,7 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 | Air Humidifier CB1     | zhimi.humidifier.cb1   | |
 | Air Humidifier MJJSQ   | deerma.humidifier.mjjsq   | |
 | Air Humidifier JSQ1    | deerma.humidifier.jsq1    | |
+| Zero Fog Humidifier    | shuii.humidifier.jsq001   | |
 | Air Fresh VA2          | zhimi.airfresh.va2     | |
 | Air Fresh VA4          | zhimi.airfresh.va4     | |
 | Pedestal Fan Fan V2    | zhimi.fan.v2           | |
