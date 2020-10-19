@@ -15,7 +15,7 @@ from miio.airdehumidifier import (  # pylint: disable=import-error, import-error
 )
 import voluptuous as vol
 
-from homeassistant.components.climate import DOMAIN, PLATFORM_SCHEMA, ClimateDevice
+from homeassistant.components.climate import DOMAIN, PLATFORM_SCHEMA, ClimateEntity
 from homeassistant.components.climate.const import (
     ATTR_CURRENT_HUMIDITY,
     ATTR_FAN_MODE,
@@ -206,7 +206,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         )
 
 
-class XiaomiGenericDevice(ClimateDevice):
+class XiaomiGenericDevice(ClimateEntity):
     """Representation of a generic Xiaomi device."""
 
     def __init__(self, name, device, model, unique_id):
