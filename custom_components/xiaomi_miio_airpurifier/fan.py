@@ -15,7 +15,6 @@ from miio import (  # pylint: disable=import-error
     Device,
     DeviceException,
     Fan,
-    FanMiot,
     FanP5,
 )
 from miio.airfresh import (  # pylint: disable=import-error, import-error
@@ -117,9 +116,6 @@ MODEL_FAN_ZA1 = "zhimi.fan.za1"
 MODEL_FAN_ZA3 = "zhimi.fan.za3"
 MODEL_FAN_ZA4 = "zhimi.fan.za4"
 MODEL_FAN_P5 = "dmaker.fan.p5"
-MODEL_FAN_P9 = "dmaker.fan.p9"
-MODEL_FAN_P10 = "dmaker.fan.p10"
-MODEL_FAN_P11 = "dmaker.fan.p11"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -160,9 +156,6 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_FAN_ZA3,
                 MODEL_FAN_ZA4,
                 MODEL_FAN_P5,
-                MODEL_FAN_P9,
-                MODEL_FAN_P10,
-                MODEL_FAN_P11,
             ]
         ),
         vol.Optional(CONF_RETRIES, default=DEFAULT_RETRIES): cv.positive_int,
@@ -859,9 +852,6 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         device = XiaomiFan(name, fan, model, unique_id, retries)
     elif model == MODEL_FAN_P5:
         fan = FanP5(host, token, model=model)
-        device = XiaomiFanP5(name, fan, model, unique_id, retries)
-    elif model in [MODEL_FAN_P9, MODEL_FAN_P10, MODEL_FAN_P11]:
-        fan = FanMiot(host, token, model=model)
         device = XiaomiFanP5(name, fan, model, unique_id, retries)
     else:
         _LOGGER.error(
