@@ -4,9 +4,18 @@ from enum import Enum
 from functools import partial
 import logging
 
+from miio import (  # pylint: disable=import-error
+    AirDehumidifier,
+    Device,
+    DeviceException,
+)
+from miio.airdehumidifier import (  # pylint: disable=import-error, import-error
+    FanSpeed as AirdehumidifierFanSpeed,
+    OperationMode as AirdehumidifierOperationMode,
+)
 import voluptuous as vol
 
-from homeassistant.components.climate import DOMAIN, PLATFORM_SCHEMA, ClimateDevice
+from homeassistant.components.climate import DOMAIN, PLATFORM_SCHEMA, ClimateEntity
 from homeassistant.components.climate.const import (
     ATTR_CURRENT_HUMIDITY,
     ATTR_FAN_MODE,
@@ -120,8 +129,6 @@ SERVICE_TO_METHOD = {
 
 async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
     """Set up the miio fan device from config."""
-    from miio import Device, DeviceException
-
     if DATA_KEY not in hass.data:
         hass.data[DATA_KEY] = {}
 
@@ -150,8 +157,6 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         )
 
     if model.startswith("nwt.derh."):
-        from miio import AirDehumidifier
-
         air_dehumidifier = AirDehumidifier(host, token, model=model)
         device = XiaomiAirDehumidifier(name, air_dehumidifier, model, unique_id)
     else:
@@ -201,7 +206,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         )
 
 
-class XiaomiGenericDevice(ClimateDevice):
+class XiaomiGenericDevice(ClimateEntity):
     """Representation of a generic Xiaomi device."""
 
     def __init__(self, name, device, model, unique_id):
@@ -257,8 +262,6 @@ class XiaomiGenericDevice(ClimateDevice):
 
     async def _try_command(self, mask_error, func, *args, **kwargs):
         """Call a miio device command handling error messages."""
-        from miio import DeviceException
-
         try:
             result = await self.hass.async_add_executor_job(
                 partial(func, *args, **kwargs)
@@ -342,17 +345,16 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
 
     def __init__(self, name, device, model, unique_id):
         """Initialize the plug switch."""
-        from miio.airdehumidifier import OperationMode, FanSpeed
-
         super().__init__(name, device, model, unique_id)
 
         self._device_features = FEATURE_FLAGS_AIRDEHUMIDIFIER
         self._available_attributes = AVAILABLE_ATTRIBUTES_AIRDEHUMIDIFIER
-        self._preset_modes_list = [mode.name for mode in OperationMode]
+        self._preset_modes_list = [mode.name for mode in AirdehumidifierOperationMode]
         self._fan_mode_list = [
             mode.name
-            for mode in FanSpeed
-            if mode not in [FanSpeed.Sleep, FanSpeed.Strong]
+            for mode in AirdehumidifierFanSpeed
+            if mode
+            not in [AirdehumidifierFanSpeed.Sleep, AirdehumidifierFanSpeed.Strong]
         ]
 
         self._state_attrs.update(
@@ -389,20 +391,16 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
         if self.hvac_mode == HVAC_MODE_OFF:
             return 0
 
-        from miio.airdehumidifier import OperationMode
-
         features = SUPPORT_PRESET_MODE
-        mode = OperationMode(self._state_attrs[ATTR_MODE])
-        if mode == OperationMode.Auto:
+        mode = AirdehumidifierOperationMode(self._state_attrs[ATTR_MODE])
+        if mode == AirdehumidifierOperationMode.Auto:
             features |= SUPPORT_TARGET_HUMIDITY
-        if mode != OperationMode.DryCloth:
+        if mode != AirdehumidifierOperationMode.DryCloth:
             features |= SUPPORT_FAN_MODE
         return features
 
     async def async_update(self):
         """Fetch state from the device."""
-        from miio import DeviceException
-
         # On state change the device doesn't provide the new state immediately.
         if self._skip_update:
             self._skip_update = False
@@ -473,18 +471,14 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
     @property
     def preset_mode(self):
         """Return the current preset mode, e.g., home, away, temp."""
-        from miio.airdehumidifier import OperationMode
-
-        return OperationMode(self._state_attrs[ATTR_MODE]).name
+        return AirdehumidifierOperationMode(self._state_attrs[ATTR_MODE]).name
 
     @property
     def fan_mode(self):
         """Return the fan setting."""
-        from miio.airdehumidifier import OperationMode, FanSpeed
-
-        if self.preset_mode == OperationMode.DryCloth.name:
+        if self.preset_mode == AirdehumidifierOperationMode.DryCloth.name:
             return None
-        return FanSpeed(self._state_attrs[ATTR_FAN_ST]).name
+        return AirdehumidifierFanSpeed(self._state_attrs[ATTR_FAN_ST]).name
 
     @property
     def fan_modes(self):
@@ -500,20 +494,16 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
 
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set new preset mode."""
-        from miio.airdehumidifier import OperationMode
-
         await self._try_command(
             "Setting the fan mode of the miio device failed.",
             self._device.set_mode,
-            OperationMode[preset_mode],
+            AirdehumidifierOperationMode[preset_mode],
         )
 
     async def async_set_humidity(self, humidity: int) -> None:
         """Set new target humidity."""
-        from miio.airdehumidifier import OperationMode
-
-        if self.preset_mode != OperationMode.Auto.name:
-            await self.async_set_preset_mode(OperationMode.Auto)
+        if self.preset_mode != AirdehumidifierOperationMode.Auto.name:
+            await self.async_set_preset_mode(AirdehumidifierOperationMode.Auto)
 
         humidity = round(humidity / 10) * 10
         await self._try_command(
@@ -524,11 +514,9 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
 
     async def async_set_fan_mode(self, fan_mode: str):
         """Set new target fan mode."""
-        from miio.airdehumidifier import OperationMode, FanSpeed
-
-        if self.preset_mode != OperationMode.DryCloth.name:
+        if self.preset_mode != AirdehumidifierOperationMode.DryCloth.name:
             await self._try_command(
                 "Setting the fan mode of the miio device failed.",
                 self._device.set_fan_speed,
-                FanSpeed[fan_mode],
+                AirdehumidifierFanSpeed[fan_mode],
             )
