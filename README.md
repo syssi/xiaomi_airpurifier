@@ -27,7 +27,7 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 | Air Purifier 3H (2019) | zhimi.airpurifier.mb3  | |
 | Air Humidifier         | zhimi.humidifier.v1    | |
 | Air Humidifier CA1     | zhimi.humidifier.ca1   | |
-| Air Humidifier CA4     | zhimi.humidifier.ca4   | |
+| Smartmi Humidifier Evaporator 2  | zhimi.humidifier.ca4   | |
 | Air Humidifier CB1     | zhimi.humidifier.cb1   | |
 | Air Humidifier MJJSQ   | deerma.humidifier.mjjsq   | |
 | Air Humidifier JSQ1    | deerma.humidifier.jsq1    | |
