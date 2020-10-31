@@ -30,7 +30,7 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 | Smartmi Humidifier Evaporator 2  | zhimi.humidifier.ca4   | CJXJSQ04ZM  | |
 | Air Humidifier CB1     | zhimi.humidifier.cb1   | | |
 | Mijia Intelligent Sterilization Humidifier  | deerma.humidifier.mjjsq  | | 4.5L, <38dB, 300mL/h, 40W  |
-| Air Humidifier JSQ1    | deerma.humidifier.jsq1    | MJJSQ04DY  | 4L, 32dbB, 300mL/h, 25W |
+| Mijia Smart Humidifier 4L  | deerma.humidifier.jsq1    | MJJSQ04DY  | 4L, 32dbB, 300mL/h, 25W |
 | Zero Fog Humidifier    | shuii.humidifier.jsq001   | | |
 | Air Fresh VA2          | zhimi.airfresh.va2     | | |
 | Air Fresh VA4          | zhimi.airfresh.va4     | | |
