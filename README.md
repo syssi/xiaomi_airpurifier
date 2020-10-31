@@ -580,6 +580,18 @@ sensor:
         unit_of_measurement: '%'
 ```
 
+## Debugging
+
+If the custom component doesn't work out of the box for your device please update your configuration to increase the log level:
+
+```
+logger:
+  default: warn
+  logs:
+    custom_components.xiaomi_miio_airpurifier: debug
+    miio: debug
+```
+
 ## Platform services
 
 #### Service `fan.set_speed`
