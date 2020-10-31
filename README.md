@@ -548,6 +548,8 @@ Configuration variables:
 - **name** (*Optional*): The name of your light.
 - **model** (*Optional*): The model of your device. This setting can be used to bypass the device model detection and is recommended if your device isn't always available.
 
+![Fan device](fan-device.png "fan device")
+
 ## Template sensor example
 
 If your entity has another name the value `xiaomi_air_purifier` and `xiaomi_air_humidifier` must be updated.
@@ -561,6 +563,7 @@ sensor:
       airpurifier_aqi:
         friendly_name: Air Purifier Air Quality Index
         value_template: '{{ states.fan.xiaomi_air_purifier.attributes.aqi }}'
+        icon_template: mdi:weather-windy
       airpurifier_temperature:
         friendly_name: Air Purifier Temperature
         value_template: '{{ states.fan.xiaomi_air_purifier.attributes.temperature }}'
@@ -569,6 +572,7 @@ sensor:
         friendly_name: Air Purifier Humidity
         value_template: '{{ states.fan.xiaomi_air_purifier.attributes.humidity }}'
         unit_of_measurement: '%'
+        icon_template: mdi:water-percent
 
       airhumidifier_temperature:
         friendly_name: Air Humidifier Temperature
@@ -578,7 +582,56 @@ sensor:
         friendly_name: Air Humidifier Humidity
         value_template: '{{ states.fan.xiaomi_air_humidifier.attributes.humidity }}'
         unit_of_measurement: '%'
+        icon_template: mdi:water-percent
 ```
+
+## Template switch example
+
+```
+switch:
+  - platform: template
+    switches:
+      xiaomi_airpurifier_child_lock:
+        friendly_name: "Child lock"
+        value_template: "{{ is_state_attr('fan.xiaomi_air_purifier', 'child_lock', True) }}"
+        turn_on:
+          service: xiaomi_miio_airpurifier.fan_set_child_lock_on
+          data:
+            entity_id: fan.xiaomi_air_purifier
+        turn_off:
+          service: xiaomi_miio_airpurifier.fan_set_child_lock_off
+          data:
+            entity_id: fan.xiaomi_air_purifier
+        icon_template: "mdi:lock-outline"
+
+      xiaomi_airpurifier_buzzer:
+        friendly_name: "Buzzer"
+        value_template: "{{ is_state_attr('fan.xiaomi_air_purifier', 'buzzer', True) }}"
+        turn_on:
+          service: xiaomi_miio_airpurifier.fan_set_buzzer_on
+          data:
+            entity_id: fan.xiaomi_air_purifier
+        turn_off:
+          service: xiaomi_miio_airpurifier.fan_set_buzzer_off
+          data:
+            entity_id: fan.xiaomi_air_purifier
+        icon_template: "mdi:volume-off"
+
+      xiaomi_airpurifier_led:
+        friendly_name: "LED"
+        value_template: "{{ is_state_attr('fan.xiaomi_air_purifier', 'led', True) }}"
+        turn_on:
+          service: xiaomi_miio_airpurifier.fan_set_led_on
+          data:
+            entity_id: fan.xiaomi_air_purifier
+        turn_off:
+          service: xiaomi_miio_airpurifier.fan_set_led_off
+          data:
+            entity_id: fan.xiaomi_air_purifier
+        icon_template: "mdi:lightbulb-outline"
+```
+
+![Lovelace entities card](lovelace-entities-card.png "lovelace entities card")
 
 ## Debugging
 
