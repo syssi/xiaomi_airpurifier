@@ -424,7 +424,6 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
             }
         )
         self._state_attrs[ATTR_TEMPERATURE] = None
-        self._state_attrs[ATTR_HUMIDITY] = self._state_attrs[ATTR_TARGET_HUMIDITY]
 
     @property
     def temperature_unit(self):
