@@ -6,6 +6,7 @@ import logging
 
 from miio import (  # pylint: disable=import-error
     AirFresh,
+    AirFreshT2017,
     AirHumidifier,
     AirHumidifierJsq,
     AirHumidifierMiot,
@@ -20,6 +21,9 @@ from miio import (  # pylint: disable=import-error
 from miio.airfresh import (  # pylint: disable=import-error, import-error
     LedBrightness as AirfreshLedBrightness,
     OperationMode as AirfreshOperationMode,
+)
+from miio.airfresh_t2017 import (  # pylint: disable=import-error, import-error
+    OperationMode as AirfreshT2017OperationMode,
 )
 from miio.airhumidifier import (  # pylint: disable=import-error, import-error
     LedBrightness as AirhumidifierLedBrightness,
@@ -108,6 +112,7 @@ MODEL_AIRHUMIDIFIER_JSQ001 = "shuii.humidifier.jsq001"
 
 MODEL_AIRFRESH_VA2 = "zhimi.airfresh.va2"
 MODEL_AIRFRESH_VA4 = "zhimi.airfresh.va4"
+MODEL_AIRFRESH_T2017 = "dmaker.airfresh.t2017"
 
 MODEL_FAN_V2 = "zhimi.fan.v2"
 MODEL_FAN_V3 = "zhimi.fan.v3"
@@ -149,6 +154,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_AIRHUMIDIFIER_JSQ001,
                 MODEL_AIRFRESH_VA2,
                 MODEL_AIRFRESH_VA4,
+                MODEL_AIRFRESH_T2017,
                 MODEL_FAN_V2,
                 MODEL_FAN_V3,
                 MODEL_FAN_SA1,
@@ -225,6 +231,19 @@ ATTR_LID_OPENED = "lid_opened"
 # Air Fresh
 ATTR_CO2 = "co2"
 ATTR_PTC = "ptc"
+
+# Air Fresh T2017
+ATTR_PM25 = "pm25"
+ATTR_FAVORITE_SPEED = "favorite_speed"
+ATTR_CONTROL_SPEED = "control_speed"
+ATTR_DUST_FILTER_LIFE_REMAINING = "dust_filter_life_remaining"
+ATTR_DUST_FILTER_LIFE_REMAINING_DAYS = "dust_filter_life_remaining_days"
+ATTR_UPPER_FILTER_LIFE_REMAINING = "upper_filter_life_remaining"
+ATTR_UPPER_FILTER_LIFE_REMAINING_DAYS = "upper_filter_life_remaining_days"
+ATTR_PTC_LEVEL = "ptc_level"
+ATTR_PTC_STATUS = "ptc_status"
+ATTR_DISPLAY = "display"
+ATTR_DISPLAY_ORIENTATION = "display_orientation"
 
 # Smart Fan
 ATTR_NATURAL_SPEED = "natural_speed"
@@ -456,6 +475,26 @@ AVAILABLE_ATTRIBUTES_AIRFRESH = {
 
 AVAILABLE_ATTRIBUTES_AIRFRESH_VA4 = {**AVAILABLE_ATTRIBUTES_AIRFRESH, ATTR_PTC: "ptc"}
 
+AVAILABLE_ATTRIBUTES_AIRFRESH_T2017 = {
+    ATTR_MODE: "mode",
+    ATTR_PM25: "pm25",
+    ATTR_CO2: "co2",
+    ATTR_TEMPERATURE: "temperature",
+    ATTR_FAVORITE_SPEED: "favorite_speed",
+    ATTR_CONTROL_SPEED: "control_speed",
+    ATTR_DUST_FILTER_LIFE_REMAINING: "dust_filter_life_remaining",
+    ATTR_DUST_FILTER_LIFE_REMAINING_DAYS: "dust_filter_life_remaining_days",
+    ATTR_UPPER_FILTER_LIFE_REMAINING: "upper_filter_life_remaining",
+    ATTR_UPPER_FILTER_LIFE_REMAINING_DAYS: "upper_filter_life_remaining_days",
+    ATTR_PTC: "ptc",
+    ATTR_PTC_LEVEL: "ptc_level",
+    ATTR_PTC_STATUS: "ptc_status",
+    ATTR_CHILD_LOCK: "child_lock",
+    ATTR_BUZZER: "buzzer",
+    ATTR_DISPLAY: "display",
+    ATTR_DISPLAY_ORIENTATION: "display_orientation",
+}
+
 AVAILABLE_ATTRIBUTES_FAN = {
     ATTR_ANGLE: "angle",
     ATTR_RAW_SPEED: "speed",
@@ -535,6 +574,7 @@ OPERATION_MODES_AIRPURIFIER_V3 = [
     "Strong",
 ]
 OPERATION_MODES_AIRFRESH = ["Auto", "Silent", "Interval", "Low", "Middle", "Strong"]
+OPERATION_MODES_AIRFRESH_T2017 = ["Off", "Auto", "Sleep", "Favorite"]
 
 SUCCESS = ["ok"]
 
@@ -662,6 +702,10 @@ FEATURE_FLAGS_AIRFRESH_VA4 = (
     | FEATURE_RESET_FILTER
     | FEATURE_SET_EXTRA_FEATURES
     | FEATURE_SET_PTC
+)
+
+FEATURE_FLAGS_AIRFRESH_T2017 = (
+    FEATURE_SET_BUZZER | FEATURE_SET_CHILD_LOCK | FEATURE_RESET_FILTER
 )
 
 FEATURE_FLAGS_FAN = (
@@ -861,6 +905,9 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     elif model.startswith("zhimi.airfresh."):
         air_fresh = AirFresh(host, token, model=model)
         device = XiaomiAirFresh(name, air_fresh, model, unique_id)
+    elif model == MODEL_AIRFRESH_T2017:
+        air_fresh = AirFreshT2017(host, token, model=model)
+        device = XiaomiAirFreshT2017(name, air_fresh, model, unique_id)
     elif model in [
         MODEL_FAN_V2,
         MODEL_FAN_V3,
@@ -1761,6 +1808,29 @@ class XiaomiAirFresh(XiaomiGenericDevice):
             self._device.set_ptc,
             False,
         )
+
+
+class XiaomiAirFreshT2017(XiaomiAirFresh):
+    """Representation of a Xiaomi Air Fresh T2017."""
+
+    def __init__(self, name, device, model, unique_id):
+        """Initialize the miio device."""
+        super().__init__(name, device, model, unique_id)
+
+        self._available_attributes = AVAILABLE_ATTRIBUTES_AIRFRESH_T2017
+        self._device_features = FEATURE_FLAGS_AIRFRESH_T2017
+        self._speed_list = OPERATION_MODES_AIRFRESH_T2017
+        self._state_attrs.update(
+            {attribute: None for attribute in self._available_attributes}
+        )
+
+    @property
+    def speed(self):
+        """Return the current speed."""
+        if self._state:
+            return AirfreshT2017OperationMode(self._state_attrs[ATTR_MODE]).name
+
+        return None
 
 
 class XiaomiFan(XiaomiGenericDevice):

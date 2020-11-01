@@ -34,6 +34,7 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 | Zero Fog Humidifier    | shuii.humidifier.jsq001   | | |
 | Smartmi Fresh Air System XFXT01ZM        | zhimi.airfresh.va2  | XFXT01ZM     | |
 | Smartmi Fresh Air System XFXTDFR02ZM     | zhimi.airfresh.va4  | XFXTDFR02ZM  | PTC/Heater support |
+| Mi Fresh Air Ventilator  | dmaker.airfresh.t2017  | MJXFJ-300-G1**?** | 300m3/h (Air volume), 35W, 36db(A), 16kg |
 | Pedestal Fan Fan V2    | zhimi.fan.v2           | | |
 | Pedestal Fan Fan V3    | zhimi.fan.v3           | | |
 | Pedestal Fan Fan SA1   | zhimi.fan.sa1          | | |
