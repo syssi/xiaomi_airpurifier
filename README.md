@@ -32,8 +32,8 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 | Mijia Smart Sterilization Humidifier S  | deerma.humidifier.mjjsq  | MJJSQ03DY  | 4.5L, <=39dB, 450mL/h, 40W  |
 | Mijia Intelligent Sterilization Humidifier SCK0A45  | deerma.humidifier.jsq1    | SCKOA45, SCK0A45  | 4.5L, <=38dbB, 300mL/h, 25W |
 | Zero Fog Humidifier    | shuii.humidifier.jsq001   | | |
-| Air Fresh VA2          | zhimi.airfresh.va2     | | |
-| Air Fresh VA4          | zhimi.airfresh.va4     | | |
+| Smartmi Fresh Air System XFXT01ZM        | zhimi.airfresh.va2  | XFXT01ZM     | |
+| Smartmi Fresh Air System XFXTDFR02ZM     | zhimi.airfresh.va4  | XFXTDFR02ZM  | PTC/Heater support |
 | Pedestal Fan Fan V2    | zhimi.fan.v2           | | |
 | Pedestal Fan Fan V3    | zhimi.fan.v3           | | |
 | Pedestal Fan Fan SA1   | zhimi.fan.sa1          | | |
@@ -399,6 +399,7 @@ This model uses newer MiOT communication protocol.
 - Buzzer (on, off)
 - Child lock (on, off)
 - LED (on, off), LED brightness (bright, dim, off)
+- PTC (on, off) (zhimi.airfresh.va4 only)
 - Attributes
   - `model`
   - `aqi`
@@ -416,7 +417,7 @@ This model uses newer MiOT communication protocol.
   - `use_time`
   - `motor_speed`
   - `extra_features`
-  - `ptc_sate` (zhimi.airfresh.va4 only)
+  - `ptc` (zhimi.airfresh.va4 only)
 
 
 ### Air Humidifier MJJSQ and JSQ1 (deerma.humidifier.mjjsq, deerma.humidifier.jsq1)
@@ -909,3 +910,19 @@ Set the level when on fan mode
 |---------------------------|----------|----------------------------------------------------------------------|
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
 | `level`                   |       no | Valid values are `1`, `2` and `3`.                                   |
+
+#### Service `xiaomi_miio_airpurifier.fan_set_ptc_on` (Air Fresh VA4 only)
+
+Turn the ptc on.
+
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.          |
+
+#### Service `xiaomi_miio_airpurifier.fan_set_ptc_off` (Air Fresh VA4 only)
+
+Turn the ptc off.
+
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.          |

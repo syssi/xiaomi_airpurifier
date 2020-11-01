@@ -557,6 +557,9 @@ FEATURE_SET_MOTOR_SPEED = 32768
 FEATURE_SET_OSCILLATION_ANGLE = 4096
 FEATURE_SET_NATURAL_MODE = 8192
 
+# Airfresh VA4
+FEATURE_SET_PTC = 65536
+
 FEATURE_FLAGS_AIRPURIFIER = (
     FEATURE_SET_BUZZER
     | FEATURE_SET_CHILD_LOCK
@@ -651,6 +654,16 @@ FEATURE_FLAGS_AIRFRESH = (
     | FEATURE_SET_EXTRA_FEATURES
 )
 
+FEATURE_FLAGS_AIRFRESH_VA4 = (
+    FEATURE_SET_BUZZER
+    | FEATURE_SET_CHILD_LOCK
+    | FEATURE_SET_LED
+    | FEATURE_SET_LED_BRIGHTNESS
+    | FEATURE_RESET_FILTER
+    | FEATURE_SET_EXTRA_FEATURES
+    | FEATURE_SET_PTC
+)
+
 FEATURE_FLAGS_FAN = (
     FEATURE_SET_BUZZER
     | FEATURE_SET_CHILD_LOCK
@@ -693,6 +706,10 @@ SERVICE_SET_DELAY_OFF = "fan_set_delay_off"
 SERVICE_SET_OSCILLATION_ANGLE = "fan_set_oscillation_angle"
 SERVICE_SET_NATURAL_MODE_ON = "fan_set_natural_mode_on"
 SERVICE_SET_NATURAL_MODE_OFF = "fan_set_natural_mode_off"
+
+# Airfresh VA4
+SERVICE_SET_PTC_ON = "fan_set_ptc_on"
+SERVICE_SET_PTC_OFF = "fan_set_ptc_off"
 
 AIRPURIFIER_SERVICE_SCHEMA = vol.Schema({vol.Optional(ATTR_ENTITY_ID): cv.entity_ids})
 
@@ -789,6 +806,8 @@ SERVICE_TO_METHOD = {
     },
     SERVICE_SET_NATURAL_MODE_ON: {"method": "async_set_natural_mode_on"},
     SERVICE_SET_NATURAL_MODE_OFF: {"method": "async_set_natural_mode_off"},
+    SERVICE_SET_PTC_ON: {"method": "async_set_ptc_on"},
+    SERVICE_SET_PTC_OFF: {"method": "async_set_ptc_off"},
 }
 
 
@@ -1143,7 +1162,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
             return
 
         await self._try_command(
-            "Turning the led of the miio device off failed.", self._device.set_led, True
+            "Turning the led of the miio device on failed.", self._device.set_led, True
         )
 
     async def async_set_led_off(self):
@@ -1391,7 +1410,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
             return
 
         await self._try_command(
-            "Turning the led of the miio device off failed.", self._device.set_led, True
+            "Turning the led of the miio device on failed.", self._device.set_led, True
         )
 
     async def async_set_led_off(self):
@@ -1433,7 +1452,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
             return
 
         await self._try_command(
-            "Turning the dry mode of the miio device off failed.",
+            "Turning the dry mode of the miio device on failed.",
             self._device.set_dry,
             True,
         )
@@ -1602,7 +1621,6 @@ class XiaomiAirHumidifierJsq(XiaomiAirHumidifier):
         return None
 
 
-# TODO: Add set_ptc service for zhimi.airfresh.va4
 class XiaomiAirFresh(XiaomiGenericDevice):
     """Representation of a Xiaomi Air Fresh."""
 
@@ -1612,10 +1630,11 @@ class XiaomiAirFresh(XiaomiGenericDevice):
 
         if self._model == MODEL_AIRFRESH_VA4:
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRFRESH_VA4
+            self._device_features = FEATURE_FLAGS_AIRFRESH_VA4
         else:
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRFRESH
+            self._device_features = FEATURE_FLAGS_AIRFRESH
 
-        self._device_features = FEATURE_FLAGS_AIRFRESH
         self._speed_list = OPERATION_MODES_AIRFRESH
         self._state_attrs.update(
             {attribute: None for attribute in self._available_attributes}
@@ -1677,7 +1696,7 @@ class XiaomiAirFresh(XiaomiGenericDevice):
             return
 
         await self._try_command(
-            "Turning the led of the miio device off failed.", self._device.set_led, True
+            "Turning the led of the miio device on failed.", self._device.set_led, True
         )
 
     async def async_set_led_off(self):
@@ -1721,6 +1740,26 @@ class XiaomiAirFresh(XiaomiGenericDevice):
         await self._try_command(
             "Resetting the filter lifetime of the miio device failed.",
             self._device.reset_filter,
+        )
+
+    async def async_set_ptc_on(self):
+        """Turn the ptc on."""
+        if self._device_features & FEATURE_SET_PTC == 0:
+            return
+
+        await self._try_command(
+            "Turning the ptc of the miio device on failed.", self._device.set_ptc, True
+        )
+
+    async def async_set_ptc_off(self):
+        """Turn the ptc off."""
+        if self._device_features & FEATURE_SET_PTC == 0:
+            return
+
+        await self._try_command(
+            "Turning the led of the miio device off failed.",
+            self._device.set_ptc,
+            False,
         )
 
 
