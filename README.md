@@ -8,40 +8,41 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 
 ## Supported devices
 
-| Name                   | Model                  | Model no. |
-| ---------------------- | ---------------------- | --------- |
-| Air Purifier           | zhimi.airpurifier.v1   | |
-| Air Purifier 2         | zhimi.airpurifier.v2   | FJY4006CN |
-| Air Purifier V3        | zhimi.airpurifier.v3   | |
-| Air Purifier V5        | zhimi.airpurifier.v5   | |
-| Air Purifier Pro       | zhimi.airpurifier.v6   | |
-| Air Purifier Pro V7    | zhimi.airpurifier.v7   | |
-| Air Purifier 2 (mini)  | zhimi.airpurifier.m1   | |
-| Air Purifier (mini)    | zhimi.airpurifier.m2   | |
-| Air Purifier MA1       | zhimi.airpurifier.ma1  | |
-| Air Purifier MA2       | zhimi.airpurifier.ma2  | |
-| Air Purifier 2S        | zhimi.airpurifier.mc1  | |
-| Air Purifier Super     | zhimi.airpurifier.sa1  | |
-| Air Purifier Super 2   | zhimi.airpurifier.sa2  | |
-| Air Purifier 3 (2019)  | zhimi.airpurifier.ma4  | |
-| Air Purifier 3H (2019) | zhimi.airpurifier.mb3  | |
-| Air Humidifier         | zhimi.humidifier.v1    | |
-| Air Humidifier CA1     | zhimi.humidifier.ca1   | |
-| Air Humidifier CA4     | zhimi.humidifier.ca4   | |
-| Air Humidifier CB1     | zhimi.humidifier.cb1   | |
-| Air Humidifier MJJSQ   | deerma.humidifier.mjjsq   | |
-| Air Humidifier JSQ1    | deerma.humidifier.jsq1    | |
-| Zero Fog Humidifier    | shuii.humidifier.jsq001   | |
-| Air Fresh VA2          | zhimi.airfresh.va2     | |
-| Air Fresh VA4          | zhimi.airfresh.va4     | |
-| Pedestal Fan Fan V2    | zhimi.fan.v2           | |
-| Pedestal Fan Fan V3    | zhimi.fan.v3           | |
-| Pedestal Fan Fan SA1   | zhimi.fan.sa1          | |
-| Pedestal Fan Fan ZA1   | zhimi.fan.za1          | |
-| Pedestal Fan Fan ZA3   | zhimi.fan.za3          | |
-| Pedestal Fan Fan ZA4   | zhimi.fan.za4          | |
-| Pedestal Fan Fan P5    | dmaker.fan.p5          | |
- 
+| Name                   | Model                  | Model no. | Specs |
+| ---------------------- | ---------------------- | --------- | ----- |
+| Air Purifier           | zhimi.airpurifier.v1   | | |
+| Air Purifier 2         | zhimi.airpurifier.v2   | FJY4006CN | |
+| Air Purifier V3        | zhimi.airpurifier.v3   | | |
+| Air Purifier V5        | zhimi.airpurifier.v5   | | |
+| Air Purifier Pro       | zhimi.airpurifier.v6   | | |
+| Air Purifier Pro V7    | zhimi.airpurifier.v7   | | |
+| Air Purifier 2 (mini)  | zhimi.airpurifier.m1   | | |
+| Air Purifier (mini)    | zhimi.airpurifier.m2   | | |
+| Air Purifier MA1       | zhimi.airpurifier.ma1  | | |
+| Air Purifier MA2       | zhimi.airpurifier.ma2  | | |
+| Air Purifier 2S        | zhimi.airpurifier.mc1  | | |
+| Air Purifier Super     | zhimi.airpurifier.sa1  | | |
+| Air Purifier Super 2   | zhimi.airpurifier.sa2  | | |
+| Air Purifier 3 (2019)  | zhimi.airpurifier.ma4  | | |
+| Air Purifier 3H (2019) | zhimi.airpurifier.mb3  | | |
+| Air Humidifier         | zhimi.humidifier.v1    | | |
+| Air Humidifier CA1     | zhimi.humidifier.ca1   | | |
+| Smartmi Humidifier Evaporator 2  | zhimi.humidifier.ca4   | CJXJSQ04ZM  | |
+| Air Humidifier CB1     | zhimi.humidifier.cb1   | | |
+| Mijia Smart Sterilization Humidifier S  | deerma.humidifier.mjjsq  | MJJSQ03DY  | 4.5L, <=39dB, 450mL/h, 40W  |
+| Mijia Intelligent Sterilization Humidifier SCK0A45  | deerma.humidifier.jsq1    | SCKOA45, SCK0A45  | 4.5L, <=38dbB, 300mL/h, 25W |
+| Zero Fog Humidifier    | shuii.humidifier.jsq001   | | |
+| Air Fresh VA2          | zhimi.airfresh.va2     | | |
+| Air Fresh VA4          | zhimi.airfresh.va4     | | |
+| Pedestal Fan Fan V2    | zhimi.fan.v2           | | |
+| Pedestal Fan Fan V3    | zhimi.fan.v3           | | |
+| Pedestal Fan Fan SA1   | zhimi.fan.sa1          | | |
+| Pedestal Fan Fan ZA1   | zhimi.fan.za1          | | |
+| Pedestal Fan Fan ZA3   | zhimi.fan.za3          | | |
+| Pedestal Fan Fan ZA4   | zhimi.fan.za4          | | |
+| Pedestal Fan Fan P5    | dmaker.fan.p5          | | |
+
+Support unknown / Testing required: MJJSQ04DY
 
 ## Features
 
@@ -548,6 +549,8 @@ Configuration variables:
 - **name** (*Optional*): The name of your light.
 - **model** (*Optional*): The model of your device. This setting can be used to bypass the device model detection and is recommended if your device isn't always available.
 
+![Fan device](fan-device.png "fan device")
+
 ## Template sensor example
 
 If your entity has another name the value `xiaomi_air_purifier` and `xiaomi_air_humidifier` must be updated.
@@ -561,6 +564,7 @@ sensor:
       airpurifier_aqi:
         friendly_name: Air Purifier Air Quality Index
         value_template: '{{ states.fan.xiaomi_air_purifier.attributes.aqi }}'
+        icon_template: mdi:weather-windy
       airpurifier_temperature:
         friendly_name: Air Purifier Temperature
         value_template: '{{ states.fan.xiaomi_air_purifier.attributes.temperature }}'
@@ -569,6 +573,7 @@ sensor:
         friendly_name: Air Purifier Humidity
         value_template: '{{ states.fan.xiaomi_air_purifier.attributes.humidity }}'
         unit_of_measurement: '%'
+        icon_template: mdi:water-percent
 
       airhumidifier_temperature:
         friendly_name: Air Humidifier Temperature
@@ -578,6 +583,101 @@ sensor:
         friendly_name: Air Humidifier Humidity
         value_template: '{{ states.fan.xiaomi_air_humidifier.attributes.humidity }}'
         unit_of_measurement: '%'
+        icon_template: mdi:water-percent
+```
+
+## Template switch example
+
+```
+switch:
+  - platform: template
+    switches:
+      xiaomi_airpurifier_child_lock:
+        friendly_name: "Child lock"
+        value_template: "{{ is_state_attr('fan.xiaomi_air_purifier', 'child_lock', True) }}"
+        turn_on:
+          service: xiaomi_miio_airpurifier.fan_set_child_lock_on
+          data:
+            entity_id: fan.xiaomi_air_purifier
+        turn_off:
+          service: xiaomi_miio_airpurifier.fan_set_child_lock_off
+          data:
+            entity_id: fan.xiaomi_air_purifier
+        icon_template: "mdi:lock-outline"
+
+      xiaomi_airpurifier_buzzer:
+        friendly_name: "Buzzer"
+        value_template: "{{ is_state_attr('fan.xiaomi_air_purifier', 'buzzer', True) }}"
+        turn_on:
+          service: xiaomi_miio_airpurifier.fan_set_buzzer_on
+          data:
+            entity_id: fan.xiaomi_air_purifier
+        turn_off:
+          service: xiaomi_miio_airpurifier.fan_set_buzzer_off
+          data:
+            entity_id: fan.xiaomi_air_purifier
+        icon_template: "mdi:volume-off"
+
+      xiaomi_airpurifier_led:
+        friendly_name: "LED"
+        value_template: "{{ is_state_attr('fan.xiaomi_air_purifier', 'led', True) }}"
+        turn_on:
+          service: xiaomi_miio_airpurifier.fan_set_led_on
+          data:
+            entity_id: fan.xiaomi_air_purifier
+        turn_off:
+          service: xiaomi_miio_airpurifier.fan_set_led_off
+          data:
+            entity_id: fan.xiaomi_air_purifier
+        icon_template: "mdi:lightbulb-outline"
+```
+
+![Lovelace entities card](lovelace-entities-card.png "lovelace entities card")
+
+## Input select example
+
+```
+input_select:
+  airpurifier_mode:
+    name: Operation mode
+    options:
+     - Low
+     - Medium
+     - High
+     - Humidity
+
+automation:
+  - alias: Select operation mode
+    trigger:
+      entity_id: input_select.airpurifier_mode
+      platform: state
+    action:
+      service: fan.set_speed
+      data_template:
+        entity_id: fan.xiaomi_air_purifier
+        speed: '{{ states.input_select.airpurifier_mode.state }}'
+
+  - alias: Monitor operation mode
+    trigger:
+      platform: state
+      entity_id: fan.xiaomi_air_purifier
+    action:
+      service: input_select.select_option
+      entity_id: input_select.airpurifier_mode
+      data_template:
+        option: '{{ states.fan.xiaomi_air_purifier.attributes.speed }}'
+```
+
+## Debugging
+
+If the custom component doesn't work out of the box for your device please update your configuration to increase the log level:
+
+```
+logger:
+  default: warn
+  logs:
+    custom_components.xiaomi_miio_airpurifier: debug
+    miio: debug
 ```
 
 ## Platform services

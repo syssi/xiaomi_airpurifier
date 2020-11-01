@@ -78,7 +78,7 @@ ATTR_ALARM = "alarm"
 # Map attributes to properties of the state object
 AVAILABLE_ATTRIBUTES_AIRDEHUMIDIFIER = {
     ATTR_TEMPERATURE: "temperature",
-    ATTR_HUMIDITY: "humidity",
+    ATTR_CURRENT_HUMIDITY: "humidity",
     ATTR_MODE: "mode",
     ATTR_BUZZER: "buzzer",
     ATTR_CHILD_LOCK: "child_lock",
@@ -434,12 +434,12 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
     @property
     def current_humidity(self):
         """Return the current humidity."""
-        return self._state_attrs[ATTR_HUMIDITY]
+        return self._state_attrs[ATTR_CURRENT_HUMIDITY]
 
     @property
     def target_humidity(self):
         """Return the humidity we try to reach."""
-        return self._state_attrs[ATTR_TARGET_HUMIDITY]
+        return self._state_attrs[ATTR_HUMIDITY]
 
     @property
     def min_humidity(self):
