@@ -840,7 +840,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         air_humidifier = AirHumidifierJsq(host, token, model=model)
         device = XiaomiAirHumidifierJsq(name, air_humidifier, model, unique_id)
     elif model.startswith("zhimi.airfresh."):
-        air_fresh = AirFresh(host, token)
+        air_fresh = AirFresh(host, token, model=model)
         device = XiaomiAirFresh(name, air_fresh, model, unique_id)
     elif model in [
         MODEL_FAN_V2,
