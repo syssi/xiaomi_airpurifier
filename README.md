@@ -634,6 +634,40 @@ switch:
 
 ![Lovelace entities card](lovelace-entities-card.png "lovelace entities card")
 
+## Input select example
+
+```
+input_select:
+  airpurifier_mode:
+    name: Operation mode
+    options:
+     - Low
+     - Medium
+     - High
+     - Humidity
+
+automation:
+  - alias: Select operation mode
+    trigger:
+      entity_id: input_select.airpurifier_mode
+      platform: state
+    action:
+      service: fan.set_speed
+      data_template:
+        entity_id: fan.xiaomi_air_purifier
+        speed: '{{ states.input_select.airpurifier_mode.state }}'
+
+  - alias: Monitor operation mode
+    trigger:
+      platform: state
+      entity_id: fan.xiaomi_air_purifier
+    action:
+      service: input_select.select_option
+      entity_id: input_select.airpurifier_mode
+      data_template:
+        option: '{{ states.fan.xiaomi_air_purifier.attributes.speed }}'
+```
+
 ## Debugging
 
 If the custom component doesn't work out of the box for your device please update your configuration to increase the log level:
