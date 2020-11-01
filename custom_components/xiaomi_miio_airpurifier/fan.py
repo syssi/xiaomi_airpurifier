@@ -409,6 +409,7 @@ AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA_AND_CB = {
 
 AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA4 = {
     **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON,
+    ATTR_TARGET_HUMIDITY: "target_humidity",
     ATTR_ACTUAL_MOTOR_SPEED: "actual_speed",
     ATTR_BUTTON_PRESSED: "button_pressed",
     ATTR_DRY: "dry",
@@ -420,6 +421,7 @@ AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA4 = {
 
 AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ_AND_JSQ1 = {
     **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON,
+    ATTR_TARGET_HUMIDITY: "target_humidity",
     ATTR_LED: "led",
     ATTR_NO_WATER: "no_water",
     ATTR_WATER_TANK_DETACHED: "water_tank_detached",
@@ -903,7 +905,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 class XiaomiGenericDevice(FanEntity):
     """Representation of a generic Xiaomi device."""
 
-    def __init__(self, name, device, model, unique_id, retries = 0):
+    def __init__(self, name, device, model, unique_id, retries=0):
         """Initialize the generic Xiaomi device."""
         self._name = name
         self._device = device
