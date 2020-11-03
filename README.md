@@ -705,6 +705,38 @@ automation:
 
 ![Input number example](input_number.png "input number example")
 
+The following example can be used to setup a `input_numer` entity to control the target humidity of an Air Humidifier. Make sure to replace all occurrences of `fan.xiaomi_air_humidifier` with the `entity_id` of your device.
+
+```
+input_number:
+  airhumidifier_target_humidity:
+    name: Target humidity
+    min: 0
+    max: 99
+    step: 1
+
+automation:
+  - alias: Select target humidity by slider
+    trigger:
+      platform: state
+      entity_id: input_number.airhumidifier_target_humidity
+    action:
+      - service: xiaomi_miio_airpurifier.fan_set_target_humidity
+        data_template:
+          entity_id: fan.xiaomi_air_humidifier
+          humidity: '{{ states.input_number.airhumidifier_target_humidity.state|int }}'
+
+  - alias: Monitor target humidity and update slider
+    trigger:
+      platform: state
+      entity_id: fan.xiaomi_air_humidifier
+    action:
+      service: input_number.set_value
+      entity_id: input_number.airhumidifier_target_humidity
+      data_template:
+        value: '{{ states.fan.xiaomi_air_humidifier.attributes.target_humidity }}'
+```
+
 ## Debugging
 
 If the custom component doesn't work out of the box for your device please update your configuration to increase the log level:
