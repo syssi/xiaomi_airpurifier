@@ -649,7 +649,7 @@ input_select:
      - Humidity
 
 automation:
-  - alias: Select operation mode
+  - alias: Select operation mode by input select
     trigger:
       entity_id: input_select.airpurifier_mode
       platform: state
@@ -659,7 +659,7 @@ automation:
         entity_id: fan.xiaomi_air_purifier
         speed: '{{ states.input_select.airpurifier_mode.state }}'
 
-  - alias: Monitor operation mode
+  - alias: Monitor operation mode and update input select
     trigger:
       platform: state
       entity_id: fan.xiaomi_air_purifier
@@ -668,6 +668,39 @@ automation:
       entity_id: input_select.airpurifier_mode
       data_template:
         option: '{{ states.fan.xiaomi_air_purifier.attributes.speed }}'
+```
+
+## Input number example
+
+```
+input_number:
+  airpurifier_favorite_level:
+    name: Favorite Level
+    initial: 1
+    min: 0
+    max: 16
+    step: 1
+
+automation:
+  - alias: Select favorite level by slider
+    trigger:
+      platform: state
+      entity_id: input_number.airpurifier_favorite_level
+    action:
+      - service: xiaomi_miio_airpurifier.fan_set_favorite_level
+        data_template:
+          entity_id: fan.xiaomi_air_purifier
+          level: '{{ states.input_number.airpurifier_favorite_level.state|int }}'
+
+  - alias: Monitor favorite level and update slider
+    trigger:
+      platform: state
+      entity_id: fan.xiaomi_air_purifier
+    action:
+      service: input_number.set_value
+      entity_id: input_number.airpurifier_favorite_level
+      data_template:
+        value: '{{ states.fan.xiaomi_air_purifier.attributes.favorite_level }}'
 ```
 
 ## Debugging
