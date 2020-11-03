@@ -32,7 +32,7 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 | Mijia Smart Sterilization Humidifier S  | deerma.humidifier.mjjsq  | MJJSQ03DY  | 4.5L, <=39dB, 450mL/h, 40W  |
 | Mijia Intelligent Sterilization Humidifier SCK0A45  | deerma.humidifier.jsq1    | SCKOA45, SCK0A45  | 4.5L, <=38dB, 300mL/h, 25W |
 | Zero Fog Humidifier    | shuii.humidifier.jsq001   | | |
-| Widetech WDH318EFW1 Dehumidifier  | nwt.derh.wdh318efw1  | WDH318EFW1**?**  | 2.7L tank, 38dB, 18L/d, 250W |
+| New Widetech Internet Dehumidifier  | nwt.derh.wdh318efw1  | WDH318EFW1  | 2.7L tank, 38dB, 18L/d, 240W |
 | Smartmi Fresh Air System XFXT01ZM        | zhimi.airfresh.va2  | XFXT01ZM     | |
 | Smartmi Fresh Air System XFXTDFR02ZM     | zhimi.airfresh.va4  | XFXTDFR02ZM  | PTC/Heater support |
 | Pedestal Fan Fan V2    | zhimi.fan.v2           | | |
