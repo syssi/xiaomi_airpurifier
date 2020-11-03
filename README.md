@@ -703,6 +703,8 @@ automation:
         value: '{{ states.fan.xiaomi_air_purifier.attributes.favorite_level }}'
 ```
 
+![Input number example](input_number.png "input number example")
+
 ## Debugging
 
 If the custom component doesn't work out of the box for your device please update your configuration to increase the log level:
