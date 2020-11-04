@@ -43,7 +43,11 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 | Pedestal Fan Fan ZA4   | zhimi.fan.za4          | | |
 | Pedestal Fan Fan P5    | dmaker.fan.p5          | | |
 
-Support unknown / Testing required: MJJSQ04DY
+Support unknown / Testing required:
+- Mijia Humidifier 4L (MJJSQ04DY), 300ml/h, 25W, <=38dB: Please create an issue if you own this device.
+
+Unsupported devices:
+- Mijia Humidifer 4L (MJJSQ02LX): This device isn't smart / has no WiFi support.
 
 ## Features
 
