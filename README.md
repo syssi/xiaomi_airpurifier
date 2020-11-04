@@ -677,6 +677,13 @@ automation:
 ## Input number example
 
 ```
+sensor:
+  - platform: template
+    sensors:
+      airpurifier_favorite_level:
+        friendly_name: Favorite level
+        value_template: '{{ states.fan.xiaomi_air_purifier.attributes.favorite_level }}'
+
 input_number:
   airpurifier_favorite_level:
     name: Favorite Level
@@ -699,7 +706,7 @@ automation:
   - alias: Monitor favorite level and update slider
     trigger:
       platform: state
-      entity_id: fan.xiaomi_air_purifier
+      entity_id: sensor.airpurifier_favorite_level
     action:
       service: input_number.set_value
       entity_id: input_number.airpurifier_favorite_level
@@ -712,6 +719,15 @@ automation:
 The following example can be used to setup a `input_numer` entity to control the target humidity of an Air Humidifier. Make sure to replace all occurrences of `fan.xiaomi_air_humidifier` with the `entity_id` of your device.
 
 ```
+sensor:
+  - platform: template
+    sensors:
+      airhumidifier_target_humidity:
+        friendly_name: Target humidity
+        value_template: '{{ states.fan.xiaomi_air_humidifier.attributes.target_humidity }}'
+        unit_of_measurement: '%'
+        icon_template: mdi:water-percent
+
 input_number:
   airhumidifier_target_humidity:
     name: Target humidity
@@ -733,7 +749,7 @@ automation:
   - alias: Monitor target humidity and update slider
     trigger:
       platform: state
-      entity_id: fan.xiaomi_air_humidifier
+      entity_id: sensor.airhumidifier_target_humidity
     action:
       service: input_number.set_value
       entity_id: input_number.airhumidifier_target_humidity
