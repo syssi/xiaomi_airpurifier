@@ -32,7 +32,7 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 | Mijia Smart Sterilization Humidifier S  | deerma.humidifier.mjjsq  | MJJSQ03DY  | 4.5L, <=39dB, 450mL/h, 40W  |
 | Mijia Intelligent Sterilization Humidifier SCK0A45  | deerma.humidifier.jsq1    | SCKOA45, SCK0A45  | 4.5L, <=38dB, 300mL/h, 25W |
 | Zero Fog Humidifier    | shuii.humidifier.jsq001   | | |
-| Widetech WDH318EFW1 Dehumidifier  | nwt.derh.wdh318efw1  | WDH318EFW1**?**  | 2.7L tank, 38dB, 18L/d, 250W |
+| New Widetech Internet Dehumidifier  | nwt.derh.wdh318efw1  | WDH318EFW1  | 2.7L tank, 38dB, 18L/d, 240W |
 | Smartmi Fresh Air System XFXT01ZM        | zhimi.airfresh.va2  | XFXT01ZM     | |
 | Smartmi Fresh Air System XFXTDFR02ZM     | zhimi.airfresh.va4  | XFXTDFR02ZM  | PTC/Heater support |
 | Pedestal Fan Fan V2    | zhimi.fan.v2           | | |
@@ -708,6 +708,38 @@ automation:
 ```
 
 ![Input number example](input_number.png "input number example")
+
+The following example can be used to setup a `input_numer` entity to control the target humidity of an Air Humidifier. Make sure to replace all occurrences of `fan.xiaomi_air_humidifier` with the `entity_id` of your device.
+
+```
+input_number:
+  airhumidifier_target_humidity:
+    name: Target humidity
+    min: 0
+    max: 99
+    step: 1
+
+automation:
+  - alias: Select target humidity by slider
+    trigger:
+      platform: state
+      entity_id: input_number.airhumidifier_target_humidity
+    action:
+      - service: xiaomi_miio_airpurifier.fan_set_target_humidity
+        data_template:
+          entity_id: fan.xiaomi_air_humidifier
+          humidity: '{{ states.input_number.airhumidifier_target_humidity.state|int }}'
+
+  - alias: Monitor target humidity and update slider
+    trigger:
+      platform: state
+      entity_id: fan.xiaomi_air_humidifier
+    action:
+      service: input_number.set_value
+      entity_id: input_number.airhumidifier_target_humidity
+      data_template:
+        value: '{{ states.fan.xiaomi_air_humidifier.attributes.target_humidity }}'
+```
 
 ## Debugging
 
