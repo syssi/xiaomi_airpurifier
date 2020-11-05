@@ -800,8 +800,7 @@ SERVICE_SCHEMA_TARGET_HUMIDITY = AIRPURIFIER_SERVICE_SCHEMA.extend(
 )
 
 SERVICE_SCHEMA_FAVORITE_SPEED = AIRPURIFIER_SERVICE_SCHEMA.extend(
-    {vol.Required(ATTR_SPEED): vol.All(
-        vol.Coerce(int), vol.Clamp(min=60, max=300))}
+    {vol.Required(ATTR_SPEED): vol.All(vol.Coerce(int), vol.Clamp(min=60, max=300))}
 )
 
 SERVICE_SCHEMA_MOTOR_SPEED = AIRPURIFIER_SERVICE_SCHEMA.extend(
@@ -1924,7 +1923,9 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
             return
 
         await self._try_command(
-            "Turning the led of the miio device off failed.", self._device.set_display, True
+            "Turning the led of the miio device off failed.",
+            self._device.set_display,
+            True,
         )
 
     async def async_set_display_off(self):
