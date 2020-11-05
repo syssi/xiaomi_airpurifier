@@ -24,6 +24,8 @@ from miio.airfresh import (  # pylint: disable=import-error, import-error
 )
 from miio.airfresh_t2017 import (  # pylint: disable=import-error, import-error
     OperationMode as AirfreshT2017OperationMode,
+    PtcLevel as AirfreshT2017PtcLevel,
+    DisplayOrientation as AirfreshT2017DisplayOrientation,
 )
 from miio.airhumidifier import (  # pylint: disable=import-error, import-error
     LedBrightness as AirhumidifierLedBrightness,
@@ -233,6 +235,7 @@ ATTR_CO2 = "co2"
 ATTR_PTC = "ptc"
 
 # Air Fresh T2017
+ATTR_POWER = "power"
 ATTR_PM25 = "pm25"
 ATTR_FAVORITE_SPEED = "favorite_speed"
 ATTR_CONTROL_SPEED = "control_speed"
@@ -476,6 +479,7 @@ AVAILABLE_ATTRIBUTES_AIRFRESH = {
 AVAILABLE_ATTRIBUTES_AIRFRESH_VA4 = {**AVAILABLE_ATTRIBUTES_AIRFRESH, ATTR_PTC: "ptc"}
 
 AVAILABLE_ATTRIBUTES_AIRFRESH_T2017 = {
+    ATTR_POWER: "power",
     ATTR_MODE: "mode",
     ATTR_PM25: "pm25",
     ATTR_CO2: "co2",
@@ -574,7 +578,8 @@ OPERATION_MODES_AIRPURIFIER_V3 = [
     "Strong",
 ]
 OPERATION_MODES_AIRFRESH = ["Auto", "Silent", "Interval", "Low", "Middle", "Strong"]
-OPERATION_MODES_AIRFRESH_T2017 = ["Off", "Auto", "Sleep", "Favorite"]
+OPERATION_MODES_AIRFRESH_T2017 = ["Auto", "Sleep", "Favorite"]
+PTC_MODES_AIRFRESH_T2017 = ["Low", "Medium", "High"]
 
 SUCCESS = ["ok"]
 
@@ -592,6 +597,8 @@ FEATURE_SET_TARGET_HUMIDITY = 1024
 FEATURE_SET_DRY = 2048
 FEATURE_SET_FAN_LEVEL = 16384
 FEATURE_SET_MOTOR_SPEED = 32768
+FEATURE_SET_PTC_LEVEL = 131072
+FEATURE_SET_FAVORITE_SPEED = 262144
 
 # Smart Fan
 FEATURE_SET_OSCILLATION_ANGLE = 4096
@@ -705,7 +712,12 @@ FEATURE_FLAGS_AIRFRESH_VA4 = (
 )
 
 FEATURE_FLAGS_AIRFRESH_T2017 = (
-    FEATURE_SET_BUZZER | FEATURE_SET_CHILD_LOCK | FEATURE_RESET_FILTER
+    FEATURE_SET_CHILD_LOCK
+    | FEATURE_SET_LED
+    | FEATURE_SET_PTC_LEVEL
+    | FEATURE_SET_FAVORITE_SPEED
+    | FEATURE_RESET_FILTER
+    | FEATURE_SET_BUZZER
 )
 
 FEATURE_FLAGS_FAN = (
@@ -745,6 +757,14 @@ SERVICE_SET_TARGET_HUMIDITY = "fan_set_target_humidity"
 SERVICE_SET_DRY_ON = "fan_set_dry_on"
 SERVICE_SET_DRY_OFF = "fan_set_dry_off"
 
+# Airfresh T2017
+SERVICE_SET_FAVORITE_SPEED = "fan_set_favorite_speed"
+SERVICE_SET_DISPLAY_ON = "fan_set_display_on"
+SERVICE_SET_DISPLAY_OFF = "fan_set_display_off"
+SERVICE_SET_PTC_LEVEL = "fan_set_ptc_level"
+SERVICE_SET_POWER_ON = "fan_set_power_on"
+SERVICE_SET_POWER_OFF = "fan_set_power_off"
+
 # Smart Fan
 SERVICE_SET_DELAY_OFF = "fan_set_delay_off"
 SERVICE_SET_OSCILLATION_ANGLE = "fan_set_oscillation_angle"
@@ -779,6 +799,11 @@ SERVICE_SCHEMA_EXTRA_FEATURES = AIRPURIFIER_SERVICE_SCHEMA.extend(
 
 SERVICE_SCHEMA_TARGET_HUMIDITY = AIRPURIFIER_SERVICE_SCHEMA.extend(
     {vol.Required(ATTR_HUMIDITY): vol.All(vol.Coerce(int), vol.Clamp(min=0, max=99))}
+)
+
+SERVICE_SCHEMA_FAVORITE_SPEED = AIRPURIFIER_SERVICE_SCHEMA.extend(
+    {vol.Required(ATTR_SPEED): vol.All(
+        vol.Coerce(int), vol.Clamp(min=60, max=300))}
 )
 
 SERVICE_SCHEMA_MOTOR_SPEED = AIRPURIFIER_SERVICE_SCHEMA.extend(
@@ -821,6 +846,10 @@ SERVICE_TO_METHOD = {
         "method": "async_set_favorite_level",
         "schema": SERVICE_SCHEMA_FAVORITE_LEVEL,
     },
+    SERVICE_SET_FAVORITE_SPEED: {
+        "method": "async_set_favorite_speed",
+        "schema": SERVICE_SCHEMA_FAVORITE_SPEED,
+    },
     SERVICE_SET_FAN_LEVEL: {
         "method": "async_set_fan_level",
         "schema": SERVICE_SCHEMA_FAN_LEVEL,
@@ -850,8 +879,13 @@ SERVICE_TO_METHOD = {
     },
     SERVICE_SET_NATURAL_MODE_ON: {"method": "async_set_natural_mode_on"},
     SERVICE_SET_NATURAL_MODE_OFF: {"method": "async_set_natural_mode_off"},
+    SERVICE_SET_PTC_LEVEL: {"method": "async_set_ptc_level"},
     SERVICE_SET_PTC_ON: {"method": "async_set_ptc_on"},
     SERVICE_SET_PTC_OFF: {"method": "async_set_ptc_off"},
+    SERVICE_SET_DISPLAY_ON: {"method": "async_set_display_on"},
+    SERVICE_SET_DISPLAY_OFF: {"method": "async_set_display_off"},
+    SERVICE_SET_POWER_ON: {"method": "async_set_power_on"},
+    SERVICE_SET_POWER_OFF: {"method": "async_set_power_off"},
 }
 
 
@@ -1820,9 +1854,39 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
         self._available_attributes = AVAILABLE_ATTRIBUTES_AIRFRESH_T2017
         self._device_features = FEATURE_FLAGS_AIRFRESH_T2017
         self._speed_list = OPERATION_MODES_AIRFRESH_T2017
+        self._level_list = PTC_MODES_AIRFRESH_T2017
         self._state_attrs.update(
             {attribute: None for attribute in self._available_attributes}
         )
+
+    async def async_update(self):
+        """Fetch state from the device."""
+        # On state change the device doesn't provide the new state immediately.
+        if self._skip_update:
+            self._skip_update = False
+            return
+
+        try:
+            state = await self.hass.async_add_executor_job(self._device.status)
+            _LOGGER.debug("Got new state: %s", state)
+
+            self._available = True
+            self._state = state.is_on
+            self._state_attrs.update(
+                {
+                    key: self._extract_value_from_attribute(state, value)
+                    for key, value in self._available_attributes.items()
+                }
+            )
+
+        except DeviceException as ex:
+            self._available = False
+            _LOGGER.error("Got exception while fetching the state: %s", ex)
+
+    @property
+    def speed_list(self) -> list:
+        """Get the list of available speeds."""
+        return self._speed_list
 
     @property
     def speed(self):
@@ -1831,6 +1895,97 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
             return AirfreshT2017OperationMode(self._state_attrs[ATTR_MODE]).name
 
         return None
+
+    async def async_set_speed(self, speed: str) -> None:
+        """Set the speed of the fan."""
+        if self.supported_features & SUPPORT_SET_SPEED == 0:
+            return
+
+        _LOGGER.debug("Setting the operation mode to: %s", speed)
+
+        await self._try_command(
+            "Setting operation mode of the miio device failed.",
+            self._device.set_mode,
+            AirfreshT2017OperationMode[speed.title()],
+        )
+
+    async def async_set_ptc_level(self, level: str):
+        """Set the set_ptc_level."""
+        if self.supported_features & FEATURE_SET_PTC_LEVEL == 0:
+            return
+
+        _LOGGER.debug("Setting the operation set_ptc_level to: %s", level)
+
+        await self._try_command(
+            "Setting the set_ptc_level of the miio device failed.",
+            self._device.set_ptc_level,
+            level,
+        )
+
+    async def async_set_power_on(self, speed: str = None, **kwargs) -> None:
+        """Turn the device on."""
+        if speed:
+            # If operation mode was set the device must not be turned on.
+            result = await self.async_set_speed(speed)
+        else:
+            result = await self._try_command(
+                "Turning the miio device on failed.", self._device.on
+            )
+
+        if result:
+            self._state = True
+            self._skip_update = True
+
+    async def async_set_power_off(self, **kwargs) -> None:
+        """Turn the device off."""
+        result = await self._try_command(
+            "Turning the miio device off failed.", self._device.off
+        )
+
+        if result:
+            self._state = False
+            self._skip_update = True
+
+    async def async_set_display_on(self):
+        """Turn the display on."""
+        if self._device_features & FEATURE_SET_LED == 0:
+            return
+
+        await self._try_command(
+            "Turning the led of the miio device off failed.", self._device.set_display, True
+        )
+
+    async def async_set_display_off(self):
+        """Turn the display off."""
+        if self._device_features & FEATURE_SET_LED == 0:
+            return
+
+        await self._try_command(
+            "Turning the led of the miio device off failed.",
+            self._device.set_display,
+            False,
+        )
+
+    async def async_set_favorite_speed(self, speed: int = 1):
+        """Set the favorite speed."""
+        if self._device_features & FEATURE_SET_FAVORITE_SPEED == 0:
+            return
+
+        await self._try_command(
+            "Setting the favorite level of the miio device failed.",
+            self._device.set_favorite_speed,
+            speed,
+        )
+
+    async def async_reset_filter(self):
+        """Reset the filter lifetime and usage."""
+        if self._device_features & FEATURE_RESET_FILTER == 0:
+            return
+
+        await self._try_command(
+            "Resetting the filter lifetime of the miio device failed.",
+            self._device.reset_filter,
+        )
 
 
 class XiaomiFan(XiaomiGenericDevice):
