@@ -43,6 +43,9 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 | Pedestal Fan Fan ZA3   | zhimi.fan.za3          | | |
 | Pedestal Fan Fan ZA4   | zhimi.fan.za4          | | |
 | Pedestal Fan Fan P5    | dmaker.fan.p5          | | |
+| Pedestal Fan Fan P9     | dmaker.fan.p9         | | Supported as soon as python-miio 0.5.4 is released.  |
+| Pedestal Fan Fan P10    | dmaker.fan.p10        | | Supported as soon as python-miio 0.5.4 is released.  |
+| Mijia Pedestal Fan      | dmaker.fan.p11        | BPLDS03DM  | Supported as soon as python-miio 0.5.4 is released. 2800mAh, 24W, <=58dB  |
 
 Support unknown / Testing required:
 - Mijia Humidifier 4L (MJJSQ04DY), 300ml/h, 25W, <=38dB: Please create an issue if you own this device.
