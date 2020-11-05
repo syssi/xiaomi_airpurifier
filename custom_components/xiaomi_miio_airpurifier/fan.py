@@ -598,6 +598,7 @@ FEATURE_SET_FAN_LEVEL = 16384
 FEATURE_SET_MOTOR_SPEED = 32768
 FEATURE_SET_PTC_LEVEL = 131072
 FEATURE_SET_FAVORITE_SPEED = 262144
+FEATURE_SET_DISPLAY_ORIENTATION = 524550
 
 # Smart Fan
 FEATURE_SET_OSCILLATION_ANGLE = 4096
@@ -762,6 +763,7 @@ SERVICE_SET_FAVORITE_SPEED = "fan_set_favorite_speed"
 SERVICE_SET_DISPLAY_ON = "fan_set_display_on"
 SERVICE_SET_DISPLAY_OFF = "fan_set_display_off"
 SERVICE_SET_PTC_LEVEL = "fan_set_ptc_level"
+SERVICE_SET_DISPLAY_ORIENTATION = "fan_set_display_orientation"
 
 # Smart Fan
 SERVICE_SET_DELAY_OFF = "fan_set_delay_off"
@@ -805,6 +807,10 @@ SERVICE_SCHEMA_FAVORITE_SPEED = AIRPURIFIER_SERVICE_SCHEMA.extend(
 
 SERVICE_SCHEMA_PTC_LEVEL = AIRPURIFIER_SERVICE_SCHEMA.extend(
     {vol.Required(ATTR_LEVEL): vol.In([level.name for level in AirfreshT2017PtcLevel])}
+)
+
+SERVICE_SCHEMA_DISPLAY_ORIENTATION = AIRPURIFIER_SERVICE_SCHEMA.extend(
+    {vol.Required(ATTR_DISPLAY_ORIENTATION): vol.In([orientation.name for orientation in AirfreshT2017DisplayOrientation])}
 )
 
 SERVICE_SCHEMA_MOTOR_SPEED = AIRPURIFIER_SERVICE_SCHEMA.extend(
@@ -883,6 +889,10 @@ SERVICE_TO_METHOD = {
     SERVICE_SET_PTC_LEVEL: {
         "method": "async_set_ptc_level",
         "schema": SERVICE_SCHEMA_PTC_LEVEL,
+    },
+    SERVICE_SET_DISPLAY_ORIENTATION: {
+        "method": "async_set_display_orientation",
+        "schema": SERVICE_SCHEMA_DISPLAY_ORIENTATION,
     },
     SERVICE_SET_PTC_ON: {"method": "async_set_ptc_on"},
     SERVICE_SET_PTC_OFF: {"method": "async_set_ptc_off"},
@@ -1905,7 +1915,7 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
         )
 
     async def async_set_ptc_level(self, level: str):
-        """Set the set_ptc_level."""
+        """Set the ptc level."""
         if self.supported_features & FEATURE_SET_PTC_LEVEL == 0:
             return
 
@@ -1937,13 +1947,24 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
             False,
         )
 
+    async def async_set_display_orientation(self, orientation: str):
+        """Set the display orientation."""
+        if self.supported_features & FEATURE_SET_DISPLAY_ORIENTATION == 0:
+            return
+
+        await self._try_command(
+            "Setting the display orientation of the miio device failed.",
+            self._device.set_display_orientation,
+            AirfreshT2017DisplayOrientation[orientation.title()],
+        )
+
     async def async_set_favorite_speed(self, speed: int = 1):
         """Set the favorite speed."""
         if self._device_features & FEATURE_SET_FAVORITE_SPEED == 0:
             return
 
         await self._try_command(
-            "Setting the favorite level of the miio device failed.",
+            "Setting the favorite speed of the miio device failed.",
             self._device.set_favorite_speed,
             speed,
         )
@@ -1954,11 +1975,11 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
             return
 
         await self._try_command(
-            "Resetting the filter lifetime of the miio device failed.",
+            "Resetting the upper filter lifetime of the miio device failed.",
             self._device.reset_upper_filter,
         )
         await self._try_command(
-            "Resetting the filter lifetime of the miio device failed.",
+            "Resetting the dust filter lifetime of the miio device failed.",
             self._device.reset_dust_filter,
         )
 
