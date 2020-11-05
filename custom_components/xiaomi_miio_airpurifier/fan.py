@@ -1879,11 +1879,6 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
             _LOGGER.error("Got exception while fetching the state: %s", ex)
 
     @property
-    def speed_list(self) -> list:
-        """Get the list of available speeds."""
-        return self._speed_list
-
-    @property
     def speed(self):
         """Return the current speed."""
         if self._state:
