@@ -226,6 +226,7 @@ ATTR_POWER_TIME = "power_time"
 # Air Humidifier MJJSQ and JSQ1
 ATTR_NO_WATER = "no_water"
 ATTR_WATER_TANK_DETACHED = "water_tank_detached"
+ATTR_WET_PROTECTION = "wet_protection"
 
 # Air Humidifier JSQ001
 ATTR_LID_OPENED = "lid_opened"
@@ -441,12 +442,17 @@ AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA4 = {
     ATTR_WATER_LEVEL: "water_level",
 }
 
-AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ_AND_JSQ1 = {
+AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ = {
     **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON,
     ATTR_TARGET_HUMIDITY: "target_humidity",
     ATTR_LED: "led",
     ATTR_NO_WATER: "no_water",
     ATTR_WATER_TANK_DETACHED: "water_tank_detached",
+}
+
+AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ1 = {
+    **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ,
+    ATTR_WET_PROTECTION: "wet_protection",
 }
 
 AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ = {
@@ -599,6 +605,7 @@ FEATURE_SET_MOTOR_SPEED = 32768
 FEATURE_SET_PTC_LEVEL = 131072
 FEATURE_SET_FAVORITE_SPEED = 262144
 FEATURE_SET_DISPLAY_ORIENTATION = 524288
+FEATURE_SET_WET_PROTECTION = 1048576
 
 # Smart Fan
 FEATURE_SET_OSCILLATION_ANGLE = 4096
@@ -680,8 +687,17 @@ FEATURE_FLAGS_AIRHUMIDIFIER_CA4 = (
     | FEATURE_SET_MOTOR_SPEED
 )
 
-FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ_AND_JSQ1 = (
-    FEATURE_SET_BUZZER | FEATURE_SET_LED | FEATURE_SET_TARGET_HUMIDITY
+FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ = (
+    FEATURE_SET_BUZZER |
+    FEATURE_SET_LED |
+    FEATURE_SET_TARGET_HUMIDITY
+)
+
+FEATURE_FLAGS_AIRHUMIDIFIER_JSQ1 = (
+    FEATURE_SET_BUZZER |
+    FEATURE_SET_LED |
+    FEATURE_SET_TARGET_HUMIDITY |
+    FEATURE_SET_WET_PROTECTION
 )
 
 FEATURE_FLAGS_AIRHUMIDIFIER_JSQ = (
@@ -757,6 +773,10 @@ SERVICE_SET_EXTRA_FEATURES = "fan_set_extra_features"
 SERVICE_SET_TARGET_HUMIDITY = "fan_set_target_humidity"
 SERVICE_SET_DRY_ON = "fan_set_dry_on"
 SERVICE_SET_DRY_OFF = "fan_set_dry_off"
+
+# Airhumidifer JSQ1
+SERVICE_SET_WET_PROTECTION_ON = "fan_set_wet_protection_on"
+SERVICE_SET_WET_PROTECTION_OFF = "fan_set_wet_protection_off"
 
 # Airfresh T2017
 SERVICE_SET_FAVORITE_SPEED = "fan_set_favorite_speed"
@@ -902,6 +922,8 @@ SERVICE_TO_METHOD = {
     SERVICE_SET_PTC_OFF: {"method": "async_set_ptc_off"},
     SERVICE_SET_DISPLAY_ON: {"method": "async_set_display_on"},
     SERVICE_SET_DISPLAY_OFF: {"method": "async_set_display_off"},
+    SERVICE_SET_WET_PROTECTION_N: {"method": "async_set_wet_protection"},
+    SERVICE_SET_WET_PROTECTION_OFF: {"method": "async_set_wet_protection"},
 }
 
 
@@ -1630,8 +1652,13 @@ class XiaomiAirHumidifierMjjsq(XiaomiAirHumidifier):
         """Initialize the plug switch."""
         super().__init__(name, device, model, unique_id)
 
-        self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ_AND_JSQ1
-        self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ_AND_JSQ1
+        if self._model == MODEL_AIRHUMIDIFIER_JSQ1:
+            self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_JSQ1
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ1
+        else:
+            self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ
+
         self._speed_list = [mode.name for mode in AirhumidifierMjjsqOperationMode]
         self._state_attrs = {ATTR_MODEL: self._model}
         self._state_attrs.update(
@@ -1657,6 +1684,28 @@ class XiaomiAirHumidifierMjjsq(XiaomiAirHumidifier):
             "Setting operation mode of the miio device failed.",
             self._device.set_mode,
             AirhumidifierMjjsqOperationMode[speed.title()],
+        )
+
+    async def async_set_wet_protection_on(self):
+        """Turn the wet protection on."""
+        if self._device_features & FEATURE_SET_WET_PROTECTION == 0:
+            return
+
+        await self._try_command(
+            "Turning the wet protection of the miio device on failed.",
+            self._device.set_wet_protection,
+            True,
+        )
+
+    async def async_set_wet_protection_off(self):
+        """Turn the wet protection off."""
+        if self._device_features & FEATURE_SET_WET_PROTECTION == 0:
+            return
+
+        await self._try_command(
+            "Turning the wet protection of the miio device off failed.",
+            self._device.set_wet_protection,
+            False,
         )
 
 
