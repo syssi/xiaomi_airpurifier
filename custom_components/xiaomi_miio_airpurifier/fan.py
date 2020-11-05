@@ -762,8 +762,6 @@ SERVICE_SET_FAVORITE_SPEED = "fan_set_favorite_speed"
 SERVICE_SET_DISPLAY_ON = "fan_set_display_on"
 SERVICE_SET_DISPLAY_OFF = "fan_set_display_off"
 SERVICE_SET_PTC_LEVEL = "fan_set_ptc_level"
-SERVICE_SET_POWER_ON = "fan_set_power_on"
-SERVICE_SET_POWER_OFF = "fan_set_power_off"
 
 # Smart Fan
 SERVICE_SET_DELAY_OFF = "fan_set_delay_off"
@@ -884,8 +882,6 @@ SERVICE_TO_METHOD = {
     SERVICE_SET_PTC_OFF: {"method": "async_set_ptc_off"},
     SERVICE_SET_DISPLAY_ON: {"method": "async_set_display_on"},
     SERVICE_SET_DISPLAY_OFF: {"method": "async_set_display_off"},
-    SERVICE_SET_POWER_ON: {"method": "async_set_power_on"},
-    SERVICE_SET_POWER_OFF: {"method": "async_set_power_off"},
 }
 
 
@@ -1914,37 +1910,13 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
         if self.supported_features & FEATURE_SET_PTC_LEVEL == 0:
             return
 
-        _LOGGER.debug("Setting the operation set_ptc_level to: %s", level)
+        _LOGGER.debug("Setting the ptc level to: %s", level)
 
         await self._try_command(
-            "Setting the set_ptc_level of the miio device failed.",
+            "Setting the ptc level of the miio device failed.",
             self._device.set_ptc_level,
-            level,
+            AirfreshT2017PtcLevel[level.title()],
         )
-
-    async def async_set_power_on(self, speed: str = None, **kwargs) -> None:
-        """Turn the device on."""
-        if speed:
-            # If operation mode was set the device must not be turned on.
-            result = await self.async_set_speed(speed)
-        else:
-            result = await self._try_command(
-                "Turning the miio device on failed.", self._device.on
-            )
-
-        if result:
-            self._state = True
-            self._skip_update = True
-
-    async def async_set_power_off(self, **kwargs) -> None:
-        """Turn the device off."""
-        result = await self._try_command(
-            "Turning the miio device off failed.", self._device.off
-        )
-
-        if result:
-            self._state = False
-            self._skip_update = True
 
     async def async_set_display_on(self):
         """Turn the display on."""
