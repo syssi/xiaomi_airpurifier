@@ -1952,7 +1952,11 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
 
         await self._try_command(
             "Resetting the filter lifetime of the miio device failed.",
-            self._device.reset_filter,
+            self._device.reset_upper_filter,
+        )
+        await self._try_command(
+            "Resetting the filter lifetime of the miio device failed.",
+            self._device.reset_dust_filter,
         )
 
 
