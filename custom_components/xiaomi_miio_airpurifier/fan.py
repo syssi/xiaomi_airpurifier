@@ -579,7 +579,6 @@ OPERATION_MODES_AIRPURIFIER_V3 = [
 ]
 OPERATION_MODES_AIRFRESH = ["Auto", "Silent", "Interval", "Low", "Middle", "Strong"]
 OPERATION_MODES_AIRFRESH_T2017 = ["Auto", "Sleep", "Favorite"]
-PTC_MODES_AIRFRESH_T2017 = ["Low", "Medium", "High"]
 
 SUCCESS = ["ok"]
 
@@ -712,12 +711,13 @@ FEATURE_FLAGS_AIRFRESH_VA4 = (
 )
 
 FEATURE_FLAGS_AIRFRESH_T2017 = (
-    FEATURE_SET_CHILD_LOCK
+    FEATURE_SET_BUZZER
+    | FEATURE_SET_CHILD_LOCK
     | FEATURE_SET_LED
+    | FEATURE_RESET_FILTER
+    | FEATURE_SET_PTC
     | FEATURE_SET_PTC_LEVEL
     | FEATURE_SET_FAVORITE_SPEED
-    | FEATURE_RESET_FILTER
-    | FEATURE_SET_BUZZER
 )
 
 FEATURE_FLAGS_FAN = (
@@ -803,6 +803,10 @@ SERVICE_SCHEMA_FAVORITE_SPEED = AIRPURIFIER_SERVICE_SCHEMA.extend(
     {vol.Required(ATTR_SPEED): vol.All(vol.Coerce(int), vol.Clamp(min=60, max=300))}
 )
 
+SERVICE_SCHEMA_PTC_LEVEL = AIRPURIFIER_SERVICE_SCHEMA.extend(
+    {vol.Required(ATTR_LEVEL): vol.In([level.name for level in AirfreshT2017PtcLevel])}
+)
+
 SERVICE_SCHEMA_MOTOR_SPEED = AIRPURIFIER_SERVICE_SCHEMA.extend(
     {
         vol.Required(ATTR_MOTOR_SPEED): vol.All(
@@ -876,7 +880,10 @@ SERVICE_TO_METHOD = {
     },
     SERVICE_SET_NATURAL_MODE_ON: {"method": "async_set_natural_mode_on"},
     SERVICE_SET_NATURAL_MODE_OFF: {"method": "async_set_natural_mode_off"},
-    SERVICE_SET_PTC_LEVEL: {"method": "async_set_ptc_level"},
+    SERVICE_SET_PTC_LEVEL: {
+        "method": "async_set_ptc_level",
+        "schema": SERVICE_SCHEMA_PTC_LEVEL,
+    },
     SERVICE_SET_PTC_ON: {"method": "async_set_ptc_on"},
     SERVICE_SET_PTC_OFF: {"method": "async_set_ptc_off"},
     SERVICE_SET_DISPLAY_ON: {"method": "async_set_display_on"},
