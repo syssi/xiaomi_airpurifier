@@ -1891,8 +1891,6 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
         if self.supported_features & SUPPORT_SET_SPEED == 0:
             return
 
-        _LOGGER.debug("Setting the operation mode to: %s", speed)
-
         await self._try_command(
             "Setting operation mode of the miio device failed.",
             self._device.set_mode,
@@ -1903,8 +1901,6 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
         """Set the set_ptc_level."""
         if self.supported_features & FEATURE_SET_PTC_LEVEL == 0:
             return
-
-        _LOGGER.debug("Setting the ptc level to: %s", level)
 
         await self._try_command(
             "Setting the ptc level of the miio device failed.",
