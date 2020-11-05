@@ -732,7 +732,7 @@ sensor:
 input_number:
   airhumidifier_target_humidity:
     name: Target humidity
-    min: 0
+    min: 1
     max: 99
     step: 1
 
