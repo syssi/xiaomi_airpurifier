@@ -1870,7 +1870,6 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
         self._available_attributes = AVAILABLE_ATTRIBUTES_AIRFRESH_T2017
         self._device_features = FEATURE_FLAGS_AIRFRESH_T2017
         self._speed_list = OPERATION_MODES_AIRFRESH_T2017
-        self._level_list = PTC_MODES_AIRFRESH_T2017
         self._state_attrs.update(
             {attribute: None for attribute in self._available_attributes}
         )
