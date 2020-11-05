@@ -20,8 +20,8 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 | Air Purifier (mini)    | zhimi.airpurifier.m2   | | |
 | Air Purifier MA1       | zhimi.airpurifier.ma1  | | |
 | Air Purifier MA2       | zhimi.airpurifier.ma2  | | |
-| Air Purifier 2S        | zhimi.airpurifier.mc1  | XM200003<strong>(?)</strong>  | 37m<sup>2</sup>, 310m<sup>3</sup>/h CADR, 66dB, 29W (max)  |
-| Air Purifier 2H        | zhimi.airpurifier.mc2  | FJY4026GL<strong>(?)</strong>  | 31m<sup>2</sup>, 260m<sup>3</sup>/h CADR, 66dB, 31W (max)  |
+| Air Purifier 2S        | zhimi.airpurifier.mc1  | XM200003<strong>(?)</strong>, AC-M4-AA  | 37m<sup>2</sup>, 310m<sup>3</sup>/h CADR, 66dB, 29W (max)  |
+| Air Purifier 2H        | zhimi.airpurifier.mc2  | FJY4026GL<strong>(?)</strong>, AC-M9-AA  | 31m<sup>2</sup>, 260m<sup>3</sup>/h CADR, 66dB, 31W (max)  |
 | Air Purifier Super     | zhimi.airpurifier.sa1  | | |
 | Air Purifier Super 2   | zhimi.airpurifier.sa2  | | |
 | Air Purifier 3 (2019)  | zhimi.airpurifier.ma4  | | |
