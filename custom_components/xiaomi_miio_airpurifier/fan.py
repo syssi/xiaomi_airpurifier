@@ -810,7 +810,11 @@ SERVICE_SCHEMA_PTC_LEVEL = AIRPURIFIER_SERVICE_SCHEMA.extend(
 )
 
 SERVICE_SCHEMA_DISPLAY_ORIENTATION = AIRPURIFIER_SERVICE_SCHEMA.extend(
-    {vol.Required(ATTR_DISPLAY_ORIENTATION): vol.In([orientation.name for orientation in AirfreshT2017DisplayOrientation])}
+    {
+        vol.Required(ATTR_DISPLAY_ORIENTATION): vol.In(
+            [orientation.name for orientation in AirfreshT2017DisplayOrientation]
+        )
+    }
 )
 
 SERVICE_SCHEMA_MOTOR_SPEED = AIRPURIFIER_SERVICE_SCHEMA.extend(
