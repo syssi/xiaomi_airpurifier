@@ -36,6 +36,7 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 | New Widetech Internet Dehumidifier  | nwt.derh.wdh318efw1  | WDH318EFW1  | 2.7L tank, 38dB, 18L/d, 240W |
 | Smartmi Fresh Air System XFXT01ZM        | zhimi.airfresh.va2  | XFXT01ZM     | |
 | Smartmi Fresh Air System XFXTDFR02ZM     | zhimi.airfresh.va4  | XFXTDFR02ZM  | PTC/Heater support |
+| Mi Fresh Air Ventilator  | dmaker.airfresh.t2017  | MJXFJ-300-G1**?** | 300m3/h (Air volume), 35W, 36db(A), 16kg |
 | Pedestal Fan Fan V2    | zhimi.fan.v2           | | |
 | Pedestal Fan Fan V3    | zhimi.fan.v3           | | |
 | Pedestal Fan Fan SA1   | zhimi.fan.sa1          | | |
@@ -428,6 +429,34 @@ This model uses newer MiOT communication protocol.
   - `extra_features`
   - `ptc` (zhimi.airfresh.va4 only)
 
+### Air Fresh T2017 (dmaker.airfresh.t2017)
+
+- Power (on, off)
+- Operation modes (Off, Auto, Sleep, Favorite)
+- Buzzer (on, off)
+- Child lock (on, off)
+- Display (on, off), Display orientation (Portrait, LandscapeLeft, LandscapeRight)
+- PTC (on, off), PTC level (Low, Medium, High)
+- Attributes
+  - `model`
+  - `mode`
+  - `pm25`
+  - `co2`
+  - `temperature`
+  - `favorite_speed`
+  - `control_speed`
+  - `dust_filter_life_remaining`
+  - `dust_filter_life_remaining_days`
+  - `upper_filter_life_remaining`
+  - `upper_filter_life_remaining_days`
+  - `ptc`
+  - `ptc_level`
+  - `ptc_status`
+  - `child_lock`
+  - `buzzer`
+  - `display`
+  - `display_orientation`
+
 
 ### Air Humidifier MJJSQ and JSQ1 (deerma.humidifier.mjjsq, deerma.humidifier.jsq1)
 
@@ -782,7 +811,7 @@ Set the fan speed/operation mode.
 | Service data attribute    | Optional | Description                                                          |
 |---------------------------|----------|----------------------------------------------------------------------|
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
-| `speed`                   |       no | Fan speed. Valid values are 'Auto', 'Silent', 'Favorite' and 'Idle'. Valid values of the Pedestal Fan are `Level 1`, `Level 2`, `Level 3` and `Level 4` as well as a value between 0 and 100. |
+| `speed`                   |       no | Fan speed. Valid values are `Auto`, `Silent`, `Favorite` and `Idle`. Valid values of the Pedestal Fan are `Level 1`, `Level 2`, `Level 3` and `Level 4` as well as a value between 0 and 100. |
 
 #### Service `xiaomi_miio_airpurifier.fan_set_buzzer_on` (Air Purifier Pro excluded)
 
@@ -985,7 +1014,7 @@ Turn the natural mode off.
 |---------------------------|----------|----------------------------------------------------------------------|
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
 
-### Service `xiaomi_miio.fan_set_motor_speed` (Air Humidifier CA4)
+### Service `xiaomi_miio_airpurifier.fan_set_motor_speed` (Air Humidifier CA4)
 
 Set motor speed RPM.
 
@@ -994,16 +1023,16 @@ Set motor speed RPM.
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
 | `motor_speed`             |       no | Motor speed RPM. Allowed values are between 200 and 2000             |
 
-#### Service `xiaomi_miio.fan_set_fan_level` (Air Purifier 3H only)
+#### Service `xiaomi_miio_airpurifier.fan_set_fan_level` (Air Purifier 3H only)
 
-Set the level when on fan mode
+Set the level when on fan mode.
 
 | Service data attribute    | Optional | Description                                                          |
 |---------------------------|----------|----------------------------------------------------------------------|
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
 | `level`                   |       no | Valid values are `1`, `2` and `3`.                                   |
 
-#### Service `xiaomi_miio_airpurifier.fan_set_ptc_on` (Air Fresh VA4 only)
+#### Service `xiaomi_miio_airpurifier.fan_set_ptc_on` (Air Fresh VA4 and T2017 only)
 
 Turn the ptc on.
 
@@ -1011,9 +1040,52 @@ Turn the ptc on.
 |---------------------------|----------|---------------------------------------------------------|
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.          |
 
-#### Service `xiaomi_miio_airpurifier.fan_set_ptc_off` (Air Fresh VA4 only)
+#### Service `xiaomi_miio_airpurifier.fan_set_ptc_off` (Air Fresh VA4 and T2017 only)
 
 Turn the ptc off.
+
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.          |
+
+#### Service `xiaomi_miio_airpurifier.async_set_favorite_speed` (Air Fresh T2017 only)
+
+Set the favorite speed.
+
+| Service data attribute    | Optional | Description                                                          |
+|---------------------------|----------|----------------------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
+| `speed`                   |       no | Volume, between 60 and 300.                                          |
+
+#### Service `xiaomi_miio_airpurifier.async_set_ptc_level` (Air Fresh T2017 only)
+
+Set the ptc level.
+
+| Service data attribute    | Optional | Description                                                          |
+|---------------------------|----------|----------------------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
+| `level`                   |       no | PTC level. Valid values are `Low`, `Medium`, `High`.                 |
+
+#### Service `xiaomi_miio_airpurifier.fan_set_display_orientation` (Air Fresh T2017 only)
+
+Set the display orientation.
+
+| Service data attribute    | Optional | Description                                                          |
+|---------------------------|----------|----------------------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
+| `orientation`             |       no | Display orientation. Valid values are `Portrait`, `LandscapeLeft` and `LandscapeRight`.  |
+
+#### Service `xiaomi_miio_airpurifier.fan_set_display_on` (Air Fresh T2017 only)
+
+Turn the display on.
+
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.          |
+
+#### Service `xiaomi_miio_airpurifier.fan_set_display_off` (Air Fresh T2017 only)
+
+Turn the display off.
 
 | Service data attribute    | Optional | Description                                             |
 |---------------------------|----------|---------------------------------------------------------|
