@@ -114,6 +114,7 @@ MODEL_AIRHUMIDIFIER_JSQ = "deerma.humidifier.jsq"
 MODEL_AIRHUMIDIFIER_JSQ1 = "deerma.humidifier.jsq1"
 MODEL_AIRHUMIDIFIER_JSQ001 = "shuii.humidifier.jsq001"
 
+MODEL_AIRFRESH_A1 = "dmaker.airfresh.a1"
 MODEL_AIRFRESH_VA2 = "zhimi.airfresh.va2"
 MODEL_AIRFRESH_VA4 = "zhimi.airfresh.va4"
 MODEL_AIRFRESH_T2017 = "dmaker.airfresh.t2017"
@@ -160,6 +161,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_AIRHUMIDIFIER_JSQ,
                 MODEL_AIRHUMIDIFIER_JSQ1,
                 MODEL_AIRHUMIDIFIER_JSQ001,
+                MODEL_AIRFRESH_A1,
                 MODEL_AIRFRESH_VA2,
                 MODEL_AIRFRESH_VA4,
                 MODEL_AIRFRESH_T2017,
@@ -988,7 +990,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     elif model.startswith("zhimi.airfresh."):
         air_fresh = AirFresh(host, token, model=model)
         device = XiaomiAirFresh(name, air_fresh, model, unique_id)
-    elif model == MODEL_AIRFRESH_T2017:
+    elif model in [MODEL_AIRFRESH_A1, MODEL_AIRFRESH_T2017]:
         air_fresh = AirFreshT2017(host, token, model=model)
         device = XiaomiAirFreshT2017(name, air_fresh, model, unique_id)
     elif model in [
