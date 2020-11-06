@@ -2052,6 +2052,19 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
         )
 
 
+class XiaomiAirFreshA1(XiaomiAirFreshT2017):
+    """Representation of a Xiaomi Air Fresh A1."""
+    async def async_reset_filter(self):
+        """Reset the filter lifetime and usage."""
+        if self._device_features & FEATURE_RESET_FILTER == 0:
+            return
+
+        await self._try_command(
+            "Resetting filter lifetime of the miio device failed.",
+            self._device.reset_filter,
+        )
+
+
 class XiaomiFan(XiaomiGenericDevice):
     """Representation of a Xiaomi Pedestal Fan."""
 
