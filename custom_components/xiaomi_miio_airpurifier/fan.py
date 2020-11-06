@@ -980,7 +980,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         device = XiaomiFanP5(name, fan, model, unique_id, retries)
     elif model in [MODEL_FAN_P9, MODEL_FAN_P10, MODEL_FAN_P11]:
         fan = FanMiot(host, token, model=model)
-        device = XiaomiFanP5(name, fan, model, unique_id, retries)
+        device = XiaomiFanMiot(name, fan, model, unique_id, retries)
     else:
         _LOGGER.error(
             "Unsupported device found! Please create an issue at "
@@ -2317,3 +2317,7 @@ class XiaomiFanP5(XiaomiFan):
             self._device.delay_off,
             delay_off_countdown,
         )
+
+
+class XiaomiFanMiot(XiaomiFanP5):
+    """Representation of a Xiaomi Pedestal Fan P9, P10, P11."""
