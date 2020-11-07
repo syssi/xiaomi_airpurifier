@@ -1919,7 +1919,7 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
 
     async def async_set_ptc_level(self, level: str):
         """Set the ptc level."""
-        if self.supported_features & FEATURE_SET_PTC_LEVEL == 0:
+        if self._device_features & FEATURE_SET_PTC_LEVEL == 0:
             return
 
         await self._try_command(
@@ -1952,7 +1952,7 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
 
     async def async_set_display_orientation(self, orientation: str):
         """Set the display orientation."""
-        if self.supported_features & FEATURE_SET_DISPLAY_ORIENTATION == 0:
+        if self._device_features & FEATURE_SET_DISPLAY_ORIENTATION == 0:
             return
 
         await self._try_command(
