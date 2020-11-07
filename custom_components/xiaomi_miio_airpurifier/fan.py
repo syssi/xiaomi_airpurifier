@@ -806,7 +806,7 @@ SERVICE_SCHEMA_FAVORITE_SPEED = AIRPURIFIER_SERVICE_SCHEMA.extend(
 )
 
 SERVICE_SCHEMA_PTC_LEVEL = AIRPURIFIER_SERVICE_SCHEMA.extend(
-    {vol.Required(ATTR_PTC_LEVEL): vol.In([level.name for level in AirfreshT2017PtcLevel])}
+    {vol.Required(ATTR_LEVEL): vol.In([level.name for level in AirfreshT2017PtcLevel])}
 )
 
 SERVICE_SCHEMA_DISPLAY_ORIENTATION = AIRPURIFIER_SERVICE_SCHEMA.extend(
@@ -1917,7 +1917,7 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
             AirfreshT2017OperationMode[speed.title()],
         )
 
-    async def async_set_ptc_level(self, ptc_level: str):
+    async def async_set_ptc_level(self, level: str):
         """Set the ptc level."""
         if self._device_features & FEATURE_SET_PTC_LEVEL == 0:
             return
@@ -1925,7 +1925,7 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
         await self._try_command(
             "Setting the ptc level of the miio device failed.",
             self._device.set_ptc_level,
-            AirfreshT2017PtcLevel[ptc_level.title()],
+            AirfreshT2017PtcLevel[level.title()],
         )
 
     async def async_set_display_on(self):
