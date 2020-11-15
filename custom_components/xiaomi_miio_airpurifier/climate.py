@@ -62,7 +62,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 ATTR_MODEL = "model"
 
 # Air Dehumidifier
-ATTR_TEMPERATURE = "temperature"
+ATTR_CURRENT_TEMPERATUR = "current_temperature"
 ATTR_MODE = "mode"
 ATTR_BUZZER = "buzzer"
 ATTR_CHILD_LOCK = "child_lock"
@@ -77,7 +77,7 @@ ATTR_ALARM = "alarm"
 
 # Map attributes to properties of the state object
 AVAILABLE_ATTRIBUTES_AIRDEHUMIDIFIER = {
-    ATTR_TEMPERATURE: "temperature",
+    ATTR_CURRENT_TEMPERATUR: "temperature",
     ATTR_CURRENT_HUMIDITY: "humidity",
     ATTR_MODE: "mode",
     ATTR_BUZZER: "buzzer",
@@ -423,7 +423,6 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
                 for key, value in self._available_attributes.items()
             }
         )
-        self._state_attrs[ATTR_TEMPERATURE] = None
         self._state_attrs[ATTR_HUMIDITY] = self._state_attrs[ATTR_TARGET_HUMIDITY]
 
     @property

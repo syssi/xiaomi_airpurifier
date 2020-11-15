@@ -20,20 +20,24 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 | Air Purifier (mini)    | zhimi.airpurifier.m2   | | |
 | Air Purifier MA1       | zhimi.airpurifier.ma1  | | |
 | Air Purifier MA2       | zhimi.airpurifier.ma2  | | |
-| Air Purifier 2S        | zhimi.airpurifier.mc1  | | |
+| Air Purifier 2S        | zhimi.airpurifier.mc1  | XM200003<strong>(?)</strong>, AC-M4-AA  | 37m<sup>2</sup>, 310m<sup>3</sup>/h CADR, 66dB, 29W (max)  |
+| Air Purifier 2H        | zhimi.airpurifier.mc2  | FJY4026GL<strong>(?)</strong>, AC-M9-AA  | 31m<sup>2</sup>, 260m<sup>3</sup>/h CADR, 66dB, 31W (max)  |
 | Air Purifier Super     | zhimi.airpurifier.sa1  | | |
 | Air Purifier Super 2   | zhimi.airpurifier.sa2  | | |
 | Air Purifier 3 (2019)  | zhimi.airpurifier.ma4  | | |
-| Air Purifier 3H (2019) | zhimi.airpurifier.mb3  | | |
+| Air Purifier 3H (2019) | zhimi.airpurifier.mb3  | FJY4031GL<strong>(?)</strong>, XM200017 | 45m<sup>2</sup>, 380m<sup>3</sup>/h CADR, 64dB, 38W (max) |
 | Air Humidifier         | zhimi.humidifier.v1    | | |
 | Air Humidifier CA1     | zhimi.humidifier.ca1   | | |
 | Smartmi Humidifier Evaporator 2  | zhimi.humidifier.ca4   | CJXJSQ04ZM  | |
 | Air Humidifier CB1     | zhimi.humidifier.cb1   | | |
 | Mijia Smart Sterilization Humidifier S  | deerma.humidifier.mjjsq  | MJJSQ03DY  | 4.5L, <=39dB, 450mL/h, 40W  |
-| Mijia Intelligent Sterilization Humidifier SCK0A45  | deerma.humidifier.jsq1    | SCKOA45, SCK0A45  | 4.5L, <=38dbB, 300mL/h, 25W |
+| Mijia Intelligent Sterilization Humidifier  | deerma.humidifier.jsq  |  |  |
+| Mijia Intelligent Sterilization Humidifier SCK0A45  | deerma.humidifier.jsq1    | SCKOA45, SCK0A45  | 4.5L, <=38dB, 300mL/h, 25W |
 | Zero Fog Humidifier    | shuii.humidifier.jsq001   | | |
-| Air Fresh VA2          | zhimi.airfresh.va2     | | |
-| Air Fresh VA4          | zhimi.airfresh.va4     | | |
+| New Widetech Internet Dehumidifier  | nwt.derh.wdh318efw1  | WDH318EFW1  | 2.7L tank, 38dB, 18L/d, 240W |
+| Smartmi Fresh Air System XFXT01ZM        | zhimi.airfresh.va2  | XFXT01ZM     | |
+| Smartmi Fresh Air System XFXTDFR02ZM     | zhimi.airfresh.va4  | XFXTDFR02ZM  | PTC/Heater support |
+| Mi Fresh Air Ventilator  | dmaker.airfresh.t2017  | MJXFJ-300-G1**?** | 300m3/h (Air volume), 35W, 36db(A), 16kg |
 | Pedestal Fan Fan V2    | zhimi.fan.v2           | | |
 | Pedestal Fan Fan V3    | zhimi.fan.v3           | | |
 | Pedestal Fan Fan SA1   | zhimi.fan.sa1          | | |
@@ -41,8 +45,15 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 | Pedestal Fan Fan ZA3   | zhimi.fan.za3          | | |
 | Pedestal Fan Fan ZA4   | zhimi.fan.za4          | | |
 | Pedestal Fan Fan P5    | dmaker.fan.p5          | | |
+| Pedestal Fan Fan P9     | dmaker.fan.p9         | | Supported as soon as python-miio 0.5.4 is released.  |
+| Pedestal Fan Fan P10    | dmaker.fan.p10        | | Supported as soon as python-miio 0.5.4 is released.  |
+| Mijia Pedestal Fan      | dmaker.fan.p11        | BPLDS03DM  | Supported as soon as python-miio 0.5.4 is released. 2800mAh, 24W, <=58dB  |
 
-Support unknown / Testing required: MJJSQ04DY
+Support unknown / Testing required:
+- Mijia Humidifier 4L (MJJSQ04DY), 300ml/h, 25W, <=38dB: Please create an issue if you own this device.
+
+Unsupported devices:
+- Mijia Humidifer 4L (MJJSQ02LX): This device isn't smart / has no WiFi support.
 
 ## Features
 
@@ -174,7 +185,7 @@ Support unknown / Testing required: MJJSQ04DY
   - `motor2_speed`
   - `volume`
 
-### Air Purifier 2S (zhimi.airpurifier.mc1)
+### Air Purifier 2S (zhimi.airpurifier.mc1) and 2H (zhimi.airpurifier.mc2)
 
 - Power (on, off)
 - Operation modes (auto, silent, favorite)
@@ -399,6 +410,7 @@ This model uses newer MiOT communication protocol.
 - Buzzer (on, off)
 - Child lock (on, off)
 - LED (on, off), LED brightness (bright, dim, off)
+- PTC (on, off) (zhimi.airfresh.va4 only)
 - Attributes
   - `model`
   - `aqi`
@@ -416,7 +428,35 @@ This model uses newer MiOT communication protocol.
   - `use_time`
   - `motor_speed`
   - `extra_features`
-  - `ptc_sate` (zhimi.airfresh.va4 only)
+  - `ptc` (zhimi.airfresh.va4 only)
+
+### Air Fresh T2017 (dmaker.airfresh.t2017)
+
+- Power (on, off)
+- Operation modes (Off, Auto, Sleep, Favorite)
+- Buzzer (on, off)
+- Child lock (on, off)
+- Display (on, off), Display orientation (Portrait, LandscapeLeft, LandscapeRight)
+- PTC (on, off), PTC level (Low, Medium, High)
+- Attributes
+  - `model`
+  - `mode`
+  - `pm25`
+  - `co2`
+  - `temperature`
+  - `favorite_speed`
+  - `control_speed`
+  - `dust_filter_life_remaining`
+  - `dust_filter_life_remaining_days`
+  - `upper_filter_life_remaining`
+  - `upper_filter_life_remaining_days`
+  - `ptc`
+  - `ptc_level`
+  - `ptc_status`
+  - `child_lock`
+  - `buzzer`
+  - `display`
+  - `display_orientation`
 
 
 ### Air Humidifier MJJSQ and JSQ1 (deerma.humidifier.mjjsq, deerma.humidifier.jsq1)
@@ -426,6 +466,7 @@ This model uses newer MiOT communication protocol.
 * Buzzer (on, off)
 * LED (on, off)
 * Target humidity (0...99)
+* Wet protection (on, off) (deerma.humidifier.jsq1 only)
 * Attributes
   - `model`
   - `temperature`
@@ -436,6 +477,7 @@ This model uses newer MiOT communication protocol.
   - `led`
   - `no_water`
   - `water_tank_detached`
+  - `wet_protection` (deerma.humidifier.jsq1 only)
 
 ### Air Dehumidifier (nwt.derh.wdh318efw1)
 
@@ -647,7 +689,7 @@ input_select:
      - Humidity
 
 automation:
-  - alias: Select operation mode
+  - alias: Select operation mode by input select
     trigger:
       entity_id: input_select.airpurifier_mode
       platform: state
@@ -657,7 +699,7 @@ automation:
         entity_id: fan.xiaomi_air_purifier
         speed: '{{ states.input_select.airpurifier_mode.state }}'
 
-  - alias: Monitor operation mode
+  - alias: Monitor operation mode and update input select
     trigger:
       platform: state
       entity_id: fan.xiaomi_air_purifier
@@ -666,6 +708,89 @@ automation:
       entity_id: input_select.airpurifier_mode
       data_template:
         option: '{{ states.fan.xiaomi_air_purifier.attributes.speed }}'
+```
+
+## Input number example
+
+```
+sensor:
+  - platform: template
+    sensors:
+      airpurifier_favorite_level:
+        friendly_name: Favorite level
+        value_template: '{{ states.fan.xiaomi_air_purifier.attributes.favorite_level }}'
+
+input_number:
+  airpurifier_favorite_level:
+    name: Favorite Level
+    initial: 1
+    min: 0
+    max: 16
+    step: 1
+
+automation:
+  - alias: Select favorite level by slider
+    trigger:
+      platform: state
+      entity_id: input_number.airpurifier_favorite_level
+    action:
+      - service: xiaomi_miio_airpurifier.fan_set_favorite_level
+        data_template:
+          entity_id: fan.xiaomi_air_purifier
+          level: '{{ states.input_number.airpurifier_favorite_level.state|int }}'
+
+  - alias: Monitor favorite level and update slider
+    trigger:
+      platform: state
+      entity_id: sensor.airpurifier_favorite_level
+    action:
+      service: input_number.set_value
+      entity_id: input_number.airpurifier_favorite_level
+      data_template:
+        value: '{{ states.fan.xiaomi_air_purifier.attributes.favorite_level }}'
+```
+
+![Input number example](input_number.png "input number example")
+
+The following example can be used to setup a `input_numer` entity to control the target humidity of an Air Humidifier. Make sure to replace all occurrences of `fan.xiaomi_air_humidifier` with the `entity_id` of your device.
+
+```
+sensor:
+  - platform: template
+    sensors:
+      airhumidifier_target_humidity:
+        friendly_name: Target humidity
+        value_template: '{{ states.fan.xiaomi_air_humidifier.attributes.target_humidity }}'
+        unit_of_measurement: '%'
+        icon_template: mdi:water-percent
+
+input_number:
+  airhumidifier_target_humidity:
+    name: Target humidity
+    min: 1
+    max: 99
+    step: 1
+
+automation:
+  - alias: Select target humidity by slider
+    trigger:
+      platform: state
+      entity_id: input_number.airhumidifier_target_humidity
+    action:
+      - service: xiaomi_miio_airpurifier.fan_set_target_humidity
+        data_template:
+          entity_id: fan.xiaomi_air_humidifier
+          humidity: '{{ states.input_number.airhumidifier_target_humidity.state|int }}'
+
+  - alias: Monitor target humidity and update slider
+    trigger:
+      platform: state
+      entity_id: sensor.airhumidifier_target_humidity
+    action:
+      service: input_number.set_value
+      entity_id: input_number.airhumidifier_target_humidity
+      data_template:
+        value: '{{ states.fan.xiaomi_air_humidifier.attributes.target_humidity }}'
 ```
 
 ## Debugging
@@ -689,7 +814,7 @@ Set the fan speed/operation mode.
 | Service data attribute    | Optional | Description                                                          |
 |---------------------------|----------|----------------------------------------------------------------------|
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
-| `speed`                   |       no | Fan speed. Valid values are 'Auto', 'Silent', 'Favorite' and 'Idle'. Valid values of the Pedestal Fan are `Level 1`, `Level 2`, `Level 3` and `Level 4` as well as a value between 0 and 100. |
+| `speed`                   |       no | Fan speed. Valid values are `Auto`, `Silent`, `Favorite` and `Idle`. Valid values of the Pedestal Fan are `Level 1`, `Level 2`, `Level 3` and `Level 4` as well as a value between 0 and 100. |
 
 #### Service `xiaomi_miio_airpurifier.fan_set_buzzer_on` (Air Purifier Pro excluded)
 
@@ -892,7 +1017,7 @@ Turn the natural mode off.
 |---------------------------|----------|----------------------------------------------------------------------|
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
 
-### Service `xiaomi_miio.fan_set_motor_speed` (Air Humidifier CA4)
+### Service `xiaomi_miio_airpurifier.fan_set_motor_speed` (Air Humidifier CA4)
 
 Set motor speed RPM.
 
@@ -901,11 +1026,86 @@ Set motor speed RPM.
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
 | `motor_speed`             |       no | Motor speed RPM. Allowed values are between 200 and 2000             |
 
-#### Service `xiaomi_miio.fan_set_fan_level` (Air Purifier 3H only)
+#### Service `xiaomi_miio_airpurifier.fan_set_fan_level` (Air Purifier 3H only)
 
-Set the level when on fan mode
+Set the level when on fan mode.
 
 | Service data attribute    | Optional | Description                                                          |
 |---------------------------|----------|----------------------------------------------------------------------|
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
 | `level`                   |       no | Valid values are `1`, `2` and `3`.                                   |
+
+#### Service `xiaomi_miio_airpurifier.fan_set_ptc_on` (Air Fresh VA4 and T2017 only)
+
+Turn the ptc on.
+
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.          |
+
+#### Service `xiaomi_miio_airpurifier.fan_set_ptc_off` (Air Fresh VA4 and T2017 only)
+
+Turn the ptc off.
+
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.          |
+
+#### Service `xiaomi_miio_airpurifier.async_set_favorite_speed` (Air Fresh T2017 only)
+
+Set the favorite speed.
+
+| Service data attribute    | Optional | Description                                                          |
+|---------------------------|----------|----------------------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
+| `speed`                   |       no | Volume, between 60 and 300.                                          |
+
+#### Service `xiaomi_miio_airpurifier.async_set_ptc_level` (Air Fresh T2017 only)
+
+Set the ptc level.
+
+| Service data attribute    | Optional | Description                                                          |
+|---------------------------|----------|----------------------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
+| `level`                   |       no | PTC level. Valid values are `Low`, `Medium`, `High`.                 |
+
+#### Service `xiaomi_miio_airpurifier.fan_set_display_orientation` (Air Fresh T2017 only)
+
+Set the display orientation.
+
+| Service data attribute    | Optional | Description                                                          |
+|---------------------------|----------|----------------------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
+| `orientation`             |       no | Display orientation. Valid values are `Portrait`, `LandscapeLeft` and `LandscapeRight`.  |
+
+#### Service `xiaomi_miio_airpurifier.fan_set_display_on` (Air Fresh T2017 only)
+
+Turn the display on.
+
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.          |
+
+#### Service `xiaomi_miio_airpurifier.fan_set_display_off` (Air Fresh T2017 only)
+
+Turn the display off.
+
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.          |
+
+#### Service `xiaomi_miio_airpurifier.fan_set_wet_protection_on` (deerma.humidifier.jsq1 only)
+
+Turn the wet protection on.
+
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.          |
+
+#### Service `xiaomi_miio_airpurifier.fan_set_wet_protection_on` (deerma.humidifier.jsq1 only)
+
+Turn the wet protection off.
+
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.          |

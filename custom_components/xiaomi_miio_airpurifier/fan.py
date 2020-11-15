@@ -6,6 +6,7 @@ import logging
 
 from miio import (  # pylint: disable=import-error
     AirFresh,
+    AirFreshT2017,
     AirHumidifier,
     AirHumidifierJsq,
     AirHumidifierMiot,
@@ -15,11 +16,17 @@ from miio import (  # pylint: disable=import-error
     Device,
     DeviceException,
     Fan,
+    FanMiot,
     FanP5,
 )
 from miio.airfresh import (  # pylint: disable=import-error, import-error
     LedBrightness as AirfreshLedBrightness,
     OperationMode as AirfreshOperationMode,
+)
+from miio.airfresh_t2017 import (  # pylint: disable=import-error, import-error
+    OperationMode as AirfreshT2017OperationMode,
+    PtcLevel as AirfreshT2017PtcLevel,
+    DisplayOrientation as AirfreshT2017DisplayOrientation,
 )
 from miio.airhumidifier import (  # pylint: disable=import-error, import-error
     LedBrightness as AirhumidifierLedBrightness,
@@ -103,11 +110,13 @@ MODEL_AIRHUMIDIFIER_CA1 = "zhimi.humidifier.ca1"
 MODEL_AIRHUMIDIFIER_CA4 = "zhimi.humidifier.ca4"
 MODEL_AIRHUMIDIFIER_CB1 = "zhimi.humidifier.cb1"
 MODEL_AIRHUMIDIFIER_MJJSQ = "deerma.humidifier.mjjsq"
+MODEL_AIRHUMIDIFIER_JSQ = "deerma.humidifier.jsq"
 MODEL_AIRHUMIDIFIER_JSQ1 = "deerma.humidifier.jsq1"
 MODEL_AIRHUMIDIFIER_JSQ001 = "shuii.humidifier.jsq001"
 
 MODEL_AIRFRESH_VA2 = "zhimi.airfresh.va2"
 MODEL_AIRFRESH_VA4 = "zhimi.airfresh.va4"
+MODEL_AIRFRESH_T2017 = "dmaker.airfresh.t2017"
 
 MODEL_FAN_V2 = "zhimi.fan.v2"
 MODEL_FAN_V3 = "zhimi.fan.v3"
@@ -116,6 +125,9 @@ MODEL_FAN_ZA1 = "zhimi.fan.za1"
 MODEL_FAN_ZA3 = "zhimi.fan.za3"
 MODEL_FAN_ZA4 = "zhimi.fan.za4"
 MODEL_FAN_P5 = "dmaker.fan.p5"
+MODEL_FAN_P9 = "dmaker.fan.p9"
+MODEL_FAN_P10 = "dmaker.fan.p10"
+MODEL_FAN_P11 = "dmaker.fan.p11"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -145,10 +157,12 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_AIRHUMIDIFIER_CA4,
                 MODEL_AIRHUMIDIFIER_CB1,
                 MODEL_AIRHUMIDIFIER_MJJSQ,
+                MODEL_AIRHUMIDIFIER_JSQ,
                 MODEL_AIRHUMIDIFIER_JSQ1,
                 MODEL_AIRHUMIDIFIER_JSQ001,
                 MODEL_AIRFRESH_VA2,
                 MODEL_AIRFRESH_VA4,
+                MODEL_AIRFRESH_T2017,
                 MODEL_FAN_V2,
                 MODEL_FAN_V3,
                 MODEL_FAN_SA1,
@@ -156,6 +170,9 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_FAN_ZA3,
                 MODEL_FAN_ZA4,
                 MODEL_FAN_P5,
+                MODEL_FAN_P9,
+                MODEL_FAN_P10,
+                MODEL_FAN_P11,
             ]
         ),
         vol.Optional(CONF_RETRIES, default=DEFAULT_RETRIES): cv.positive_int,
@@ -215,9 +232,10 @@ ATTR_FAHRENHEIT = "fahrenheit"
 ATTR_FAULT = "fault"
 ATTR_POWER_TIME = "power_time"
 
-# Air Humidifier MJJSQ and JSQ1
+# Air Humidifier MJJSQ, JSQ and JSQ1
 ATTR_NO_WATER = "no_water"
 ATTR_WATER_TANK_DETACHED = "water_tank_detached"
+ATTR_WET_PROTECTION = "wet_protection"
 
 # Air Humidifier JSQ001
 ATTR_LID_OPENED = "lid_opened"
@@ -225,6 +243,20 @@ ATTR_LID_OPENED = "lid_opened"
 # Air Fresh
 ATTR_CO2 = "co2"
 ATTR_PTC = "ptc"
+
+# Air Fresh T2017
+ATTR_POWER = "power"
+ATTR_PM25 = "pm25"
+ATTR_FAVORITE_SPEED = "favorite_speed"
+ATTR_CONTROL_SPEED = "control_speed"
+ATTR_DUST_FILTER_LIFE_REMAINING = "dust_filter_life_remaining"
+ATTR_DUST_FILTER_LIFE_REMAINING_DAYS = "dust_filter_life_remaining_days"
+ATTR_UPPER_FILTER_LIFE_REMAINING = "upper_filter_life_remaining"
+ATTR_UPPER_FILTER_LIFE_REMAINING_DAYS = "upper_filter_life_remaining_days"
+ATTR_PTC_LEVEL = "ptc_level"
+ATTR_PTC_STATUS = "ptc_status"
+ATTR_DISPLAY = "display"
+ATTR_DISPLAY_ORIENTATION = "display_orientation"
 
 # Smart Fan
 ATTR_NATURAL_SPEED = "natural_speed"
@@ -419,12 +451,17 @@ AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA4 = {
     ATTR_WATER_LEVEL: "water_level",
 }
 
-AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ_AND_JSQ1 = {
+AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ = {
     **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON,
     ATTR_TARGET_HUMIDITY: "target_humidity",
     ATTR_LED: "led",
     ATTR_NO_WATER: "no_water",
     ATTR_WATER_TANK_DETACHED: "water_tank_detached",
+}
+
+AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ1 = {
+    **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ,
+    ATTR_WET_PROTECTION: "wet_protection",
 }
 
 AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ = {
@@ -455,6 +492,27 @@ AVAILABLE_ATTRIBUTES_AIRFRESH = {
 }
 
 AVAILABLE_ATTRIBUTES_AIRFRESH_VA4 = {**AVAILABLE_ATTRIBUTES_AIRFRESH, ATTR_PTC: "ptc"}
+
+AVAILABLE_ATTRIBUTES_AIRFRESH_T2017 = {
+    ATTR_POWER: "power",
+    ATTR_MODE: "mode",
+    ATTR_PM25: "pm25",
+    ATTR_CO2: "co2",
+    ATTR_TEMPERATURE: "temperature",
+    ATTR_FAVORITE_SPEED: "favorite_speed",
+    ATTR_CONTROL_SPEED: "control_speed",
+    ATTR_DUST_FILTER_LIFE_REMAINING: "dust_filter_life_remaining",
+    ATTR_DUST_FILTER_LIFE_REMAINING_DAYS: "dust_filter_life_remaining_days",
+    ATTR_UPPER_FILTER_LIFE_REMAINING: "upper_filter_life_remaining",
+    ATTR_UPPER_FILTER_LIFE_REMAINING_DAYS: "upper_filter_life_remaining_days",
+    ATTR_PTC: "ptc",
+    ATTR_PTC_LEVEL: "ptc_level",
+    ATTR_PTC_STATUS: "ptc_status",
+    ATTR_CHILD_LOCK: "child_lock",
+    ATTR_BUZZER: "buzzer",
+    ATTR_DISPLAY: "display",
+    ATTR_DISPLAY_ORIENTATION: "display_orientation",
+}
 
 AVAILABLE_ATTRIBUTES_FAN = {
     ATTR_ANGLE: "angle",
@@ -535,6 +593,7 @@ OPERATION_MODES_AIRPURIFIER_V3 = [
     "Strong",
 ]
 OPERATION_MODES_AIRFRESH = ["Auto", "Silent", "Interval", "Low", "Middle", "Strong"]
+OPERATION_MODES_AIRFRESH_T2017 = ["Auto", "Sleep", "Favorite"]
 
 SUCCESS = ["ok"]
 
@@ -552,10 +611,17 @@ FEATURE_SET_TARGET_HUMIDITY = 1024
 FEATURE_SET_DRY = 2048
 FEATURE_SET_FAN_LEVEL = 16384
 FEATURE_SET_MOTOR_SPEED = 32768
+FEATURE_SET_PTC_LEVEL = 131072
+FEATURE_SET_FAVORITE_SPEED = 262144
+FEATURE_SET_DISPLAY_ORIENTATION = 524288
+FEATURE_SET_WET_PROTECTION = 1048576
 
 # Smart Fan
 FEATURE_SET_OSCILLATION_ANGLE = 4096
 FEATURE_SET_NATURAL_MODE = 8192
+
+# Airfresh VA4
+FEATURE_SET_PTC = 65536
 
 FEATURE_FLAGS_AIRPURIFIER = (
     FEATURE_SET_BUZZER
@@ -630,8 +696,15 @@ FEATURE_FLAGS_AIRHUMIDIFIER_CA4 = (
     | FEATURE_SET_MOTOR_SPEED
 )
 
-FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ_AND_JSQ1 = (
+FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ = (
     FEATURE_SET_BUZZER | FEATURE_SET_LED | FEATURE_SET_TARGET_HUMIDITY
+)
+
+FEATURE_FLAGS_AIRHUMIDIFIER_JSQ1 = (
+    FEATURE_SET_BUZZER
+    | FEATURE_SET_LED
+    | FEATURE_SET_TARGET_HUMIDITY
+    | FEATURE_SET_WET_PROTECTION
 )
 
 FEATURE_FLAGS_AIRHUMIDIFIER_JSQ = (
@@ -649,6 +722,26 @@ FEATURE_FLAGS_AIRFRESH = (
     | FEATURE_SET_LED_BRIGHTNESS
     | FEATURE_RESET_FILTER
     | FEATURE_SET_EXTRA_FEATURES
+)
+
+FEATURE_FLAGS_AIRFRESH_VA4 = (
+    FEATURE_SET_BUZZER
+    | FEATURE_SET_CHILD_LOCK
+    | FEATURE_SET_LED
+    | FEATURE_SET_LED_BRIGHTNESS
+    | FEATURE_RESET_FILTER
+    | FEATURE_SET_EXTRA_FEATURES
+    | FEATURE_SET_PTC
+)
+
+FEATURE_FLAGS_AIRFRESH_T2017 = (
+    FEATURE_SET_BUZZER
+    | FEATURE_SET_CHILD_LOCK
+    | FEATURE_SET_LED
+    | FEATURE_RESET_FILTER
+    | FEATURE_SET_PTC
+    | FEATURE_SET_PTC_LEVEL
+    | FEATURE_SET_FAVORITE_SPEED
 )
 
 FEATURE_FLAGS_FAN = (
@@ -688,11 +781,26 @@ SERVICE_SET_TARGET_HUMIDITY = "fan_set_target_humidity"
 SERVICE_SET_DRY_ON = "fan_set_dry_on"
 SERVICE_SET_DRY_OFF = "fan_set_dry_off"
 
+# Airhumidifer JSQ1
+SERVICE_SET_WET_PROTECTION_ON = "fan_set_wet_protection_on"
+SERVICE_SET_WET_PROTECTION_OFF = "fan_set_wet_protection_off"
+
+# Airfresh T2017
+SERVICE_SET_FAVORITE_SPEED = "fan_set_favorite_speed"
+SERVICE_SET_DISPLAY_ON = "fan_set_display_on"
+SERVICE_SET_DISPLAY_OFF = "fan_set_display_off"
+SERVICE_SET_PTC_LEVEL = "fan_set_ptc_level"
+SERVICE_SET_DISPLAY_ORIENTATION = "fan_set_display_orientation"
+
 # Smart Fan
 SERVICE_SET_DELAY_OFF = "fan_set_delay_off"
 SERVICE_SET_OSCILLATION_ANGLE = "fan_set_oscillation_angle"
 SERVICE_SET_NATURAL_MODE_ON = "fan_set_natural_mode_on"
 SERVICE_SET_NATURAL_MODE_OFF = "fan_set_natural_mode_off"
+
+# Airfresh VA4
+SERVICE_SET_PTC_ON = "fan_set_ptc_on"
+SERVICE_SET_PTC_OFF = "fan_set_ptc_off"
 
 AIRPURIFIER_SERVICE_SCHEMA = vol.Schema({vol.Optional(ATTR_ENTITY_ID): cv.entity_ids})
 
@@ -718,6 +826,22 @@ SERVICE_SCHEMA_EXTRA_FEATURES = AIRPURIFIER_SERVICE_SCHEMA.extend(
 
 SERVICE_SCHEMA_TARGET_HUMIDITY = AIRPURIFIER_SERVICE_SCHEMA.extend(
     {vol.Required(ATTR_HUMIDITY): vol.All(vol.Coerce(int), vol.Clamp(min=0, max=99))}
+)
+
+SERVICE_SCHEMA_FAVORITE_SPEED = AIRPURIFIER_SERVICE_SCHEMA.extend(
+    {vol.Required(ATTR_SPEED): vol.All(vol.Coerce(int), vol.Clamp(min=60, max=300))}
+)
+
+SERVICE_SCHEMA_PTC_LEVEL = AIRPURIFIER_SERVICE_SCHEMA.extend(
+    {vol.Required(ATTR_LEVEL): vol.In([level.name for level in AirfreshT2017PtcLevel])}
+)
+
+SERVICE_SCHEMA_DISPLAY_ORIENTATION = AIRPURIFIER_SERVICE_SCHEMA.extend(
+    {
+        vol.Required(ATTR_DISPLAY_ORIENTATION): vol.In(
+            [orientation.name for orientation in AirfreshT2017DisplayOrientation]
+        )
+    }
 )
 
 SERVICE_SCHEMA_MOTOR_SPEED = AIRPURIFIER_SERVICE_SCHEMA.extend(
@@ -760,6 +884,10 @@ SERVICE_TO_METHOD = {
         "method": "async_set_favorite_level",
         "schema": SERVICE_SCHEMA_FAVORITE_LEVEL,
     },
+    SERVICE_SET_FAVORITE_SPEED: {
+        "method": "async_set_favorite_speed",
+        "schema": SERVICE_SCHEMA_FAVORITE_SPEED,
+    },
     SERVICE_SET_FAN_LEVEL: {
         "method": "async_set_fan_level",
         "schema": SERVICE_SCHEMA_FAN_LEVEL,
@@ -789,6 +917,20 @@ SERVICE_TO_METHOD = {
     },
     SERVICE_SET_NATURAL_MODE_ON: {"method": "async_set_natural_mode_on"},
     SERVICE_SET_NATURAL_MODE_OFF: {"method": "async_set_natural_mode_off"},
+    SERVICE_SET_PTC_LEVEL: {
+        "method": "async_set_ptc_level",
+        "schema": SERVICE_SCHEMA_PTC_LEVEL,
+    },
+    SERVICE_SET_DISPLAY_ORIENTATION: {
+        "method": "async_set_display_orientation",
+        "schema": SERVICE_SCHEMA_DISPLAY_ORIENTATION,
+    },
+    SERVICE_SET_PTC_ON: {"method": "async_set_ptc_on"},
+    SERVICE_SET_PTC_OFF: {"method": "async_set_ptc_off"},
+    SERVICE_SET_DISPLAY_ON: {"method": "async_set_display_on"},
+    SERVICE_SET_DISPLAY_OFF: {"method": "async_set_display_off"},
+    SERVICE_SET_WET_PROTECTION_ON: {"method": "async_set_wet_protection"},
+    SERVICE_SET_WET_PROTECTION_OFF: {"method": "async_set_wet_protection"},
 }
 
 
@@ -833,15 +975,22 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     elif model.startswith("zhimi.humidifier."):
         air_humidifier = AirHumidifier(host, token, model=model)
         device = XiaomiAirHumidifier(name, air_humidifier, model, unique_id)
-    elif model in [MODEL_AIRHUMIDIFIER_MJJSQ, MODEL_AIRHUMIDIFIER_JSQ1]:
+    elif model in [
+        MODEL_AIRHUMIDIFIER_MJJSQ,
+        MODEL_AIRHUMIDIFIER_JSQ,
+        MODEL_AIRHUMIDIFIER_JSQ1,
+    ]:
         air_humidifier = AirHumidifierMjjsq(host, token, model=model)
         device = XiaomiAirHumidifierMjjsq(name, air_humidifier, model, unique_id)
     elif model == MODEL_AIRHUMIDIFIER_JSQ001:
         air_humidifier = AirHumidifierJsq(host, token, model=model)
         device = XiaomiAirHumidifierJsq(name, air_humidifier, model, unique_id)
     elif model.startswith("zhimi.airfresh."):
-        air_fresh = AirFresh(host, token)
+        air_fresh = AirFresh(host, token, model=model)
         device = XiaomiAirFresh(name, air_fresh, model, unique_id)
+    elif model == MODEL_AIRFRESH_T2017:
+        air_fresh = AirFreshT2017(host, token, model=model)
+        device = XiaomiAirFreshT2017(name, air_fresh, model, unique_id)
     elif model in [
         MODEL_FAN_V2,
         MODEL_FAN_V3,
@@ -855,6 +1004,9 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     elif model == MODEL_FAN_P5:
         fan = FanP5(host, token, model=model)
         device = XiaomiFanP5(name, fan, model, unique_id, retries)
+    elif model in [MODEL_FAN_P9, MODEL_FAN_P10, MODEL_FAN_P11]:
+        fan = FanMiot(host, token, model=model)
+        device = XiaomiFanMiot(name, fan, model, unique_id, retries)
     else:
         _LOGGER.error(
             "Unsupported device found! Please create an issue at "
@@ -1143,7 +1295,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
             return
 
         await self._try_command(
-            "Turning the led of the miio device off failed.", self._device.set_led, True
+            "Turning the led of the miio device on failed.", self._device.set_led, True
         )
 
     async def async_set_led_off(self):
@@ -1391,7 +1543,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
             return
 
         await self._try_command(
-            "Turning the led of the miio device off failed.", self._device.set_led, True
+            "Turning the led of the miio device on failed.", self._device.set_led, True
         )
 
     async def async_set_led_off(self):
@@ -1433,7 +1585,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
             return
 
         await self._try_command(
-            "Turning the dry mode of the miio device off failed.",
+            "Turning the dry mode of the miio device on failed.",
             self._device.set_dry,
             True,
         )
@@ -1514,8 +1666,13 @@ class XiaomiAirHumidifierMjjsq(XiaomiAirHumidifier):
         """Initialize the plug switch."""
         super().__init__(name, device, model, unique_id)
 
-        self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ_AND_JSQ1
-        self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ_AND_JSQ1
+        if self._model == MODEL_AIRHUMIDIFIER_JSQ1:
+            self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_JSQ1
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ1
+        else:
+            self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ
+
         self._speed_list = [mode.name for mode in AirhumidifierMjjsqOperationMode]
         self._state_attrs = {ATTR_MODEL: self._model}
         self._state_attrs.update(
@@ -1541,6 +1698,28 @@ class XiaomiAirHumidifierMjjsq(XiaomiAirHumidifier):
             "Setting operation mode of the miio device failed.",
             self._device.set_mode,
             AirhumidifierMjjsqOperationMode[speed.title()],
+        )
+
+    async def async_set_wet_protection_on(self):
+        """Turn the wet protection on."""
+        if self._device_features & FEATURE_SET_WET_PROTECTION == 0:
+            return
+
+        await self._try_command(
+            "Turning the wet protection of the miio device on failed.",
+            self._device.set_wet_protection,
+            True,
+        )
+
+    async def async_set_wet_protection_off(self):
+        """Turn the wet protection off."""
+        if self._device_features & FEATURE_SET_WET_PROTECTION == 0:
+            return
+
+        await self._try_command(
+            "Turning the wet protection of the miio device off failed.",
+            self._device.set_wet_protection,
+            False,
         )
 
 
@@ -1602,7 +1781,6 @@ class XiaomiAirHumidifierJsq(XiaomiAirHumidifier):
         return None
 
 
-# TODO: Add set_ptc service for zhimi.airfresh.va4
 class XiaomiAirFresh(XiaomiGenericDevice):
     """Representation of a Xiaomi Air Fresh."""
 
@@ -1612,10 +1790,11 @@ class XiaomiAirFresh(XiaomiGenericDevice):
 
         if self._model == MODEL_AIRFRESH_VA4:
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRFRESH_VA4
+            self._device_features = FEATURE_FLAGS_AIRFRESH_VA4
         else:
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRFRESH
+            self._device_features = FEATURE_FLAGS_AIRFRESH
 
-        self._device_features = FEATURE_FLAGS_AIRFRESH
         self._speed_list = OPERATION_MODES_AIRFRESH
         self._state_attrs.update(
             {attribute: None for attribute in self._available_attributes}
@@ -1677,7 +1856,7 @@ class XiaomiAirFresh(XiaomiGenericDevice):
             return
 
         await self._try_command(
-            "Turning the led of the miio device off failed.", self._device.set_led, True
+            "Turning the led of the miio device on failed.", self._device.set_led, True
         )
 
     async def async_set_led_off(self):
@@ -1721,6 +1900,153 @@ class XiaomiAirFresh(XiaomiGenericDevice):
         await self._try_command(
             "Resetting the filter lifetime of the miio device failed.",
             self._device.reset_filter,
+        )
+
+    async def async_set_ptc_on(self):
+        """Turn the ptc on."""
+        if self._device_features & FEATURE_SET_PTC == 0:
+            return
+
+        await self._try_command(
+            "Turning the ptc of the miio device on failed.", self._device.set_ptc, True
+        )
+
+    async def async_set_ptc_off(self):
+        """Turn the ptc off."""
+        if self._device_features & FEATURE_SET_PTC == 0:
+            return
+
+        await self._try_command(
+            "Turning the led of the miio device off failed.",
+            self._device.set_ptc,
+            False,
+        )
+
+
+class XiaomiAirFreshT2017(XiaomiAirFresh):
+    """Representation of a Xiaomi Air Fresh T2017."""
+
+    def __init__(self, name, device, model, unique_id):
+        """Initialize the miio device."""
+        super().__init__(name, device, model, unique_id)
+
+        self._available_attributes = AVAILABLE_ATTRIBUTES_AIRFRESH_T2017
+        self._device_features = FEATURE_FLAGS_AIRFRESH_T2017
+        self._speed_list = OPERATION_MODES_AIRFRESH_T2017
+        self._state_attrs.update(
+            {attribute: None for attribute in self._available_attributes}
+        )
+
+    async def async_update(self):
+        """Fetch state from the device."""
+        # On state change the device doesn't provide the new state immediately.
+        if self._skip_update:
+            self._skip_update = False
+            return
+
+        try:
+            state = await self.hass.async_add_executor_job(self._device.status)
+            _LOGGER.debug("Got new state: %s", state)
+
+            self._available = True
+            self._state = state.is_on
+            self._state_attrs.update(
+                {
+                    key: self._extract_value_from_attribute(state, value)
+                    for key, value in self._available_attributes.items()
+                }
+            )
+
+        except DeviceException as ex:
+            self._available = False
+            _LOGGER.error("Got exception while fetching the state: %s", ex)
+
+    @property
+    def speed(self):
+        """Return the current speed."""
+        if self._state:
+            return AirfreshT2017OperationMode(self._state_attrs[ATTR_MODE]).name
+
+        return None
+
+    async def async_set_speed(self, speed: str) -> None:
+        """Set the speed of the fan."""
+        if self.supported_features & SUPPORT_SET_SPEED == 0:
+            return
+
+        await self._try_command(
+            "Setting operation mode of the miio device failed.",
+            self._device.set_mode,
+            AirfreshT2017OperationMode[speed.title()],
+        )
+
+    async def async_set_ptc_level(self, level: str):
+        """Set the ptc level."""
+        if self._device_features & FEATURE_SET_PTC_LEVEL == 0:
+            return
+
+        await self._try_command(
+            "Setting the ptc level of the miio device failed.",
+            self._device.set_ptc_level,
+            AirfreshT2017PtcLevel[level.title()],
+        )
+
+    async def async_set_display_on(self):
+        """Turn the display on."""
+        if self._device_features & FEATURE_SET_LED == 0:
+            return
+
+        await self._try_command(
+            "Turning the led of the miio device off failed.",
+            self._device.set_display,
+            True,
+        )
+
+    async def async_set_display_off(self):
+        """Turn the display off."""
+        if self._device_features & FEATURE_SET_LED == 0:
+            return
+
+        await self._try_command(
+            "Turning the led of the miio device off failed.",
+            self._device.set_display,
+            False,
+        )
+
+    async def async_set_display_orientation(self, orientation: str):
+        """Set the display orientation."""
+        if self._device_features & FEATURE_SET_DISPLAY_ORIENTATION == 0:
+            return
+
+        await self._try_command(
+            "Setting the display orientation of the miio device failed.",
+            self._device.set_display_orientation,
+            AirfreshT2017DisplayOrientation[orientation.title()],
+        )
+
+    async def async_set_favorite_speed(self, speed: int = 1):
+        """Set the favorite speed."""
+        if self._device_features & FEATURE_SET_FAVORITE_SPEED == 0:
+            return
+
+        await self._try_command(
+            "Setting the favorite speed of the miio device failed.",
+            self._device.set_favorite_speed,
+            speed,
+        )
+
+    async def async_reset_filter(self):
+        """Reset the filter lifetime and usage."""
+        if self._device_features & FEATURE_RESET_FILTER == 0:
+            return
+
+        await self._try_command(
+            "Resetting the upper filter lifetime of the miio device failed.",
+            self._device.reset_upper_filter,
+        )
+        await self._try_command(
+            "Resetting the dust filter lifetime of the miio device failed.",
+            self._device.reset_dust_filter,
         )
 
 
@@ -2044,3 +2370,7 @@ class XiaomiFanP5(XiaomiFan):
             self._device.delay_off,
             delay_off_countdown,
         )
+
+
+class XiaomiFanMiot(XiaomiFanP5):
+    """Representation of a Xiaomi Pedestal Fan P9, P10, P11."""
