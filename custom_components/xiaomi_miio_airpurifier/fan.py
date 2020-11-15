@@ -110,6 +110,7 @@ MODEL_AIRHUMIDIFIER_CA1 = "zhimi.humidifier.ca1"
 MODEL_AIRHUMIDIFIER_CA4 = "zhimi.humidifier.ca4"
 MODEL_AIRHUMIDIFIER_CB1 = "zhimi.humidifier.cb1"
 MODEL_AIRHUMIDIFIER_MJJSQ = "deerma.humidifier.mjjsq"
+MODEL_AIRHUMIDIFIER_JSQ = "deerma.humidifier.jsq"
 MODEL_AIRHUMIDIFIER_JSQ1 = "deerma.humidifier.jsq1"
 MODEL_AIRHUMIDIFIER_JSQ001 = "shuii.humidifier.jsq001"
 
@@ -156,6 +157,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_AIRHUMIDIFIER_CA4,
                 MODEL_AIRHUMIDIFIER_CB1,
                 MODEL_AIRHUMIDIFIER_MJJSQ,
+                MODEL_AIRHUMIDIFIER_JSQ,
                 MODEL_AIRHUMIDIFIER_JSQ1,
                 MODEL_AIRHUMIDIFIER_JSQ001,
                 MODEL_AIRFRESH_VA2,
@@ -230,7 +232,7 @@ ATTR_FAHRENHEIT = "fahrenheit"
 ATTR_FAULT = "fault"
 ATTR_POWER_TIME = "power_time"
 
-# Air Humidifier MJJSQ and JSQ1
+# Air Humidifier MJJSQ, JSQ and JSQ1
 ATTR_NO_WATER = "no_water"
 ATTR_WATER_TANK_DETACHED = "water_tank_detached"
 ATTR_WET_PROTECTION = "wet_protection"
@@ -973,7 +975,11 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     elif model.startswith("zhimi.humidifier."):
         air_humidifier = AirHumidifier(host, token, model=model)
         device = XiaomiAirHumidifier(name, air_humidifier, model, unique_id)
-    elif model in [MODEL_AIRHUMIDIFIER_MJJSQ, MODEL_AIRHUMIDIFIER_JSQ1]:
+    elif model in [
+        MODEL_AIRHUMIDIFIER_MJJSQ,
+        MODEL_AIRHUMIDIFIER_JSQ,
+        MODEL_AIRHUMIDIFIER_JSQ1,
+    ]:
         air_humidifier = AirHumidifierMjjsq(host, token, model=model)
         device = XiaomiAirHumidifierMjjsq(name, air_humidifier, model, unique_id)
     elif model == MODEL_AIRHUMIDIFIER_JSQ001:
