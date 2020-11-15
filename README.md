@@ -465,6 +465,7 @@ This model uses newer MiOT communication protocol.
 * Buzzer (on, off)
 * LED (on, off)
 * Target humidity (0...99)
+* Wet protection (on, off) (deerma.humidifier.jsq1 only)
 * Attributes
   - `model`
   - `temperature`
@@ -475,6 +476,7 @@ This model uses newer MiOT communication protocol.
   - `led`
   - `no_water`
   - `water_tank_detached`
+  - `wet_protection` (deerma.humidifier.jsq1 only)
 
 ### Air Dehumidifier (nwt.derh.wdh318efw1)
 
@@ -1086,6 +1088,22 @@ Turn the display on.
 #### Service `xiaomi_miio_airpurifier.fan_set_display_off` (Air Fresh T2017 only)
 
 Turn the display off.
+
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.          |
+
+#### Service `xiaomi_miio_airpurifier.fan_set_wet_protection_on` (deerma.humidifier.jsq1 only)
+
+Turn the wet protection on.
+
+| Service data attribute    | Optional | Description                                             |
+|---------------------------|----------|---------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.          |
+
+#### Service `xiaomi_miio_airpurifier.fan_set_wet_protection_on` (deerma.humidifier.jsq1 only)
+
+Turn the wet protection off.
 
 | Service data attribute    | Optional | Description                                             |
 |---------------------------|----------|---------------------------------------------------------|
