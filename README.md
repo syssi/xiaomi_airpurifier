@@ -432,7 +432,7 @@ This model uses newer MiOT communication protocol.
 
 ### Mi Fresh Air Ventilator (dmaker.airfresh.t2017)
 
-This paragraph was moved to [docs/dmaker-airfresh-t2017.md](dmaker-airfresh-t2017.md).
+This paragraph was moved to [docs/dmaker-airfresh-t2017.md](docs/dmaker-airfresh-t2017.md).
 
 ### Air Humidifier MJJSQ and JSQ1 (deerma.humidifier.mjjsq, deerma.humidifier.jsq1)
 
