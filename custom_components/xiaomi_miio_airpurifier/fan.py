@@ -6,6 +6,7 @@ import logging
 
 from miio import (  # pylint: disable=import-error
     AirFresh,
+    AirFreshA1,
     AirFreshT2017,
     AirHumidifier,
     AirHumidifierJsq,
