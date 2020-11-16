@@ -1005,7 +1005,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         device = XiaomiAirFresh(name, air_fresh, model, unique_id)
     elif model == MODEL_AIRFRESH_A1:
         air_fresh = AirFreshA1(host, token, model=model)
-        device = XiaomiAirFreshT2017(name, air_fresh, model, unique_id)
+        device = XiaomiAirFreshA1(name, air_fresh, model, unique_id)
     elif model == MODEL_AIRFRESH_T2017:
         air_fresh = AirFreshT2017(host, token, model=model)
         device = XiaomiAirFreshT2017(name, air_fresh, model, unique_id)
