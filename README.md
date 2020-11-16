@@ -37,7 +37,7 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 | New Widetech Internet Dehumidifier  | nwt.derh.wdh318efw1  | WDH318EFW1  | 2.7L tank, 38dB, 18L/d, 240W |
 | Smartmi Fresh Air System XFXT01ZM        | zhimi.airfresh.va2  | XFXT01ZM     | |
 | Smartmi Fresh Air System XFXTDFR02ZM     | zhimi.airfresh.va4  | XFXTDFR02ZM  | PTC/Heater support |
-| Mi Fresh Air Ventilator  | dmaker.airfresh.t2017  | MJXFJ-300-G1**?** | 300m3/h (Air volume), 35W, 36db(A), 16kg |
+| Mi Fresh Air Ventilator  | [dmaker.airfresh.t2017](docs/dmaker-airfresh-t2017.md)  | MJXFJ-300-G1**?** | 300m3/h (Air volume), 35W, 36db(A), 16kg |
 | Pedestal Fan Fan V2    | zhimi.fan.v2           | | |
 | Pedestal Fan Fan V3    | zhimi.fan.v3           | | |
 | Pedestal Fan Fan SA1   | zhimi.fan.sa1          | | |
@@ -430,34 +430,9 @@ This model uses newer MiOT communication protocol.
   - `extra_features`
   - `ptc` (zhimi.airfresh.va4 only)
 
-### Air Fresh T2017 (dmaker.airfresh.t2017)
+### Mi Fresh Air Ventilator (dmaker.airfresh.t2017)
 
-- Power (on, off)
-- Operation modes (Off, Auto, Sleep, Favorite)
-- Buzzer (on, off)
-- Child lock (on, off)
-- Display (on, off), Display orientation (Portrait, LandscapeLeft, LandscapeRight)
-- PTC (on, off), PTC level (Low, Medium, High)
-- Attributes
-  - `model`
-  - `mode`
-  - `pm25`
-  - `co2`
-  - `temperature`
-  - `favorite_speed`
-  - `control_speed`
-  - `dust_filter_life_remaining`
-  - `dust_filter_life_remaining_days`
-  - `upper_filter_life_remaining`
-  - `upper_filter_life_remaining_days`
-  - `ptc`
-  - `ptc_level`
-  - `ptc_status`
-  - `child_lock`
-  - `buzzer`
-  - `display`
-  - `display_orientation`
-
+This paragraph was moved to [docs/dmaker-airfresh-t2017.md](dmaker-airfresh-t2017.md).
 
 ### Air Humidifier MJJSQ and JSQ1 (deerma.humidifier.mjjsq, deerma.humidifier.jsq1)
 
