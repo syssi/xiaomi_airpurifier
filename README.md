@@ -1051,7 +1051,7 @@ Turn the ptc off.
 |---------------------------|----------|---------------------------------------------------------|
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.          |
 
-#### Service `xiaomi_miio_airpurifier.async_set_favorite_speed` (Air Fresh T2017 only)
+#### Service `xiaomi_miio_airpurifier.set_favorite_speed` (Air Fresh T2017 only)
 
 Set the favorite speed.
 
@@ -1060,7 +1060,7 @@ Set the favorite speed.
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
 | `speed`                   |       no | Volume, between 60 and 300.                                          |
 
-#### Service `xiaomi_miio_airpurifier.async_set_ptc_level` (Air Fresh T2017 only)
+#### Service `xiaomi_miio_airpurifier.set_ptc_level` (Air Fresh T2017 only)
 
 Set the ptc level.
 
