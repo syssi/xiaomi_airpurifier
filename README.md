@@ -465,7 +465,7 @@ This paragraph was moved to [docs/dmaker-airfresh-t2017.md](docs/dmaker-airfresh
 * LED (on, off)
 * Attributes
   - `model`
-  - `temperature`
+  - `_current_temperature`
   - `humidity`
   - `mode`
   - `buzzer`

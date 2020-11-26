@@ -62,7 +62,10 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 ATTR_MODEL = "model"
 
 # Air Dehumidifier
-ATTR_CURRENT_TEMPERATUR = "current_temperature"
+
+# Don't expose the temperature as current_temperature because
+# it overrides the current humidity at the frontend. (#107)
+ATTR_CURRENT_TEMPERATUR = "_current_temperature"
 ATTR_MODE = "mode"
 ATTR_BUZZER = "buzzer"
 ATTR_CHILD_LOCK = "child_lock"
