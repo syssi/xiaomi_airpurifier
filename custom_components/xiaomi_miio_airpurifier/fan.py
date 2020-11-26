@@ -932,8 +932,8 @@ SERVICE_TO_METHOD = {
     SERVICE_SET_PTC_OFF: {"method": "async_set_ptc_off"},
     SERVICE_SET_DISPLAY_ON: {"method": "async_set_display_on"},
     SERVICE_SET_DISPLAY_OFF: {"method": "async_set_display_off"},
-    SERVICE_SET_WET_PROTECTION_ON: {"method": "async_set_wet_protection"},
-    SERVICE_SET_WET_PROTECTION_OFF: {"method": "async_set_wet_protection"},
+    SERVICE_SET_WET_PROTECTION_ON: {"method": "async_set_wet_protection_on"},
+    SERVICE_SET_WET_PROTECTION_OFF: {"method": "async_set_wet_protection_off"},
 }
 
 
