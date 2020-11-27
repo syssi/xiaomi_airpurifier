@@ -6,6 +6,10 @@ Please follow the instructions on [Retrieving the Access Token](https://home-ass
 
 Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all the work.
 
+## What is the difference between this custom component and the one in Home Assistant Core?
+
+This custom component is more or less the beta version of the [official component](https://www.home-assistant.io/integrations/xiaomi_miio/). Furthermore, this custom component supports a number of additional devices which cannot be merged into the official component at the moment. The handling/values of the `fan_speed` property need to be refactored first because this and the official component don't align with some new architecture decisions.
+
 ## Supported devices
 
 | Name                   | Model                  | Model no. | Specs |
