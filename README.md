@@ -15,7 +15,7 @@ This custom component is more or less the beta version of the [official componen
 | Name                   | Model                  | Model no. | Specs |
 | ---------------------- | ---------------------- | --------- | ----- |
 | Air Purifier           | zhimi.airpurifier.v1   | | |
-| Air Purifier 2         | zhimi.airpurifier.v2   | FJY4006CN | |
+| Air Purifier 2         | zhimi.airpurifier.v2   | FJY4006CN, AC-M2-AA  | 37m<sup>2</sup>, 310m<sup>3</sup>/h CADR, 31W  |
 | Air Purifier V3        | zhimi.airpurifier.v3   | | |
 | Air Purifier V5        | zhimi.airpurifier.v5   | | |
 | Air Purifier Pro       | zhimi.airpurifier.v6   | | |
