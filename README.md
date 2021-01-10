@@ -6,12 +6,16 @@ Please follow the instructions on [Retrieving the Access Token](https://home-ass
 
 Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all the work.
 
+## What is the difference between this custom component and the one in Home Assistant Core?
+
+This custom component is more or less the beta version of the [official component](https://www.home-assistant.io/integrations/xiaomi_miio/). Furthermore, this custom component supports a number of additional devices which cannot be merged into the official component at the moment. The handling/values of the `fan_speed` property need to be refactored first because this and the official component don't align with some new architecture decisions.
+
 ## Supported devices
 
 | Name                   | Model                  | Model no. | Specs |
 | ---------------------- | ---------------------- | --------- | ----- |
 | Air Purifier           | zhimi.airpurifier.v1   | | |
-| Air Purifier 2         | zhimi.airpurifier.v2   | FJY4006CN | |
+| Air Purifier 2         | zhimi.airpurifier.v2   | FJY4006CN, AC-M2-AA  | 37m<sup>2</sup>, 310m<sup>3</sup>/h CADR, 31W  |
 | Air Purifier V3        | zhimi.airpurifier.v3   | | |
 | Air Purifier V5        | zhimi.airpurifier.v5   | | |
 | Air Purifier Pro       | zhimi.airpurifier.v6   | | |
@@ -31,13 +35,13 @@ Credits: Thanks to [Rytilahti](https://github.com/rytilahti/python-miio) for all
 | Smartmi Humidifier Evaporator 2  | zhimi.humidifier.ca4   | CJXJSQ04ZM  | |
 | Air Humidifier CB1     | zhimi.humidifier.cb1   | | |
 | Mijia Smart Sterilization Humidifier S  | deerma.humidifier.mjjsq  | MJJSQ03DY  | 4.5L, <=39dB, 450mL/h, 40W  |
-| Mijia Intelligent Sterilization Humidifier  | deerma.humidifier.jsq  |  |  |
+| Mijia Intelligent Sterilization Humidifier (EU version?) | deerma.humidifier.jsq  | ZNJSQ01DEM  | 4.5L, <=38dB, 300mL/h, 24W  |
 | Mijia Intelligent Sterilization Humidifier SCK0A45  | deerma.humidifier.jsq1    | SCKOA45, SCK0A45  | 4.5L, <=38dB, 300mL/h, 25W |
 | Zero Fog Humidifier    | shuii.humidifier.jsq001   | | |
 | New Widetech Internet Dehumidifier  | nwt.derh.wdh318efw1  | WDH318EFW1  | 2.7L tank, 38dB, 18L/d, 240W |
 | Smartmi Fresh Air System XFXT01ZM        | zhimi.airfresh.va2  | XFXT01ZM     | |
 | Smartmi Fresh Air System XFXTDFR02ZM     | zhimi.airfresh.va4  | XFXTDFR02ZM  | PTC/Heater support |
-| Mi Fresh Air Ventilator  | dmaker.airfresh.t2017  | MJXFJ-300-G1**?** | 300m3/h (Air volume), 35W, 36db(A), 16kg |
+| Mi Fresh Air Ventilator  | [dmaker.airfresh.t2017](docs/dmaker-airfresh-t2017.md)  | MJXFJ-300-G1**?** | 300m3/h (Air volume), 35W, 36db(A), 16kg |
 | Pedestal Fan Fan V2    | zhimi.fan.v2           | | |
 | Pedestal Fan Fan V3    | zhimi.fan.v3           | | |
 | Pedestal Fan Fan SA1   | zhimi.fan.sa1          | | |
@@ -430,34 +434,9 @@ This model uses newer MiOT communication protocol.
   - `extra_features`
   - `ptc` (zhimi.airfresh.va4 only)
 
-### Air Fresh T2017 (dmaker.airfresh.t2017)
+### Mi Fresh Air Ventilator (dmaker.airfresh.t2017)
 
-- Power (on, off)
-- Operation modes (Off, Auto, Sleep, Favorite)
-- Buzzer (on, off)
-- Child lock (on, off)
-- Display (on, off), Display orientation (Portrait, LandscapeLeft, LandscapeRight)
-- PTC (on, off), PTC level (Low, Medium, High)
-- Attributes
-  - `model`
-  - `mode`
-  - `pm25`
-  - `co2`
-  - `temperature`
-  - `favorite_speed`
-  - `control_speed`
-  - `dust_filter_life_remaining`
-  - `dust_filter_life_remaining_days`
-  - `upper_filter_life_remaining`
-  - `upper_filter_life_remaining_days`
-  - `ptc`
-  - `ptc_level`
-  - `ptc_status`
-  - `child_lock`
-  - `buzzer`
-  - `display`
-  - `display_orientation`
-
+This paragraph was moved to [docs/dmaker-airfresh-t2017.md](docs/dmaker-airfresh-t2017.md).
 
 ### Air Humidifier MJJSQ and JSQ1 (deerma.humidifier.mjjsq, deerma.humidifier.jsq1)
 
@@ -490,7 +469,7 @@ This model uses newer MiOT communication protocol.
 * LED (on, off)
 * Attributes
   - `model`
-  - `temperature`
+  - `_current_temperature`
   - `humidity`
   - `mode`
   - `buzzer`
@@ -1051,7 +1030,7 @@ Turn the ptc off.
 |---------------------------|----------|---------------------------------------------------------|
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.          |
 
-#### Service `xiaomi_miio_airpurifier.async_set_favorite_speed` (Air Fresh T2017 only)
+#### Service `xiaomi_miio_airpurifier.fan_set_favorite_speed` (Air Fresh T2017 only)
 
 Set the favorite speed.
 
@@ -1060,7 +1039,7 @@ Set the favorite speed.
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
 | `speed`                   |       no | Volume, between 60 and 300.                                          |
 
-#### Service `xiaomi_miio_airpurifier.async_set_ptc_level` (Air Fresh T2017 only)
+#### Service `xiaomi_miio_airpurifier.fan_set_ptc_level` (Air Fresh T2017 only)
 
 Set the ptc level.
 
@@ -1076,7 +1055,7 @@ Set the display orientation.
 | Service data attribute    | Optional | Description                                                          |
 |---------------------------|----------|----------------------------------------------------------------------|
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
-| `orientation`             |       no | Display orientation. Valid values are `Portrait`, `LandscapeLeft` and `LandscapeRight`.  |
+| `display_orientation`             |       no | Display orientation. Valid values are `Portrait`, `LandscapeLeft` and `LandscapeRight`.  |
 
 #### Service `xiaomi_miio_airpurifier.fan_set_display_on` (Air Fresh T2017 only)
 

@@ -441,6 +441,8 @@ AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA_AND_CB = {
 
 AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA4 = {
     **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON,
+    ATTR_CHILD_LOCK: "child_lock",
+    ATTR_LED_BRIGHTNESS: "led_brightness",
     ATTR_TARGET_HUMIDITY: "target_humidity",
     ATTR_ACTUAL_MOTOR_SPEED: "actual_speed",
     ATTR_BUTTON_PRESSED: "button_pressed",
@@ -742,6 +744,7 @@ FEATURE_FLAGS_AIRFRESH_T2017 = (
     | FEATURE_SET_PTC
     | FEATURE_SET_PTC_LEVEL
     | FEATURE_SET_FAVORITE_SPEED
+    | FEATURE_SET_DISPLAY_ORIENTATION
 )
 
 FEATURE_FLAGS_FAN = (
@@ -929,8 +932,8 @@ SERVICE_TO_METHOD = {
     SERVICE_SET_PTC_OFF: {"method": "async_set_ptc_off"},
     SERVICE_SET_DISPLAY_ON: {"method": "async_set_display_on"},
     SERVICE_SET_DISPLAY_OFF: {"method": "async_set_display_off"},
-    SERVICE_SET_WET_PROTECTION_ON: {"method": "async_set_wet_protection"},
-    SERVICE_SET_WET_PROTECTION_OFF: {"method": "async_set_wet_protection"},
+    SERVICE_SET_WET_PROTECTION_ON: {"method": "async_set_wet_protection_on"},
+    SERVICE_SET_WET_PROTECTION_OFF: {"method": "async_set_wet_protection_off"},
 }
 
 
@@ -2013,7 +2016,7 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
             False,
         )
 
-    async def async_set_display_orientation(self, orientation: str):
+    async def async_set_display_orientation(self, display_orientation: str):
         """Set the display orientation."""
         if self._device_features & FEATURE_SET_DISPLAY_ORIENTATION == 0:
             return
@@ -2021,7 +2024,7 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
         await self._try_command(
             "Setting the display orientation of the miio device failed.",
             self._device.set_display_orientation,
-            AirfreshT2017DisplayOrientation[orientation.title()],
+            AirfreshT2017DisplayOrientation[display_orientation],
         )
 
     async def async_set_favorite_speed(self, speed: int = 1):
