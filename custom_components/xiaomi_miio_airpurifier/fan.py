@@ -231,6 +231,7 @@ ATTR_ACTUAL_MOTOR_SPEED = "actual_speed"
 ATTR_FAHRENHEIT = "fahrenheit"
 ATTR_FAULT = "fault"
 ATTR_POWER_TIME = "power_time"
+ATTR_CLEAN_MODE = "clean_mode"
 
 # Air Humidifier MJJSQ, JSQ and JSQ1
 ATTR_NO_WATER = "no_water"
@@ -452,6 +453,7 @@ AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA4 = {
     ATTR_POWER_TIME: "power_time",
     ATTR_WATER_LEVEL: "water_level",
     ATTR_USE_TIME: "use_time",
+    ATTR_CLEAN_MODE: "clean_mode",
 }
 
 AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ = {
@@ -618,6 +620,7 @@ FEATURE_SET_PTC_LEVEL = 131072
 FEATURE_SET_FAVORITE_SPEED = 262144
 FEATURE_SET_DISPLAY_ORIENTATION = 524288
 FEATURE_SET_WET_PROTECTION = 1048576
+FEATURE_SET_CLEAN_MODE = 2097152
 
 # Smart Fan
 FEATURE_SET_OSCILLATION_ANGLE = 4096
@@ -697,6 +700,7 @@ FEATURE_FLAGS_AIRHUMIDIFIER_CA4 = (
     | FEATURE_SET_TARGET_HUMIDITY
     | FEATURE_SET_DRY
     | FEATURE_SET_MOTOR_SPEED
+    | FEATURE_SET_CLEAN_MODE
 )
 
 FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ = (
@@ -784,6 +788,10 @@ SERVICE_SET_EXTRA_FEATURES = "fan_set_extra_features"
 SERVICE_SET_TARGET_HUMIDITY = "fan_set_target_humidity"
 SERVICE_SET_DRY_ON = "fan_set_dry_on"
 SERVICE_SET_DRY_OFF = "fan_set_dry_off"
+
+# Airhumidifer CA4
+SERVICE_SET_CLEAN_MODE_ON = "fan_set_clean_mode_on"
+SERVICE_SET_CLEAN_MODE_OFF = "fan_set_clean_mode_off"
 
 # Airhumidifer JSQ1
 SERVICE_SET_WET_PROTECTION_ON = "fan_set_wet_protection_on"
@@ -935,6 +943,8 @@ SERVICE_TO_METHOD = {
     SERVICE_SET_DISPLAY_OFF: {"method": "async_set_display_off"},
     SERVICE_SET_WET_PROTECTION_ON: {"method": "async_set_wet_protection_on"},
     SERVICE_SET_WET_PROTECTION_OFF: {"method": "async_set_wet_protection_off"},
+    SERVICE_SET_CLEAN_MODE_ON: {"method": "async_set_clean_mode_on"},
+    SERVICE_SET_CLEAN_MODE_OFF: {"method": "async_set_clean_mode_off"},
 }
 
 
@@ -1602,6 +1612,28 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
         await self._try_command(
             "Turning the dry mode of the miio device off failed.",
             self._device.set_dry,
+            False,
+        )
+
+    async def async_set_clean_mode_on(self):
+        """Turn the clean mode on."""
+        if self._device_features & FEATURE_SET_CLEAN_MODE == 0:
+            return
+
+        await self._try_command(
+            "Turning the clean mode of the miio device on failed.",
+            self._device.set_clean_mode,
+            True
+        )
+
+    async def async_set_led_off(self):
+        """Turn the clean mode off."""
+        if self._device_features & FEATURE_SET_CLEAN_MODE == 0:
+            return
+
+        await self._try_command(
+            "Turning the clean mode of the miio device off failed.",
+            self._device.set_clean_mode,
             False,
         )
 
