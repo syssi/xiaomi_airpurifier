@@ -360,6 +360,7 @@ This model uses newer MiOT communication protocol.
   - `motor_speed`
   - `power_time`
   - `water_level`
+  - `use_time`
 
 ### Air Humidifier CB (zhimi.humidifier.cb1)
 
