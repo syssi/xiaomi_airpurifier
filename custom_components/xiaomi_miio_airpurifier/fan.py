@@ -62,7 +62,6 @@ from miio.fan import (  # pylint: disable=import-error, import-error
 from miio.fan_leshow import (  # pylint: disable=import-error, import-error
     OperationMode as FanLeshowOperationMode,
 )
-
 import voluptuous as vol
 
 from homeassistant.components.fan import (
