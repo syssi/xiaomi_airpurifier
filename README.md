@@ -33,7 +33,7 @@ This custom component is more or less the beta version of the [official componen
 | Air Humidifier         | zhimi.humidifier.v1    | | |
 | Air Humidifier CA1     | zhimi.humidifier.ca1   | | |
 | Smartmi Humidifier Evaporator 2  | zhimi.humidifier.ca4   | CJXJSQ04ZM  | |
-| Air Humidifier CB1     | zhimi.humidifier.cb1   | CJXJSQ02ZM  | |
+| Smartmi Evaporative Humidifier   | zhimi.humidifier.cb1   | CJXJSQ02ZM, SKV6001EU  | 8W, 240x240x363mm  |
 | Mijia Smart Sterilization Humidifier S  | deerma.humidifier.mjjsq  | MJJSQ03DY  | 4.5L, <=39dB, 450mL/h, 40W  |
 | Mijia Intelligent Sterilization Humidifier (EU version?) | deerma.humidifier.jsq  | ZNJSQ01DEM  | 4.5L, <=38dB, 300mL/h, 24W  |
 | Mijia Intelligent Sterilization Humidifier SCK0A45  | deerma.humidifier.jsq1    | SCKOA45, SCK0A45  | 4.5L, <=38dB, 300mL/h, 25W |
