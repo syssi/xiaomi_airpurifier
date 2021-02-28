@@ -33,7 +33,7 @@ This custom component is more or less the beta version of the [official componen
 | Air Humidifier         | zhimi.humidifier.v1    | | |
 | Air Humidifier CA1     | zhimi.humidifier.ca1   | | |
 | Smartmi Humidifier Evaporator 2  | zhimi.humidifier.ca4   | CJXJSQ04ZM  | |
-| Air Humidifier CB1     | zhimi.humidifier.cb1   | | |
+| Smartmi Evaporative Humidifier   | zhimi.humidifier.cb1   | CJXJSQ02ZM, SKV6001EU  | 8W, 240x240x363mm  |
 | Mijia Smart Sterilization Humidifier S  | deerma.humidifier.mjjsq  | MJJSQ03DY  | 4.5L, <=39dB, 450mL/h, 40W  |
 | Mijia Intelligent Sterilization Humidifier (EU version?) | deerma.humidifier.jsq  | ZNJSQ01DEM  | 4.5L, <=38dB, 300mL/h, 24W  |
 | Mijia Intelligent Sterilization Humidifier SCK0A45  | deerma.humidifier.jsq1    | SCKOA45, SCK0A45  | 4.5L, <=38dB, 300mL/h, 25W |
@@ -49,9 +49,9 @@ This custom component is more or less the beta version of the [official componen
 | Pedestal Fan Fan ZA3   | zhimi.fan.za3          | | |
 | Pedestal Fan Fan ZA4   | zhimi.fan.za4          | | |
 | Pedestal Fan Fan P5    | dmaker.fan.p5          | | |
-| Pedestal Fan Fan P9     | dmaker.fan.p9         | | Supported as soon as python-miio 0.5.4 is released.  |
-| Pedestal Fan Fan P10    | dmaker.fan.p10        | | Supported as soon as python-miio 0.5.4 is released.  |
-| Mijia Pedestal Fan      | dmaker.fan.p11        | BPLDS03DM  | Supported as soon as python-miio 0.5.4 is released. 2800mAh, 24W, <=58dB  |
+| Pedestal Fan Fan P9     | dmaker.fan.p9         | | |
+| Pedestal Fan Fan P10    | dmaker.fan.p10        | | |
+| Mijia Pedestal Fan      | dmaker.fan.p11        | BPLDS03DM  | 2800mAh, 24W, <=58dB  |
 
 Support unknown / Testing required:
 - Mijia Humidifier 4L (MJJSQ04DY), 300ml/h, 25W, <=38dB: Please create an issue if you own this device.
@@ -360,6 +360,7 @@ This model uses newer MiOT communication protocol.
   - `motor_speed`
   - `power_time`
   - `water_level`
+  - `use_time`
 
 ### Air Humidifier CB (zhimi.humidifier.cb1)
 

@@ -118,6 +118,10 @@ sensor:
         icon_template: mdi:thermometer
       xiaomi_fresh_air_ventilator_current_speed:
         friendly_name: Current speed
+        value_template: '{{ states.fan.xiaomi_fresh_air_ventilator.attributes.control_speed }}'
+        icon_template: mdi:speedometer
+      xiaomi_fresh_air_ventilator_favorite_speed:
+        friendly_name: Favorite speed
         value_template: '{{ states.fan.xiaomi_fresh_air_ventilator.attributes.favorite_speed }}'
         icon_template: mdi:speedometer
       xiaomi_fresh_air_ventilator_ptc_status:
@@ -282,6 +286,7 @@ entities:
   - entity: input_select.xiaomi_fresh_air_ventilator_ptc_level
   - entity: sensor.xiaomi_fresh_air_ventilator_ptc_status
   - entity: sensor.xiaomi_fresh_air_ventilator_current_speed
+  - entity: sensor.xiaomi_fresh_air_ventilator_favorite_speed
   - entity: sensor.xiaomi_fresh_air_ventilator_co2
   - entity: sensor.xiaomi_fresh_air_ventilator_pm25
   - entity: sensor.xiaomi_fresh_air_ventilator_temperature

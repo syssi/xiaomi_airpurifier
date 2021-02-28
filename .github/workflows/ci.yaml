@@ -4,6 +4,7 @@ on:
   pull_request:
   schedule:
     - cron: '0 0 * * *'
+
 jobs:
   ci:
     runs-on: ubuntu-latest
@@ -14,15 +15,16 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-python@v2
         name: Setup Python
+        with:
+          python-version: '3.8.x'
       - uses: actions/cache@v2
         name: Cache
         with:
           path: |
             ~/.cache/pip
           key: custom-component-ci
-      - uses: hacs/integration/action@main
+      - uses: hacs/action@main
         with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CATEGORY: integration
       - uses: KTibow/ha-blueprint@stable
         name: CI
