@@ -969,7 +969,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 
     if model in PURIFIER_MIOT:
         air_purifier = AirPurifierMiot(host, token)
-        device = XiaomiAirPurifierMiot(name, air_purifier, model, unique_id)
+        device = XiaomiAirPurifierMiot(name, air_purifier, model, unique_id, retries)
     elif model.startswith("zhimi.airpurifier."):
         air_purifier = AirPurifier(host, token)
         device = XiaomiAirPurifier(name, air_purifier, model, unique_id)
@@ -1206,9 +1206,9 @@ class XiaomiGenericDevice(FanEntity):
 class XiaomiAirPurifier(XiaomiGenericDevice):
     """Representation of a Xiaomi Air Purifier."""
 
-    def __init__(self, name, device, model, unique_id):
+    def __init__(self, name, device, model, unique_id, retries=0):
         """Initialize the plug switch."""
-        super().__init__(name, device, model, unique_id)
+        super().__init__(name, device, model, unique_id, retries)
 
         if self._model == MODEL_AIRPURIFIER_PRO:
             self._device_features = FEATURE_FLAGS_AIRPURIFIER_PRO
@@ -1263,9 +1263,23 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
                 }
             )
 
+            self._retry = 0
+
         except DeviceException as ex:
-            self._available = False
-            _LOGGER.error("Got exception while fetching the state: %s", ex)
+            self._retry = self._retry + 1
+            if self._retry < self._retries:
+                _LOGGER.info(
+                    "Got exception while fetching the state: %s , _retry=%s",
+                    ex,
+                    self._retry,
+                )
+            else:
+                self._available = False
+                _LOGGER.error(
+                    "Got exception while fetching the state: %s , _retry=%s",
+                    ex,
+                    self._retry,
+                )
 
     @property
     def speed_list(self) -> list:
