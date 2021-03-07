@@ -320,6 +320,28 @@ class XiaomiGenericDevice(ClimateEntity):
             False,
         )
 
+    async def async_set_led_on(self):
+        """Turn the led on."""
+        if self._device_features & FEATURE_SET_LED == 0:
+            return
+
+        await self._try_command(
+            "Turning the led of the miio device on failed.",
+            self._device.set_led,
+            True,
+        )
+
+    async def async_set_led_off(self):
+        """Turn the led off."""
+        if self._device_features & FEATURE_SET_LED == 0:
+            return
+
+        await self._try_command(
+            "Turning the led of the miio device off failed.",
+            self._device.set_led,
+            False,
+        )
+
     async def async_set_child_lock_on(self):
         """Turn the child lock on."""
         if self._device_features & FEATURE_SET_CHILD_LOCK == 0:
