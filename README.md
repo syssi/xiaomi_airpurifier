@@ -342,6 +342,7 @@ This model uses newer MiOT communication protocol.
 - LED brightness (off, dim, bright)
 - Target humidity (30 - 80)
 - Dry mode (on, off)
+- Clean mode (on, off)
 - Motor speed rpm (200 - 2000)
 - Attributes
   - `model`
@@ -361,6 +362,7 @@ This model uses newer MiOT communication protocol.
   - `power_time`
   - `water_level`
   - `use_time`
+  - `clean_mode`
 
 ### Air Humidifier CB (zhimi.humidifier.cb1)
 
@@ -1005,6 +1007,22 @@ Set motor speed RPM.
 |---------------------------|----------|----------------------------------------------------------------------|
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
 | `motor_speed`             |       no | Motor speed RPM. Allowed values are between 200 and 2000             |
+
+### Service `xiaomi_miio_airpurifier.fan_set_clean_mode_on` (Air Humidifier CA4)
+
+Turn the clean mode on.
+
+| Service data attribute    | Optional | Description                                                          |
+|---------------------------|----------|----------------------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
+
+### Service `xiaomi_miio_airpurifier.fan_set_clean_mode_off` (Air Humidifier CA4)
+
+Turn the clean mode off.
+
+| Service data attribute    | Optional | Description                                                          |
+|---------------------------|----------|----------------------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
 
 #### Service `xiaomi_miio_airpurifier.fan_set_fan_level` (Air Purifier 3H only)
 
