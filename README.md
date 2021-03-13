@@ -42,6 +42,7 @@ This custom component is more or less the beta version of the [official componen
 | Smartmi Fresh Air System XFXT01ZM        | zhimi.airfresh.va2  | XFXT01ZM     | |
 | Smartmi Fresh Air System XFXTDFR02ZM     | zhimi.airfresh.va4  | XFXTDFR02ZM  | PTC/Heater support |
 | Mi Fresh Air Ventilator  | [dmaker.airfresh.t2017](docs/dmaker-airfresh-t2017.md)  | MJXFJ-300-G1**?** | 300m3/h (Air volume), 35W, 36db(A), 16kg |
+| Mi Fresh Air Ventilator  | dmaker.airfresh.a1  | MJXFJ-150-A1  | 150m<sup>3</sup>/h (Air volume), 20W, 36db(A), 8kg |
 | Pedestal Fan Fan V2    | zhimi.fan.v2           | | |
 | Pedestal Fan Fan V3    | zhimi.fan.v3           | | |
 | Pedestal Fan Fan SA1   | zhimi.fan.sa1          | | |
@@ -437,7 +438,7 @@ This model uses newer MiOT communication protocol.
   - `extra_features`
   - `ptc` (zhimi.airfresh.va4 only)
 
-### Mi Fresh Air Ventilator (dmaker.airfresh.t2017)
+### Mi Fresh Air Ventilator (dmaker.airfresh.t2017, dmaker.airfresh.a1)
 
 This paragraph was moved to [docs/dmaker-airfresh-t2017.md](docs/dmaker-airfresh-t2017.md).
 

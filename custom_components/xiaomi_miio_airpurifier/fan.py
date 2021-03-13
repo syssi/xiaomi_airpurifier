@@ -6,6 +6,7 @@ import logging
 
 from miio import (  # pylint: disable=import-error
     AirFresh,
+    AirFreshA1,
     AirFreshT2017,
     AirHumidifier,
     AirHumidifierJsq,
@@ -114,6 +115,7 @@ MODEL_AIRHUMIDIFIER_JSQ = "deerma.humidifier.jsq"
 MODEL_AIRHUMIDIFIER_JSQ1 = "deerma.humidifier.jsq1"
 MODEL_AIRHUMIDIFIER_JSQ001 = "shuii.humidifier.jsq001"
 
+MODEL_AIRFRESH_A1 = "dmaker.airfresh.a1"
 MODEL_AIRFRESH_VA2 = "zhimi.airfresh.va2"
 MODEL_AIRFRESH_VA4 = "zhimi.airfresh.va4"
 MODEL_AIRFRESH_T2017 = "dmaker.airfresh.t2017"
@@ -160,6 +162,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_AIRHUMIDIFIER_JSQ,
                 MODEL_AIRHUMIDIFIER_JSQ1,
                 MODEL_AIRHUMIDIFIER_JSQ001,
+                MODEL_AIRFRESH_A1,
                 MODEL_AIRFRESH_VA2,
                 MODEL_AIRFRESH_VA4,
                 MODEL_AIRFRESH_T2017,
@@ -498,7 +501,7 @@ AVAILABLE_ATTRIBUTES_AIRFRESH = {
 
 AVAILABLE_ATTRIBUTES_AIRFRESH_VA4 = {**AVAILABLE_ATTRIBUTES_AIRFRESH, ATTR_PTC: "ptc"}
 
-AVAILABLE_ATTRIBUTES_AIRFRESH_T2017 = {
+AVAILABLE_ATTRIBUTES_AIRFRESH_A1 = {
     ATTR_POWER: "power",
     ATTR_MODE: "mode",
     ATTR_PM25: "pm25",
@@ -508,14 +511,18 @@ AVAILABLE_ATTRIBUTES_AIRFRESH_T2017 = {
     ATTR_CONTROL_SPEED: "control_speed",
     ATTR_DUST_FILTER_LIFE_REMAINING: "dust_filter_life_remaining",
     ATTR_DUST_FILTER_LIFE_REMAINING_DAYS: "dust_filter_life_remaining_days",
-    ATTR_UPPER_FILTER_LIFE_REMAINING: "upper_filter_life_remaining",
-    ATTR_UPPER_FILTER_LIFE_REMAINING_DAYS: "upper_filter_life_remaining_days",
     ATTR_PTC: "ptc",
-    ATTR_PTC_LEVEL: "ptc_level",
     ATTR_PTC_STATUS: "ptc_status",
     ATTR_CHILD_LOCK: "child_lock",
     ATTR_BUZZER: "buzzer",
     ATTR_DISPLAY: "display",
+}
+
+AVAILABLE_ATTRIBUTES_AIRFRESH_T2017 = {
+    **AVAILABLE_ATTRIBUTES_AIRFRESH_A1,
+    ATTR_UPPER_FILTER_LIFE_REMAINING: "upper_filter_life_remaining",
+    ATTR_UPPER_FILTER_LIFE_REMAINING_DAYS: "upper_filter_life_remaining_days",
+    ATTR_PTC_LEVEL: "ptc_level",
     ATTR_DISPLAY_ORIENTATION: "display_orientation",
 }
 
@@ -739,6 +746,15 @@ FEATURE_FLAGS_AIRFRESH_VA4 = (
     | FEATURE_RESET_FILTER
     | FEATURE_SET_EXTRA_FEATURES
     | FEATURE_SET_PTC
+)
+
+FEATURE_FLAGS_AIRFRESH_A1 = (
+    FEATURE_SET_BUZZER
+    | FEATURE_SET_CHILD_LOCK
+    | FEATURE_SET_LED
+    | FEATURE_RESET_FILTER
+    | FEATURE_SET_PTC
+    | FEATURE_SET_FAVORITE_SPEED
 )
 
 FEATURE_FLAGS_AIRFRESH_T2017 = (
@@ -1002,6 +1018,9 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     elif model.startswith("zhimi.airfresh."):
         air_fresh = AirFresh(host, token, model=model)
         device = XiaomiAirFresh(name, air_fresh, model, unique_id)
+    elif model == MODEL_AIRFRESH_A1:
+        air_fresh = AirFreshA1(host, token, model=model)
+        device = XiaomiAirFreshA1(name, air_fresh, model, unique_id)
     elif model == MODEL_AIRFRESH_T2017:
         air_fresh = AirFreshT2017(host, token, model=model)
         device = XiaomiAirFreshT2017(name, air_fresh, model, unique_id)
@@ -1980,8 +1999,13 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
         """Initialize the miio device."""
         super().__init__(name, device, model, unique_id)
 
-        self._available_attributes = AVAILABLE_ATTRIBUTES_AIRFRESH_T2017
-        self._device_features = FEATURE_FLAGS_AIRFRESH_T2017
+        if self._model == MODEL_AIRFRESH_T2017:
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRFRESH_T2017
+            self._device_features = FEATURE_FLAGS_AIRFRESH_T2017
+        else:
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRFRESH_A1
+            self._device_features = FEATURE_FLAGS_AIRFRESH_A1
+
         self._speed_list = OPERATION_MODES_AIRFRESH_T2017
         self._state_attrs.update(
             {attribute: None for attribute in self._available_attributes}
@@ -2097,6 +2121,20 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
         await self._try_command(
             "Resetting the dust filter lifetime of the miio device failed.",
             self._device.reset_dust_filter,
+        )
+
+
+class XiaomiAirFreshA1(XiaomiAirFreshT2017):
+    """Representation of a Xiaomi Air Fresh A1."""
+
+    async def async_reset_filter(self):
+        """Reset the filter lifetime and usage."""
+        if self._device_features & FEATURE_RESET_FILTER == 0:
+            return
+
+        await self._try_command(
+            "Resetting filter lifetime of the miio device failed.",
+            self._device.reset_filter,
         )
 
 
