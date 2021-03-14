@@ -625,6 +625,7 @@ OPERATION_MODES_AIRPURIFIER_V3 = [
 ]
 OPERATION_MODES_AIRFRESH = ["Auto", "Silent", "Interval", "Low", "Middle", "Strong"]
 OPERATION_MODES_AIRFRESH_T2017 = ["Auto", "Sleep", "Favorite"]
+OPERATION_MODES_FAN_LESHOW_SS4 = ["Manual", "Sleep", "Strong", "Natural"]
 
 SUCCESS = ["ok"]
 
@@ -2528,7 +2529,7 @@ class XiaomiFanLeshow(XiaomiGenericDevice):
         self._device_features = FEATURE_FLAGS_FAN_LESHOW_SS4
         self._available_attributes = AVAILABLE_ATTRIBUTES_FAN_LESHOW_SS4
         self._percentage = None
-        self._preset_modes = list(FAN_PRESET_MODES)
+        self._preset_modes = OPERATION_MODES_FAN_LESHOW_SS4
         self._preset_mode = None
         self._oscillate = None
 
@@ -2599,7 +2600,10 @@ class XiaomiFanLeshow(XiaomiGenericDevice):
     @property
     def preset_mode(self):
         """Get the current preset mode."""
-        return self._preset_mode
+        if self._state:
+            return FanLeshowOperationMode(self._preset_mode).name
+
+        return None
 
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode of the fan."""
@@ -2608,14 +2612,10 @@ class XiaomiFanLeshow(XiaomiGenericDevice):
 
         _LOGGER.debug("Setting the preset mode to: %s", preset_mode)
 
-        if preset_mode == SPEED_OFF:
-            await self.async_turn_off()
-            return
-
         await self._try_command(
-            "Setting fan speed of the miio device failed.",
-            self._device.set_speed,
-            FAN_PRESET_MODE_VALUES[preset_mode],
+            "Setting preset mode of the miio device failed.",
+            self._device.set_mode,
+            FanLeshowOperationMode[preset_mode.title()],
         )
 
     async def async_set_percentage(self, percentage: int) -> None:
