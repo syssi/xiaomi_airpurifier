@@ -572,7 +572,7 @@ AVAILABLE_ATTRIBUTES_FAN_P5 = {
 
 AVAILABLE_ATTRIBUTES_FAN_LESHOW_SS4 = {
     ATTR_MODE: "mode",
-    ATTR_SPEED: "speed",
+    ATTR_RAW_SPEED: "speed",
     ATTR_BUZZER: "buzzer",
     ATTR_OSCILLATE: "oscillate",
     ATTR_DELAY_OFF_COUNTDOWN: "delay_off_countdown",
