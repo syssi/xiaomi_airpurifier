@@ -1354,9 +1354,6 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
 
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode of the fan."""
-        if self.supported_features & SUPPORT_PRESET_MODE == 0:
-            return
-
         _LOGGER.debug("Setting the preset mode to: %s", preset_mode)
 
         await self._try_command(
@@ -1508,9 +1505,6 @@ class XiaomiAirPurifierMiot(XiaomiAirPurifier):
 
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode of the fan."""
-        if self.supported_features & SUPPORT_PRESET_MODE == 0:
-            return
-
         _LOGGER.debug("Setting the preset mode to: %s", preset_mode)
 
         await self._try_command(
@@ -1602,9 +1596,6 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
 
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode of the fan."""
-        if self.supported_features & SUPPORT_PRESET_MODE == 0:
-            return
-
         _LOGGER.debug("Setting the preset mode to: %s", preset_mode)
 
         await self._try_command(
@@ -1931,9 +1922,6 @@ class XiaomiAirFresh(XiaomiGenericDevice):
 
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode of the fan."""
-        if self.supported_features & SUPPORT_PRESET_MODE == 0:
-            return
-
         _LOGGER.debug("Setting the preset mode to: %s", preset_mode)
 
         await self._try_command(
@@ -2068,9 +2056,6 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
 
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode of the fan."""
-        if self.supported_features & SUPPORT_PRESET_MODE == 0:
-            return
-
         _LOGGER.debug("Setting the preset mode to: %s", preset_mode)
 
         await self._try_command(
@@ -2262,9 +2247,6 @@ class XiaomiFan(XiaomiGenericDevice):
 
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode of the fan."""
-        if self.supported_features & SUPPORT_PRESET_MODE == 0:
-            return
-
         _LOGGER.debug("Setting the preset mode to: %s", preset_mode)
 
         if preset_mode == SPEED_OFF:
@@ -2286,9 +2268,6 @@ class XiaomiFan(XiaomiGenericDevice):
 
     async def async_set_percentage(self, percentage: int) -> None:
         """Set the speed percentage of the fan."""
-        if self.supported_features & SUPPORT_SET_SPEED == 0:
-            return
-
         _LOGGER.debug("Setting the fan speed percentage to: %s", percentage)
 
         if percentage == 0:
@@ -2458,9 +2437,6 @@ class XiaomiFanP5(XiaomiFan):
 
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode of the fan."""
-        if self.supported_features & SUPPORT_PRESET_MODE == 0:
-            return
-
         _LOGGER.debug("Setting the preset mode to: %s", preset_mode)
 
         if preset_mode == SPEED_OFF:
@@ -2598,9 +2574,6 @@ class XiaomiFanLeshow(XiaomiGenericDevice):
 
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode of the fan."""
-        if self.supported_features & SUPPORT_PRESET_MODE == 0:
-            return
-
         _LOGGER.debug("Setting the preset mode to: %s", preset_mode)
 
         await self._try_command(
@@ -2611,9 +2584,6 @@ class XiaomiFanLeshow(XiaomiGenericDevice):
 
     async def async_set_percentage(self, percentage: int) -> None:
         """Set the speed percentage of the fan."""
-        if self.supported_features & SUPPORT_SET_SPEED == 0:
-            return
-
         _LOGGER.debug("Setting the fan speed percentage to: %s", percentage)
 
         if percentage == 0:
