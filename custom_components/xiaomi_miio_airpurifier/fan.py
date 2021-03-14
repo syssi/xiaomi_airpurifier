@@ -625,7 +625,6 @@ OPERATION_MODES_AIRPURIFIER_V3 = [
 ]
 OPERATION_MODES_AIRFRESH = ["Auto", "Silent", "Interval", "Low", "Middle", "Strong"]
 OPERATION_MODES_AIRFRESH_T2017 = ["Auto", "Sleep", "Favorite"]
-OPERATION_MODES_FAN_LESHOW_SS4 = ["Manual", "Sleep", "Strong", "Natural"]
 
 SUCCESS = ["ok"]
 
@@ -2380,7 +2379,7 @@ class XiaomiFan(XiaomiGenericDevice):
             return
 
         self._natural_mode = True
-        await self.async_set_speed(self._speed)
+        await self.async_set_percentage(self._percentage)
 
     async def async_set_natural_mode_off(self):
         """Turn the natural mode off."""
@@ -2388,7 +2387,7 @@ class XiaomiFan(XiaomiGenericDevice):
             return
 
         self._natural_mode = False
-        await self.async_set_speed(self._speed)
+        await self.async_set_percentage(self._percentage)
 
 
 class XiaomiFanP5(XiaomiFan):
@@ -2422,6 +2421,7 @@ class XiaomiFanP5(XiaomiFan):
             _LOGGER.debug("Got new state: %s", state)
 
             self._available = True
+            self._percentage = state.speed
             self._oscillate = state.oscillate
             self._natural_mode = state.mode == FanOperationMode.Nature
             self._state = state.is_on
@@ -2429,7 +2429,6 @@ class XiaomiFanP5(XiaomiFan):
             for preset_mode, range in FAN_PRESET_MODES.items():
                 if state.speed in range:
                     self._preset_mode = preset_mode
-                    self._percentage = state.speed
                     break
 
             self._state_attrs.update(
@@ -2527,7 +2526,7 @@ class XiaomiFanLeshow(XiaomiGenericDevice):
         self._device_features = FEATURE_FLAGS_FAN_LESHOW_SS4
         self._available_attributes = AVAILABLE_ATTRIBUTES_FAN_LESHOW_SS4
         self._percentage = None
-        self._preset_modes = OPERATION_MODES_FAN_LESHOW_SS4
+        self._preset_modes = [mode.name for mode in FanLeshowOperationMode]
         self._oscillate = None
 
         self._state_attrs.update(
