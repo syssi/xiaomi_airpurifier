@@ -25,9 +25,9 @@ from miio.airfresh import (  # pylint: disable=import-error, import-error
     OperationMode as AirfreshOperationMode,
 )
 from miio.airfresh_t2017 import (  # pylint: disable=import-error, import-error
+    DisplayOrientation as AirfreshT2017DisplayOrientation,
     OperationMode as AirfreshT2017OperationMode,
     PtcLevel as AirfreshT2017PtcLevel,
-    DisplayOrientation as AirfreshT2017DisplayOrientation,
 )
 from miio.airhumidifier import (  # pylint: disable=import-error, import-error
     LedBrightness as AirhumidifierLedBrightness,
@@ -66,6 +66,7 @@ from homeassistant.components.fan import (
     SPEED_OFF,
     SUPPORT_DIRECTION,
     SUPPORT_OSCILLATE,
+    SUPPORT_PRESET_MODE,
     SUPPORT_SET_SPEED,
     SUPPORT_PRESET_MODE,
     FanEntity,
@@ -1662,7 +1663,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
         await self._try_command(
             "Turning the clean mode of the miio device on failed.",
             self._device.set_clean_mode,
-            True
+            True,
         )
 
     async def async_set_led_off(self):
