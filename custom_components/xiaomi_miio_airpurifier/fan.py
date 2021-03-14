@@ -70,8 +70,8 @@ from homeassistant.components.fan import (
     SPEED_OFF,
     SUPPORT_DIRECTION,
     SUPPORT_OSCILLATE,
-    SUPPORT_SET_SPEED,
     SUPPORT_PRESET_MODE,
+    SUPPORT_SET_SPEED,
     FanEntity,
 )
 from homeassistant.const import (
@@ -803,9 +803,7 @@ FEATURE_FLAGS_FAN_P5 = (
     | FEATURE_SET_LED
 )
 
-FEATURE_FLAGS_FAN_LESHOW_SS4 = (
-    FEATURE_SET_BUZZER
-)
+FEATURE_FLAGS_FAN_LESHOW_SS4 = FEATURE_SET_BUZZER
 
 SERVICE_SET_BUZZER_ON = "fan_set_buzzer_on"
 SERVICE_SET_BUZZER_OFF = "fan_set_buzzer_off"
