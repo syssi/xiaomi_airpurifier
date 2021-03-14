@@ -70,7 +70,6 @@ from homeassistant.components.fan import (
     SPEED_OFF,
     SUPPORT_DIRECTION,
     SUPPORT_OSCILLATE,
-    SUPPORT_PRESET_MODE,
     SUPPORT_SET_SPEED,
     SUPPORT_PRESET_MODE,
     FanEntity,
@@ -2528,11 +2527,11 @@ class XiaomiFanLeshow(XiaomiGenericDevice):
 
         self._device_features = FEATURE_FLAGS_FAN_LESHOW_SS4
         self._available_attributes = AVAILABLE_ATTRIBUTES_FAN_LESHOW_SS4
-        self._speed_list = list(FAN_SPEED_LIST)
-        self._speed = None
+        self._percentage = None
+        self._preset_modes = list(FAN_PRESET_MODES)
+        self._preset_mode = None
         self._oscillate = None
 
-        self._state_attrs[ATTR_SPEED] = None
         self._state_attrs.update(
             {attribute: None for attribute in self._available_attributes}
         )
@@ -2540,7 +2539,7 @@ class XiaomiFanLeshow(XiaomiGenericDevice):
     @property
     def supported_features(self) -> int:
         """Supported features."""
-        return SUPPORT_SET_SPEED | SUPPORT_OSCILLATE
+        return SUPPORT_SET_SPEED | SUPPORT_PRESET_MODE | SUPPORT_OSCILLATE
 
     async def async_update(self):
         """Fetch state from the device."""
@@ -2557,10 +2556,10 @@ class XiaomiFanLeshow(XiaomiGenericDevice):
             self._oscillate = state.oscillate
             self._state = state.is_on
 
-            for level, range in FAN_SPEED_LIST.items():
+            for preset_mode, range in FAN_PRESET_MODES.items():
                 if state.speed in range:
-                    self._speed = level
-                    self._state_attrs[ATTR_SPEED] = level
+                    self._preset_mode = preset_mode
+                    self._percentage = state.speed
                     break
 
             self._state_attrs.update(
@@ -2588,37 +2587,52 @@ class XiaomiFanLeshow(XiaomiGenericDevice):
                 )
 
     @property
-    def speed_list(self) -> list:
-        """Get the list of available speeds."""
-        return self._speed_list
+    def percentage(self):
+        """Return the current speed."""
+        return self._percentage
 
     @property
-    def speed(self):
-        """Return the current speed."""
-        return self._speed
+    def preset_modes(self):
+        """Get the list of available preset modes."""
+        return self._preset_modes
 
-    async def async_set_speed(self, speed: str) -> None:
-        """Set the speed of the fan."""
-        if self.supported_features & SUPPORT_SET_SPEED == 0:
+    @property
+    def preset_mode(self):
+        """Get the current preset mode."""
+        return self._preset_mode
+
+    async def async_set_preset_mode(self, preset_mode: str) -> None:
+        """Set the preset mode of the fan."""
+        if self.supported_features & SUPPORT_PRESET_MODE == 0:
             return
 
-        _LOGGER.debug("Setting the fan speed to: %s", speed)
+        _LOGGER.debug("Setting the preset mode to: %s", preset_mode)
 
-        if speed.isdigit():
-            speed = int(speed)
-
-        if speed in [SPEED_OFF, 0]:
+        if preset_mode == SPEED_OFF:
             await self.async_turn_off()
             return
-
-        # Map speed level to speed
-        if speed in FAN_SPEED_VALUES:
-            speed = FAN_SPEED_VALUES[speed]
 
         await self._try_command(
             "Setting fan speed of the miio device failed.",
             self._device.set_speed,
-            speed,
+            FAN_PRESET_MODE_VALUES[preset_mode],
+        )
+
+    async def async_set_percentage(self, percentage: int) -> None:
+        """Set the speed percentage of the fan."""
+        if self.supported_features & SUPPORT_SET_SPEED == 0:
+            return
+
+        _LOGGER.debug("Setting the fan speed percentage to: %s", percentage)
+
+        if percentage == 0:
+            await self.async_turn_off()
+            return
+
+        await self._try_command(
+            "Setting fan speed percentage of the miio device failed.",
+            self._device.set_speed,
+            percentage,
         )
 
     @property
