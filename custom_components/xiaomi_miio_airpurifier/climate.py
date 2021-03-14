@@ -326,9 +326,7 @@ class XiaomiGenericDevice(ClimateEntity):
             return
 
         await self._try_command(
-            "Turning the led of the miio device on failed.",
-            self._device.set_led,
-            True,
+            "Turning the led of the miio device on failed.", self._device.set_led, True,
         )
 
     async def async_set_led_off(self):

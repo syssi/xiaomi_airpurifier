@@ -2163,7 +2163,12 @@ class XiaomiFan(XiaomiGenericDevice):
     @property
     def supported_features(self) -> int:
         """Supported features."""
-        return SUPPORT_SET_SPEED | SUPPORT_PRESET_MODE | SUPPORT_OSCILLATE | SUPPORT_DIRECTION
+        return (
+            SUPPORT_SET_SPEED
+            | SUPPORT_PRESET_MODE
+            | SUPPORT_OSCILLATE
+            | SUPPORT_DIRECTION
+        )
 
     async def async_update(self):
         """Fetch state from the device."""
