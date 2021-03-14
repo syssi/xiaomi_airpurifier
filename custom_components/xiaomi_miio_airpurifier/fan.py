@@ -2528,7 +2528,6 @@ class XiaomiFanLeshow(XiaomiGenericDevice):
         self._available_attributes = AVAILABLE_ATTRIBUTES_FAN_LESHOW_SS4
         self._percentage = None
         self._preset_modes = OPERATION_MODES_FAN_LESHOW_SS4
-        self._preset_mode = None
         self._oscillate = None
 
         self._state_attrs.update(
@@ -2552,14 +2551,9 @@ class XiaomiFanLeshow(XiaomiGenericDevice):
             _LOGGER.debug("Got new state: %s", state)
 
             self._available = True
+            self._percentage = state.speed
             self._oscillate = state.oscillate
             self._state = state.is_on
-
-            for preset_mode, range in FAN_PRESET_MODES.items():
-                if state.speed in range:
-                    self._preset_mode = preset_mode
-                    self._percentage = state.speed
-                    break
 
             self._state_attrs.update(
                 {
@@ -2599,7 +2593,7 @@ class XiaomiFanLeshow(XiaomiGenericDevice):
     def preset_mode(self):
         """Get the current preset mode."""
         if self._state:
-            return FanLeshowOperationMode(self._preset_mode).name
+            return FanLeshowOperationMode(self._state_attrs[ATTR_MODE]).name
 
         return None
 
