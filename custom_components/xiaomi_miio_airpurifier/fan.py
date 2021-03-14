@@ -17,6 +17,7 @@ from miio import (  # pylint: disable=import-error
     Device,
     DeviceException,
     Fan,
+    FanLeshow,
     FanMiot,
     FanP5,
 )
@@ -58,6 +59,9 @@ from miio.fan import (  # pylint: disable=import-error, import-error
     MoveDirection as FanMoveDirection,
     OperationMode as FanOperationMode,
 )
+from miio.fan_leshow import (  # pylint: disable=import-error, import-error
+    OperationMode as FanLeshowOperationMode,
+)
 import voluptuous as vol
 
 from homeassistant.components.fan import (
@@ -68,7 +72,6 @@ from homeassistant.components.fan import (
     SUPPORT_OSCILLATE,
     SUPPORT_PRESET_MODE,
     SUPPORT_SET_SPEED,
-    SUPPORT_PRESET_MODE,
     FanEntity,
 )
 from homeassistant.const import (
@@ -132,6 +135,7 @@ MODEL_FAN_P5 = "dmaker.fan.p5"
 MODEL_FAN_P9 = "dmaker.fan.p9"
 MODEL_FAN_P10 = "dmaker.fan.p10"
 MODEL_FAN_P11 = "dmaker.fan.p11"
+MODEL_FAN_LESHOW_SS4 = "leshow.fan.ss4"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -178,6 +182,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_FAN_P9,
                 MODEL_FAN_P10,
                 MODEL_FAN_P11,
+                MODEL_FAN_LESHOW_SS4,
             ]
         ),
         vol.Optional(CONF_RETRIES, default=DEFAULT_RETRIES): cv.positive_int,
@@ -276,6 +281,9 @@ ATTR_ANGLE = "angle"
 ATTR_DIRECT_SPEED = "direct_speed"
 ATTR_SPEED_LEVEL = "speed_level"
 ATTR_RAW_SPEED = "raw_speed"
+
+# Fan Leshow SS4
+ATTR_ERROR_DETECTED = "error_detected"
 
 PURIFIER_MIOT = [MODEL_AIRPURIFIER_3, MODEL_AIRPURIFIER_3H]
 HUMIDIFIER_MIOT = [MODEL_AIRHUMIDIFIER_CA4]
@@ -562,6 +570,15 @@ AVAILABLE_ATTRIBUTES_FAN_P5 = {
     ATTR_RAW_SPEED: "speed",
 }
 
+AVAILABLE_ATTRIBUTES_FAN_LESHOW_SS4 = {
+    ATTR_MODE: "mode",
+    ATTR_RAW_SPEED: "speed",
+    ATTR_BUZZER: "buzzer",
+    ATTR_OSCILLATE: "oscillate",
+    ATTR_DELAY_OFF_COUNTDOWN: "delay_off_countdown",
+    ATTR_ERROR_DETECTED: "error_detected",
+}
+
 FAN_SPEED_LEVEL1 = "Level 1"
 FAN_SPEED_LEVEL2 = "Level 2"
 FAN_SPEED_LEVEL3 = "Level 3"
@@ -608,6 +625,7 @@ OPERATION_MODES_AIRPURIFIER_V3 = [
 ]
 OPERATION_MODES_AIRFRESH = ["Auto", "Silent", "Interval", "Low", "Middle", "Strong"]
 OPERATION_MODES_AIRFRESH_T2017 = ["Auto", "Sleep", "Favorite"]
+OPERATION_MODES_FAN_LESHOW_SS4 = ["Manual", "Sleep", "Strong", "Natural"]
 
 SUCCESS = ["ok"]
 
@@ -784,6 +802,8 @@ FEATURE_FLAGS_FAN_P5 = (
     | FEATURE_SET_OSCILLATION_ANGLE
     | FEATURE_SET_LED
 )
+
+FEATURE_FLAGS_FAN_LESHOW_SS4 = FEATURE_SET_BUZZER
 
 SERVICE_SET_BUZZER_ON = "fan_set_buzzer_on"
 SERVICE_SET_BUZZER_OFF = "fan_set_buzzer_off"
@@ -1041,6 +1061,9 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     elif model in [MODEL_FAN_P9, MODEL_FAN_P10, MODEL_FAN_P11]:
         fan = FanMiot(host, token, model=model)
         device = XiaomiFanMiot(name, fan, model, unique_id, retries)
+    elif model == MODEL_FAN_LESHOW_SS4:
+        fan = FanLeshow(host, token, model=model)
+        device = XiaomiFanLeshow(name, fan, model, unique_id, retries)
     else:
         _LOGGER.error(
             "Unsupported device found! Please create an issue at "
@@ -2492,3 +2515,143 @@ class XiaomiFanP5(XiaomiFan):
 
 class XiaomiFanMiot(XiaomiFanP5):
     """Representation of a Xiaomi Pedestal Fan P9, P10, P11."""
+
+
+class XiaomiFanLeshow(XiaomiGenericDevice):
+    """Representation of a Xiaomi Fan Leshow SS4."""
+
+    def __init__(self, name, device, model, unique_id, retries):
+        """Initialize the fan entity."""
+        super().__init__(name, device, model, unique_id, retries)
+
+        self._device_features = FEATURE_FLAGS_FAN_LESHOW_SS4
+        self._available_attributes = AVAILABLE_ATTRIBUTES_FAN_LESHOW_SS4
+        self._percentage = None
+        self._preset_modes = OPERATION_MODES_FAN_LESHOW_SS4
+        self._oscillate = None
+
+        self._state_attrs.update(
+            {attribute: None for attribute in self._available_attributes}
+        )
+
+    @property
+    def supported_features(self) -> int:
+        """Supported features."""
+        return SUPPORT_SET_SPEED | SUPPORT_PRESET_MODE | SUPPORT_OSCILLATE
+
+    async def async_update(self):
+        """Fetch state from the device."""
+        # On state change the device doesn't provide the new state immediately.
+        if self._skip_update:
+            self._skip_update = False
+            return
+
+        try:
+            state = await self.hass.async_add_job(self._device.status)
+            _LOGGER.debug("Got new state: %s", state)
+
+            self._available = True
+            self._percentage = state.speed
+            self._oscillate = state.oscillate
+            self._state = state.is_on
+
+            self._state_attrs.update(
+                {
+                    key: self._extract_value_from_attribute(state, value)
+                    for key, value in self._available_attributes.items()
+                }
+            )
+            self._retry = 0
+
+        except DeviceException as ex:
+            self._retry = self._retry + 1
+            if self._retry < self._retries:
+                _LOGGER.info(
+                    "Got exception while fetching the state: %s , _retry=%s",
+                    ex,
+                    self._retry,
+                )
+            else:
+                self._available = False
+                _LOGGER.error(
+                    "Got exception while fetching the state: %s , _retry=%s",
+                    ex,
+                    self._retry,
+                )
+
+    @property
+    def percentage(self):
+        """Return the current speed."""
+        return self._percentage
+
+    @property
+    def preset_modes(self):
+        """Get the list of available preset modes."""
+        return self._preset_modes
+
+    @property
+    def preset_mode(self):
+        """Get the current preset mode."""
+        if self._state:
+            return FanLeshowOperationMode(self._state_attrs[ATTR_MODE]).name
+
+        return None
+
+    async def async_set_preset_mode(self, preset_mode: str) -> None:
+        """Set the preset mode of the fan."""
+        if self.supported_features & SUPPORT_PRESET_MODE == 0:
+            return
+
+        _LOGGER.debug("Setting the preset mode to: %s", preset_mode)
+
+        await self._try_command(
+            "Setting preset mode of the miio device failed.",
+            self._device.set_mode,
+            FanLeshowOperationMode[preset_mode.title()],
+        )
+
+    async def async_set_percentage(self, percentage: int) -> None:
+        """Set the speed percentage of the fan."""
+        if self.supported_features & SUPPORT_SET_SPEED == 0:
+            return
+
+        _LOGGER.debug("Setting the fan speed percentage to: %s", percentage)
+
+        if percentage == 0:
+            await self.async_turn_off()
+            return
+
+        await self._try_command(
+            "Setting fan speed percentage of the miio device failed.",
+            self._device.set_speed,
+            percentage,
+        )
+
+    @property
+    def oscillating(self):
+        """Return the oscillation state."""
+        return self._oscillate
+
+    async def async_oscillate(self, oscillating: bool) -> None:
+        """Set oscillation."""
+        if oscillating:
+            await self._try_command(
+                "Setting oscillate on of the miio device failed.",
+                self._device.set_oscillate,
+                True,
+            )
+        else:
+            await self._try_command(
+                "Setting oscillate off of the miio device failed.",
+                self._device.set_oscillate,
+                False,
+            )
+
+    async def async_set_delay_off(self, delay_off_countdown: int) -> None:
+        """Set scheduled off timer in minutes."""
+
+        await self._try_command(
+            "Setting delay off miio device failed.",
+            self._device.delay_off,
+            delay_off_countdown,
+        )
