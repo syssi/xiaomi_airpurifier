@@ -2764,6 +2764,7 @@ class XiaomiAirDog(XiaomiGenericDevice):
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode of the fan."""
         _LOGGER.debug("Setting the preset mode to: %s", preset_mode)
+        _LOGGER.debug("Calling set_mode_and_speed with parameters: %s", self._preset_modes_to_mode_speed[preset_mode])
 
         await self._try_command(
             "Setting preset mode of the miio device failed.",
