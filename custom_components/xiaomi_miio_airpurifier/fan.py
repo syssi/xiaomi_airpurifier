@@ -2692,15 +2692,15 @@ class XiaomiAirDog(XiaomiGenericDevice):
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_AIRDOG_X3
 
         self._preset_modes_to_mode_speed = {
-                'Auto': (AirDogOperationMode['Auto'], 1),
-                'Night mode': (AirDogOperationMode['Idle'], 1),
-                'Speed 1': (AirDogOperationMode['Manual'], 1),
-                'Speed 2': (AirDogOperationMode['Manual'], 2),
-                'Speed 3': (AirDogOperationMode['Manual'], 3),
-                'Speed 4': (AirDogOperationMode['Manual'], 4),
+                'Auto': (AirDogOperationMode('Auto'), 1),
+                'Night mode': (AirDogOperationMode('Idle'), 1),
+                'Speed 1': (AirDogOperationMode('Manual'), 1),
+                'Speed 2': (AirDogOperationMode('Manual'), 2),
+                'Speed 3': (AirDogOperationMode('Manual'), 3),
+                'Speed 4': (AirDogOperationMode('Manual'), 4),
         }
         if self._model == MODEL_AIRPURIFIER_AIRDOG_X7SM:
-            self._preset_modes_to_mode_speed['Speed 5'] = (AirDogOperationMode['Manual'], 5)
+            self._preset_modes_to_mode_speed['Speed 5'] = (AirDogOperationMode('Manual'), 5)
 
         self._mode_speed_to_preset_modes = {}
         for key, value in self._preset_modes_to_mode_speed.items():
@@ -2757,7 +2757,7 @@ class XiaomiAirDog(XiaomiGenericDevice):
     def preset_mode(self):
         """Get the current preset mode."""
         if self._state:
-            return self._mode_speed_to_preset_modes[(AirDogOperationMode[self._state_attrs[ATTR_MODE]], self._state_attrs[ATTR_SPEED])]
+            return self._mode_speed_to_preset_modes[(AirDogOperationMode(self._state_attrs[ATTR_MODE]), self._state_attrs[ATTR_SPEED])]
 
         return None
 
