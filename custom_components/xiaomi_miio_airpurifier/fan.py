@@ -2692,12 +2692,12 @@ class XiaomiAirDog(XiaomiGenericDevice):
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_AIRDOG_X3
 
         self._preset_modes_to_mode_speed = {
-                'Auto': (AirDogOperationMode('Auto'), 1),
-                'Night mode': (AirDogOperationMode('Idle'), 1),
-                'Speed 1': (AirDogOperationMode('Manual'), 1),
-                'Speed 2': (AirDogOperationMode('Manual'), 2),
-                'Speed 3': (AirDogOperationMode('Manual'), 3),
-                'Speed 4': (AirDogOperationMode('Manual'), 4),
+                'Auto': (AirDogOperationMode('auto'), 1),
+                'Night mode': (AirDogOperationMode('sleep'), 1),
+                'Speed 1': (AirDogOperationMode('manual'), 1),
+                'Speed 2': (AirDogOperationMode('manual'), 2),
+                'Speed 3': (AirDogOperationMode('manual'), 3),
+                'Speed 4': (AirDogOperationMode('manual'), 4),
         }
         if self._model == MODEL_AIRPURIFIER_AIRDOG_X7SM:
             self._preset_modes_to_mode_speed['Speed 5'] = (AirDogOperationMode('Manual'), 5)
