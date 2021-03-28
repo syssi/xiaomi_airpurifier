@@ -148,3 +148,12 @@ fan_set_dry_off:
     entity_id:
       description: Name of the xiaomi miio entity.
       example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+
+fan_set_filters_cleaned:
+  description: Inform the device that filters are cleaned.
+  fields:
+    entity_id:
+      description: Name of the xiaomi miio entity.
+      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+
+
