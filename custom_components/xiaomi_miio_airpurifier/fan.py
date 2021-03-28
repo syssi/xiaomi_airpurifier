@@ -2757,7 +2757,7 @@ class XiaomiAirDog(XiaomiGenericDevice):
     def preset_mode(self):
         """Get the current preset mode."""
         if self._state:
-            return self._mode_speed_to_preset_modes[(self._state_attrs[ATTR_MODE], self._state_attrs[ATTR_SPEED])]
+            return self._mode_speed_to_preset_modes[(AirDogOperationMode[self._state_attrs[ATTR_MODE]], self._state_attrs[ATTR_SPEED])]
 
         return None
 
