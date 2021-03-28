@@ -303,7 +303,7 @@ HUMIDIFIER_MIOT = [MODEL_AIRHUMIDIFIER_CA4]
 # AirDogX7SM
 ATTR_FORMALDEHYDE = "hcho"
 # AirDogX3, AirDogX5, AirDogX7SM
-ATTR_CLEAN_FILTERS: "clean_filters"
+ATTR_CLEAN_FILTERS = "clean_filters"
 
 # Map attributes to properties of the state object
 AVAILABLE_ATTRIBUTES_AIRPURIFIER_COMMON = {
