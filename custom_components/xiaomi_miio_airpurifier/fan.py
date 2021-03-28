@@ -2751,7 +2751,7 @@ class XiaomiAirDog(XiaomiGenericDevice):
     @property
     def preset_modes(self):
         """Get the list of available preset modes."""
-        return self._preset_modes_to_mode_speed.keys()
+        return list(self._preset_modes_to_mode_speed.keys())
 
     @property
     def preset_mode(self):
