@@ -2824,9 +2824,62 @@ class XiaomiAirDog(XiaomiGenericDevice):
                 *self._preset_modes_to_mode_speed[preset_mode], # Corresponding mode and speed parameters are in tuple
             )
 
+        self._state_attrs.update(
+            {
+                ATTR_MODE: self._preset_modes_to_mode_speed[preset_mode][0].value,
+                ATTR_SPEED: self._preset_modes_to_mode_speed[preset_mode][1],
+            }
+        )
+        self._skip_update = True
+
     async def async_set_filters_cleaned(self):
         """Set filters cleaned."""
         await self._try_command(
             "Setting filters cleaned failed.",
             self._device.set_filters_cleaned,
         )
+
+
+
+    async def async_turn_on(
+        self,
+        speed: str = None,
+        percentage: int = None,
+        preset_mode: str = None,
+        **kwargs,
+    ) -> None:
+        """Turn the device on."""
+        await super().async_turn_on(speed, percentage, preset_mode, **kwargs)
+
+        self._state = True
+        self._skip_update = True
+
+    async def async_turn_off(self, **kwargs) -> None:
+        """Turn the device off."""
+        await super().async_turn_off(**kwargs)
+
+        self._state = False
+        self._skip_update = True
+
+
+    async def async_set_child_lock_on(self):
+        """Turn the child lock on."""
+        await super().async_set_child_lock_on()
+        self._state_attrs.update(
+            {
+                ATTR_CHILD_LOCK: True,
+            }
+        )
+        self._skip_update = True
+
+
+    async def async_set_child_lock_off(self):
+        """Turn the child lock off."""
+        await super().async_set_child_lock_off()
+        self._state_attrs.update(
+            {
+                ATTR_CHILD_LOCK: False,
+            }
+        )
+        self._skip_update = True
+
