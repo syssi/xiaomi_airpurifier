@@ -2757,7 +2757,9 @@ class XiaomiAirDog(XiaomiGenericDevice):
     def preset_mode(self):
         """Get the current preset mode."""
         if self._state:
-            return self._mode_speed_to_preset_modes[(AirDogOperationMode(self._state_attrs[ATTR_MODE]), self._state_attrs[ATTR_SPEED])]
+            # There are invalid modes, such as 'Auto 2'. There are no presets for them
+            if (AirDogOperationMode(self._state_attrs[ATTR_MODE]), self._state_attrs[ATTR_SPEED]) in self._mode_speed_to_preset_modes:
+                return self._mode_speed_to_preset_modes[(AirDogOperationMode(self._state_attrs[ATTR_MODE]), self._state_attrs[ATTR_SPEED])]
 
         return None
 
@@ -2766,11 +2768,61 @@ class XiaomiAirDog(XiaomiGenericDevice):
         _LOGGER.debug("Setting the preset mode to: %s", preset_mode)
         _LOGGER.debug("Calling set_mode_and_speed with parameters: %s", self._preset_modes_to_mode_speed[preset_mode])
 
+        # Following is true on AirDogX5 with firmware 1.3.5_0005. Maybe this is different for other models. Needs testing
+
+        # It looks like the device was not designed to switch from any arbitrary mode to any other mode.
+        # Some of the combinations produce unexpected results
+        #
+        # For example, switching from 'Auto' to 'Speed X' switches to Manual mode, but always sets speed to 1, regardless of the speed parameter.
+        #
+        # Switching from 'Night mode' to 'Speed X' sets device in Auto mode with speed X.
+        # Tihs 'Auto X' state is quite strange and does not seem to be useful.
+        # Furthermore, we request Manual mode and get Auto.
+        # Switching from 'Auto X' mode to 'Manual X' works just fine.
+        # Switching from 'Auto X' mode to 'Manual Y' switches to 'Manual X'.
+
+        # Here is a full table of device behaviour 
+
+        # FROM          TO              RESULT
+        #'Night mode' ->
+        #               'Auto'          Good
+        #               'Speed 1'       'Auto 1' + repeat -> Good
+        #               'Speed 2'       'Auto 2' + repeat -> Good
+        #               'Speed 3'       'Auto 3' + repeat -> Good
+        #               'Speed 4'       'Auto 4' + repeat -> Good
+        #'Speed 1'
+        #               'Night mode'    Good
+        #               'Auto'    Good
+        #'Speed 2' ->
+        #               'Night mode'    Good
+        #               'Auto'    Good
+        #'Speed 3' ->
+        #               'Night mode'    Good
+        #               'Auto'    Good
+        #'Speed 4' ->
+        #               'Night mode'    Good
+        #'Auto'->
+        #               'Night mode'    Good
+        #               'Speed 1'       Good
+        #               'Speed 2'       'Speed 1' + repeat ->  Good
+        #               'Speed 3'       'Speed 1' + repeat ->  Good
+        #               'Speed 4'       'Speed 1' + repeat ->  Good
+
+
+        # To allow switching from any mode to any other mode command is repeated twice when switching is from 'Night mode' or 'Auto' to 'Speed X'.
+
         await self._try_command(
             "Setting preset mode of the miio device failed.",
             self._device.set_mode_and_speed,
             *self._preset_modes_to_mode_speed[preset_mode], # Corresponding mode and speed parameters are in tuple
         )
+
+        if self._state_attrs[ATTR_MODE] in ('auto', 'sleep') and self._preset_modes_to_mode_speed[preset_mode][0].value == 'manual':
+            await self._try_command(
+                "Setting preset mode of the miio device failed.",
+                self._device.set_mode_and_speed,
+                *self._preset_modes_to_mode_speed[preset_mode], # Corresponding mode and speed parameters are in tuple
+            )
 
     async def async_set_filters_cleaned(self):
         """Set filters cleaned."""
