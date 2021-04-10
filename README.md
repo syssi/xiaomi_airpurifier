@@ -42,6 +42,7 @@ This custom component is more or less the beta version of the [official componen
 | Smartmi Fresh Air System XFXT01ZM        | zhimi.airfresh.va2  | XFXT01ZM     | |
 | Smartmi Fresh Air System XFXTDFR02ZM     | zhimi.airfresh.va4  | XFXTDFR02ZM  | PTC/Heater support |
 | Mi Fresh Air Ventilator  | [dmaker.airfresh.t2017](docs/dmaker-airfresh-t2017.md)  | MJXFJ-300-G1**?** | 300m3/h (Air volume), 35W, 36db(A), 16kg |
+| Mi Fresh Air Ventilator  | dmaker.airfresh.a1  | MJXFJ-150-A1  | 150m<sup>3</sup>/h (Air volume), 20W, 36db(A), 8kg |
 | Pedestal Fan Fan V2    | zhimi.fan.v2           | | |
 | Pedestal Fan Fan V3    | zhimi.fan.v3           | | |
 | Pedestal Fan Fan SA1   | zhimi.fan.sa1          | | |
@@ -52,6 +53,7 @@ This custom component is more or less the beta version of the [official componen
 | Pedestal Fan Fan P9     | dmaker.fan.p9         | | |
 | Pedestal Fan Fan P10    | dmaker.fan.p10        | | |
 | Mijia Pedestal Fan      | dmaker.fan.p11        | BPLDS03DM  | 2800mAh, 24W, <=58dB  |
+| Rosou SS4 Ventilator    | leshow.fan.ss4        | | |
 
 Support unknown / Testing required:
 - Mijia Humidifier 4L (MJJSQ04DY), 300ml/h, 25W, <=38dB: Please create an issue if you own this device.
@@ -342,6 +344,7 @@ This model uses newer MiOT communication protocol.
 - LED brightness (off, dim, bright)
 - Target humidity (30 - 80)
 - Dry mode (on, off)
+- Clean mode (on, off)
 - Motor speed rpm (200 - 2000)
 - Attributes
   - `model`
@@ -361,6 +364,7 @@ This model uses newer MiOT communication protocol.
   - `power_time`
   - `water_level`
   - `use_time`
+  - `clean_mode`
 
 ### Air Humidifier CB (zhimi.humidifier.cb1)
 
@@ -435,7 +439,7 @@ This model uses newer MiOT communication protocol.
   - `extra_features`
   - `ptc` (zhimi.airfresh.va4 only)
 
-### Mi Fresh Air Ventilator (dmaker.airfresh.t2017)
+### Mi Fresh Air Ventilator (dmaker.airfresh.t2017, dmaker.airfresh.a1)
 
 This paragraph was moved to [docs/dmaker-airfresh-t2017.md](docs/dmaker-airfresh-t2017.md).
 
@@ -516,6 +520,24 @@ This paragraph was moved to [docs/dmaker-airfresh-t2017.md](docs/dmaker-airfresh
   - `button_pressed` (zhimi.fan.v2 & v3 only)
   - `led` (zhimi.fan.v2 only)
   - `battery_state` (zhimi.fan.v2 only)
+
+### Rosou SS4 Ventilator (leshow.fan.ss4)
+
+* Power (on, off)
+* Operation modes (manual, sleep, strong, natural)
+* Speed levels (Level 1, Level 2, Level 3, Level 4 / 0...100%)
+* Oscillate (on, off)
+* Buzzer (on, off)
+* Delayed turn off (minutes)
+
+* Attributes
+  - `model`
+  - `mode`
+  - `speed`
+  - `buzzer`
+  - `oscillate`
+  - `delay_off_countdown`
+  - `error_detected`
 
 
 ## Install
@@ -1005,6 +1027,22 @@ Set motor speed RPM.
 |---------------------------|----------|----------------------------------------------------------------------|
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
 | `motor_speed`             |       no | Motor speed RPM. Allowed values are between 200 and 2000             |
+
+### Service `xiaomi_miio_airpurifier.fan_set_clean_mode_on` (Air Humidifier CA4)
+
+Turn the clean mode on.
+
+| Service data attribute    | Optional | Description                                                          |
+|---------------------------|----------|----------------------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
+
+### Service `xiaomi_miio_airpurifier.fan_set_clean_mode_off` (Air Humidifier CA4)
+
+Turn the clean mode off.
+
+| Service data attribute    | Optional | Description                                                          |
+|---------------------------|----------|----------------------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
 
 #### Service `xiaomi_miio_airpurifier.fan_set_fan_level` (Air Purifier 3H only)
 
