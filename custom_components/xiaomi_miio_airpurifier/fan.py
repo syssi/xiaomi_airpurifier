@@ -20,6 +20,7 @@ from miio import (  # pylint: disable=import-error
     FanLeshow,
     FanMiot,
     FanP5,
+    FanC1,
 )
 from miio.airfresh import (  # pylint: disable=import-error, import-error
     LedBrightness as AirfreshLedBrightness,
