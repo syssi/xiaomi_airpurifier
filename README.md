@@ -494,7 +494,7 @@ This paragraph was moved to [docs/dmaker-airfresh-t2017.md](docs/dmaker-airfresh
 * Power (on, off)
 * Speed levels (Level 1, Level 2, Level 3, Level 4)
 * Oscillate (on, off)
-* Oscillation angle (30, 60, 90, 120)
+* Oscillation angle (30, 60, 90, 120, 140, 150)
 * Natural mode (on, off)
 * Rotate by 5 degrees (left, right)
 * Child lock (on, off)
