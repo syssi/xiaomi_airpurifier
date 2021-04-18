@@ -66,7 +66,7 @@ Unsupported devices:
 ### Air Purifier 2 et al.
 
 - Power (on, off)
-- Operation modes (auto, silent, favorite, idle)
+- Preset modes (auto, silent, favorite, idle)
 - Buzzer (on, off)
 - Child lock (on, off)
 - LED (on, off), LED brightness (bright, dim, off)
@@ -100,7 +100,7 @@ Unsupported devices:
 ### Air Purifier 2H (zhimi.airpurifier.mc2)
 
 - Power (on, off)
-- Operation modes (auto, silent, favorite, idle)
+- Preset modes (auto, silent, favorite, idle)
 - Buzzer (on, off)
 - Child lock (on, off)
 - LED (on, off), LED brightness (bright, dim, off)
@@ -127,7 +127,7 @@ Unsupported devices:
 ### Air Purifier Pro (zhimi.airpurifier.v6)
 
 - Power (on, off)
-- Operation modes (auto, silent, favorite)
+- Preset modes (auto, silent, favorite)
 - Child lock (on, off)
 - LED (on, off)
 - Favorite Level (0...16)
@@ -163,7 +163,7 @@ Unsupported devices:
 ### Air Purifier Pro V7 (zhimi.airpurifier.v7)
 
 - Power (on, off)
-- Operation modes (auto, silent, favorite)
+- Preset modes (auto, silent, favorite)
 - Child lock (on, off)
 - LED (on, off)
 - Favorite Level (0...16)
@@ -194,7 +194,7 @@ Unsupported devices:
 ### Air Purifier 2S (zhimi.airpurifier.mc1) and 2H (zhimi.airpurifier.mc2)
 
 - Power (on, off)
-- Operation modes (auto, silent, favorite)
+- Preset modes (auto, silent, favorite)
 - Buzzer (on, off)
 - Child lock (on, off)
 - LED (on, off)
@@ -227,7 +227,7 @@ Unsupported devices:
 This model uses newer MiOT communication protocol.
 
 - Power (on, off)
-- Operation modes (auto, silent, favorite, fan)
+- Preset modes (auto, silent, favorite, fan)
 - Buzzer (on, off)
 - Child lock (on, off)
 - LED (on, off)
@@ -258,7 +258,7 @@ This model uses newer MiOT communication protocol.
 ### Air Purifier V3 (zhimi.airpurifier.v3)
 
 - Power (on, off)
-- Operation modes (auto, silent, favorite, idle, medium, high, strong)
+- Preset modes (auto, silent, favorite, idle, medium, high, strong)
 - Child lock (on, off)
 - LED (on, off)
 - Attributes
@@ -290,7 +290,7 @@ This model uses newer MiOT communication protocol.
 ### Air Humidifier (zhimi.humidifier.v1)
 
 - On, Off
-- Operation modes (silent, medium, high, strong)
+- Preset modes (silent, medium, high, strong)
 - Buzzer (on, off)
 - Child lock (on, off)
 - LED (on, off), LED brightness (bright, dim, off)
@@ -312,7 +312,7 @@ This model uses newer MiOT communication protocol.
 ### Air Humidifier CA (zhimi.humidifier.ca1)
 
 - On, Off
-- Operation modes (silent, medium, high, auto)
+- Preset modes (silent, medium, high, auto)
 - Buzzer (on, off)
 - Child lock (on, off)
 - LED (on, off), LED brightness (bright, dim, off)
@@ -338,7 +338,7 @@ This model uses newer MiOT communication protocol.
 ### Air Humidifier CA4 (zhimi.humidifier.ca4)
 
 - On, Off
-- Operation modes (auto, low, mid, high)
+- Preset modes (auto, low, mid, high)
 - Buzzer (on, off)
 - Child lock (on, off)
 - LED brightness (off, dim, bright)
@@ -369,7 +369,7 @@ This model uses newer MiOT communication protocol.
 ### Air Humidifier CB (zhimi.humidifier.cb1)
 
 - On, Off
-- Operation modes (silent, medium, high, auto)
+- Preset modes (silent, medium, high, auto)
 - Buzzer (on, off)
 - Child lock (on, off)
 - LED (on, off), LED brightness (bright, dim, off)
@@ -396,7 +396,7 @@ This model uses newer MiOT communication protocol.
 ### Zero Fog Humidifier (shuii.humidifier.jsq001)
 
 - Power (on, off)
-- Operation modes (Intelligent, Level1, Level2, Level3, Level4)
+- Preset modes (Intelligent, Level1, Level2, Level3, Level4)
 - Buzzer (on, off)
 - Child lock (on, off)
 - LED (on, off), LED brightness (high, low, off)
@@ -415,7 +415,7 @@ This model uses newer MiOT communication protocol.
 ### Air Fresh VA2 and VA4 (zhimi.airfresh.va2, zhimi.airfresh.va4)
 
 - Power (on, off)
-- Operation modes (auto, silent, interval, low, middle, strong)
+- Preset modes (auto, silent, interval, low, middle, strong)
 - Buzzer (on, off)
 - Child lock (on, off)
 - LED (on, off), LED brightness (bright, dim, off)
@@ -446,7 +446,7 @@ This paragraph was moved to [docs/dmaker-airfresh-t2017.md](docs/dmaker-airfresh
 ### Air Humidifier MJJSQ and JSQ1 (deerma.humidifier.mjjsq, deerma.humidifier.jsq1)
 
 * Power (on, off)
-* Operation modes (low, medium, high, humidity)
+* Preset modes (low, medium, high, humidity)
 * Buzzer (on, off)
 * LED (on, off)
 * Target humidity (0...99)
@@ -466,7 +466,7 @@ This paragraph was moved to [docs/dmaker-airfresh-t2017.md](docs/dmaker-airfresh
 ### Air Dehumidifier (nwt.derh.wdh318efw1)
 
 * HVAC mode (dry, off)
-* Preset mode (on, auto, dryCloth)
+* Preset modes (on, auto, dryCloth)
 * Target humidity (40, 50, 60)
 * Fan mode (sleep, low, medium, high, strong)
 * Buzzer (on, off)
@@ -492,7 +492,8 @@ This paragraph was moved to [docs/dmaker-airfresh-t2017.md](docs/dmaker-airfresh
 ### Pedestal Fan
 
 * Power (on, off)
-* Speed levels (Level 1, Level 2, Level 3, Level 4)
+* Preset modes (Level 1, Level 2, Level 3, Level 4)
+* Speed percentage (0...100)
 * Oscillate (on, off)
 * Oscillation angle (30, 60, 90, 120, 140, 150)
 * Natural mode (on, off)
@@ -525,7 +526,8 @@ This paragraph was moved to [docs/dmaker-airfresh-t2017.md](docs/dmaker-airfresh
 
 * Power (on, off)
 * Operation modes (manual, sleep, strong, natural)
-* Speed levels (Level 1, Level 2, Level 3, Level 4 / 0...100%)
+* Preset modes (Level 1, Level 2, Level 3, Level 4)
+* Speed percentage (0...100)
 * Oscillate (on, off)
 * Buzzer (on, off)
 * Delayed turn off (minutes)
@@ -809,14 +811,23 @@ logger:
 
 ## Platform services
 
-#### Service `fan.set_speed`
+#### Service `fan.set_preset_mode`
 
-Set the fan speed/operation mode.
+Set the fan operation/preset mode.
 
 | Service data attribute    | Optional | Description                                                          |
 |---------------------------|----------|----------------------------------------------------------------------|
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
-| `speed`                   |       no | Fan speed. Valid values are `Auto`, `Silent`, `Favorite` and `Idle`. Valid values of the Pedestal Fan are `Level 1`, `Level 2`, `Level 3` and `Level 4` as well as a value between 0 and 100. |
+| `preset_mode`             |       no | Preset mode. Valid values are `Auto`, `Silent`, `Favorite` and `Idle`. Valid values of the Pedestal Fan are `Level 1`, `Level 2`, `Level 3` and `Level 4`. |
+
+#### Service `fan.set_percentage` (Pedestal Fan only)
+
+Set the fan speed percentage.
+
+| Service data attribute    | Optional | Description                                                          |
+|---------------------------|----------|----------------------------------------------------------------------|
+| `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.                       |
+| `percentage`              |       no | Percentage speed setting. Valid values are between 0 and 100. |
 
 #### Service `xiaomi_miio_airpurifier.fan_set_buzzer_on` (Air Purifier Pro excluded)
 
