@@ -1687,7 +1687,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
             True,
         )
 
-    async def async_set_led_off(self):
+    async def async_set_clean_mode_off(self):
         """Turn the clean mode off."""
         if self._device_features & FEATURE_SET_CLEAN_MODE == 0:
             return
