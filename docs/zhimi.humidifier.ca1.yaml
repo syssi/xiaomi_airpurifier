@@ -52,7 +52,7 @@ sensor:
     sensors:
       humidifier_water_level:
         friendly_name: Water level
-        value_template: '{{ states.fan.humidifier.attributes.depth / 125 * 100 | round(1) }}' # provides value in [0, ..., 125]
+        value_template: '{{ (states.fan.humidifier.attributes.depth / 125 * 100) | round() }}' # provides value in [0, ..., 125]
         unit_of_measurement: '%'
         icon_template: mdi:waves
 
@@ -103,7 +103,7 @@ automation:
       service: fan.set_preset_mode
       data_template:
         entity_id: fan.humidifier
-        preset_mode: '{{ states.input_select.humidifier_mode.state }}'
+        preset_mode: "{{ states('input_select.humidifier_mode') }}"
 
   - alias: Humidifier - monitor operation mode and update input select
     trigger:
@@ -129,7 +129,7 @@ automation:
              { 'Off':'2',
                'Dim':'1',
                'Bright':'0' } %}
-          {% set str_brightness = states.input_select.humidifier_led.state %}
+          {% set str_brightness = states('input_select.br_humidifier_led') %}
           {% set int_brightness = str_to_int[str_brightness] if str_brightness in str_to_int %}
              {{ int_brightness }}
 
@@ -159,7 +159,7 @@ automation:
       data_template:
         entity_id: fan.humidifier
         humidity: >
-          {{ input_select.humidifier_target_humidity.state }}
+          {{ states('input_select.br_humidifier_target_humidity') }}
 
   - alias: Humidifier - monitor target humidity and update input select
     trigger:
@@ -180,4 +180,4 @@ automation humidifier_water_level_low:
   action:
     - service: notify.<NOTIFIER>
       data_template:
-        message: 'Humidifier water level low - {{ states.sensor.humidifier_water_level.state }}%'
+        message: "Humidifier water level low - {{ states('sensor.br_humidifier_water_level') }}%"
