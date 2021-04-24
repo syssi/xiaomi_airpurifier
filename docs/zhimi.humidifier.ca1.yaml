@@ -129,7 +129,7 @@ automation:
              { 'Off':'2',
                'Dim':'1',
                'Bright':'0' } %}
-          {% set str_brightness = states('input_select.br_humidifier_led') %}
+          {% set str_brightness = states('input_select.humidifier_led') %}
           {% set int_brightness = str_to_int[str_brightness] if str_brightness in str_to_int %}
              {{ int_brightness }}
 
@@ -159,7 +159,7 @@ automation:
       data_template:
         entity_id: fan.humidifier
         humidity: >
-          {{ states('input_select.br_humidifier_target_humidity') }}
+          {{ states('input_select.humidifier_target_humidity') }}
 
   - alias: Humidifier - monitor target humidity and update input select
     trigger:
@@ -180,4 +180,4 @@ automation humidifier_water_level_low:
   action:
     - service: notify.<NOTIFIER>
       data_template:
-        message: "Humidifier water level low - {{ states('sensor.br_humidifier_water_level') }}%"
+        message: "Humidifier water level low - {{ states('sensor.humidifier_water_level') }}%"
