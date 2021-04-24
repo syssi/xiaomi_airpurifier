@@ -1,0 +1,183 @@
+fan humidifier:
+  - platform: xiaomi_miio_airpurifier
+    name: Humidifier
+    host: <IP>
+    token: <TOKEN>
+    model: zhimi.humidifier.ca1
+
+switch:
+  - platform: template
+    switches:
+      humidifier_buzzer:
+        friendly_name: Buzzer
+        value_template: "{{ is_state_attr('fan.humidifier', 'buzzer', True) }}"
+        turn_on:
+          service: xiaomi_miio_airpurifier.fan_set_buzzer_on
+          data:
+            entity_id: fan.humidifier
+        turn_off:
+          service: xiaomi_miio_airpurifier.fan_set_buzzer_off
+          data:
+            entity_id: fan.humidifier
+        icon_template: mdi:volume-high
+
+      humidifier_lock:
+        friendly_name: Child lock
+        value_template: "{{ is_state_attr('fan.humidifier', 'child_lock', True) }}"
+        turn_on:
+          service: xiaomi_miio_airpurifier.fan_set_child_lock_on
+          data:
+            entity_id: fan.humidifier
+        turn_off:
+          service: xiaomi_miio_airpurifier.fan_set_child_lock_off
+          data:
+            entity_id: fan.humidifier
+        icon_template: mdi:lock-outline
+
+      humidifier_dry_mode:
+        friendly_name: Dry mode
+        value_template: "{{ is_state_attr('fan.humidifier', 'dry', True) }}"
+        turn_on:
+          service: xiaomi_miio_airpurifier.fan_set_dry_on
+          data:
+            entity_id: fan.humidifier
+        turn_off:
+          service: xiaomi_miio_airpurifier.fan_set_dry_off
+          data:
+            entity_id: fan.humidifier
+        icon_template: mdi:hair-dryer-outline
+
+sensor:
+  - platform: template
+    sensors:
+      humidifier_water_level:
+        friendly_name: Water level
+        value_template: '{{ states.fan.humidifier.attributes.depth / 125 * 100 | round(1) }}' # provides value in [0, ..., 125]
+        unit_of_measurement: '%'
+        icon_template: mdi:waves
+
+      humidifier_humidity:
+        friendly_name: Humidity
+        value_template: '{{ states.fan.humidifier.attributes.humidity }}'
+        unit_of_measurement: '%'
+        icon_template: mdi:water-percent
+
+      humidifier_temperature:
+        friendly_name: Temperature
+        value_template: '{{ states.fan.humidifier.attributes.temperature }}'
+        unit_of_measurement: '°C'
+        icon_template: mdi:thermometer
+
+input_select:
+  humidifier_mode:
+    name: Operation mode
+    options:
+      - Auto
+      - Silent
+      - Medium
+      - High
+
+  humidifier_led:
+    name: Led mode
+    options:
+      - 'Off' # will be converted to False without quotes
+      - Dim
+      - Bright
+
+  humidifier_target_humidity:
+    name: Target humidity
+    options:
+      - 30
+      - 40
+      - 50
+      - 60
+      - 70
+      - 80
+
+automation:
+  - alias: Humidifier - select operation mode by input select
+    trigger:
+      entity_id: input_select.humidifier_mode
+      platform: state
+    action:
+      service: fan.set_preset_mode
+      data_template:
+        entity_id: fan.humidifier
+        preset_mode: '{{ states.input_select.humidifier_mode.state }}'
+
+  - alias: Humidifier - monitor operation mode and update input select
+    trigger:
+      platform: template
+      value_template: '{{ states.fan.humidifier.attributes.preset_mode }}'
+    action:
+      service: input_select.select_option
+      entity_id: input_select.humidifier_mode
+      data_template:
+        option: >
+          {{ states.fan.humidifier.attributes.preset_mode }}
+
+  - alias: Humidifier - select LED mode by input select
+    trigger:
+      entity_id: input_select.humidifier_led
+      platform: state
+    action:
+      service: xiaomi_miio_airpurifier.fan_set_led_brightness
+      data_template:
+        entity_id: fan.humidifier
+        brightness: > # accepts value in [0, 1, 2], input provides value in [Off, Dim, Bright]
+          {% set str_to_int =
+             { 'Off':'2',
+               'Dim':'1',
+               'Bright':'0' } %}
+          {% set str_brightness = states.input_select.humidifier_led.state %}
+          {% set int_brightness = str_to_int[str_brightness] if str_brightness in str_to_int %}
+             {{ int_brightness }}
+
+  - alias: Humidifier - monitor LED mode and update input select
+    trigger:
+      platform: template
+      value_template: '{{ states.fan.humidifier.attributes.led_brightness }}'
+    action:
+      service: input_select.select_option
+      entity_id: input_select.humidifier_led
+      data_template:
+        option: > # provides value in [0, 1, 2], input accepts value in [Off, Dim, Bright]
+          {% set int_to_str =
+             { 2:'Off',
+               1:'Dim',
+               0:'Bright' } %}
+          {% set int_brightness = states.fan.humidifier.attributes.led_brightness %}
+          {% set str_brightness = int_to_str[int_brightness] if int_brightness in int_to_str %}
+             {{ str_brightness }}
+
+  - alias: Humidifier - select target humidity by input select
+    trigger:
+      platform: state
+      entity_id: input_select.humidifier_target_humidity
+    action:
+      service: xiaomi_miio_airpurifier.fan_set_target_humidity
+      data_template:
+        entity_id: fan.humidifier
+        humidity: >
+          {{ input_select.humidifier_target_humidity.state }}
+
+  - alias: Humidifier - monitor target humidity and update input select
+    trigger:
+      platform: template
+      value_template: '{{ states.fan.humidifier.attributes.target_humidity }}'
+    action:
+      service: input_select.select_option
+      entity_id: input_select.humidifier_target_humidity
+      data_template:
+        option: >
+          {{ states.fan.humidifier.attributes.target_humidity }}
+
+automation humidifier_water_level_low:
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.humidifier_water_level
+      below: 30
+  action:
+    - service: notify.<NOTIFIER>
+      data_template:
+        message: 'Humidifier water level low - {{ states.sensor.humidifier_water_level.state }}%'
