@@ -172,12 +172,12 @@ automation:
         option: >
           {{ states.fan.humidifier.attributes.target_humidity }}
 
-automation humidifier_water_level_low:
-  trigger:
-    - platform: numeric_state
-      entity_id: sensor.humidifier_water_level
-      below: 30
-  action:
-    - service: notify.<NOTIFIER>
-      data_template:
-        message: "Humidifier water level low - {{ states('sensor.humidifier_water_level') }}%"
+# automation humidifier_water_level_low:
+#   trigger:
+#     - platform: numeric_state
+#       entity_id: sensor.humidifier_water_level
+#       below: 30
+#   action:
+#     - service: notify.<NOTIFIER>
+#       data_template:
+#         message: "Humidifier water level low - {{ states('sensor.humidifier_water_level') }}%"
