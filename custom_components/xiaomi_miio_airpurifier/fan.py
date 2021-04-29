@@ -1292,7 +1292,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
             self._device_features = FEATURE_FLAGS_AIRPURIFIER_2H
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_2H
             self._preset_modes = OPERATION_MODES_AIRPURIFIER_2H
-        elif self._model == MODEL_AIRPURIFIER_3 or self._model == MODEL_AIRPURIFIER_3H:
+        elif self._model in PURIFIER_MIOT:
             self._device_features = FEATURE_FLAGS_AIRPURIFIER_3
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_3
             self._preset_modes = OPERATION_MODES_AIRPURIFIER_3
