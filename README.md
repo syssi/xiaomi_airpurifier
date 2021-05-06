@@ -54,6 +54,7 @@ This custom component is more or less the beta version of the [official componen
 | Pedestal Fan Fan ZA4   | zhimi.fan.za4          | | |
 | Pedestal Fan Fan 1C    | dmaker.fan.1c          | | |
 | Pedestal Fan Fan P5    | dmaker.fan.p5          | | |
+| Pedestal Fan Fan P8     | dmaker.fan.p8         | | |
 | Pedestal Fan Fan P9     | dmaker.fan.p9         | | |
 | Pedestal Fan Fan P10    | dmaker.fan.p10        | | |
 | Mijia Pedestal Fan      | dmaker.fan.p11        | BPLDS03DM  | 2800mAh, 24W, <=58dB  |
