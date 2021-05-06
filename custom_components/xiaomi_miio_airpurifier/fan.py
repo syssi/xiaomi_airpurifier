@@ -5,6 +5,9 @@ from functools import partial
 import logging
 
 from miio import (  # pylint: disable=import-error
+    AirDogX3,
+    AirDogX5,
+    AirDogX7SM,
     AirFresh,
     AirFreshA1,
     AirFreshT2017,
@@ -17,12 +20,9 @@ from miio import (  # pylint: disable=import-error
     Device,
     DeviceException,
     Fan,
+    FanC1,
     FanLeshow,
     FanP5,
-    AirDogX3,
-    AirDogX5,
-    AirDogX7SM,
-    FanC1,
     FanP9,
     FanP10,
     FanP11,
@@ -56,6 +56,9 @@ from miio.airpurifier import (  # pylint: disable=import-error, import-error
     LedBrightness as AirpurifierLedBrightness,
     OperationMode as AirpurifierOperationMode,
 )
+from miio.airpurifier_airdog import (  # pylint: disable=import-error, import-error
+    OperationMode as AirDogOperationMode,
+)
 from miio.airpurifier_miot import (  # pylint: disable=import-error, import-error
     LedBrightness as AirpurifierMiotLedBrightness,
     OperationMode as AirpurifierMiotOperationMode,
@@ -68,12 +71,7 @@ from miio.fan import (  # pylint: disable=import-error, import-error
 from miio.fan_leshow import (  # pylint: disable=import-error, import-error
     OperationMode as FanLeshowOperationMode,
 )
-from miio.airpurifier_airdog import (  # pylint: disable=import-error, import-error
-    OperationMode as AirDogOperationMode,
-)
-from miio.fan_miot import (
-    OperationModeMiot as FanOperationModeMiot
-)
+from miio.fan_miot import OperationModeMiot as FanOperationModeMiot
 import voluptuous as vol
 
 from homeassistant.components.fan import (
@@ -866,7 +864,7 @@ FEATURE_FLAGS_FAN_P5 = (
 FEATURE_FLAGS_FAN_LESHOW_SS4 = FEATURE_SET_BUZZER
 FEATURE_FLAGS_FAN_1C = FEATURE_FLAGS_FAN
 
-FEATURE_FLAGS_AIRPURIFIER_AIRDOG = FEATURE_SET_CHILD_LOCK 
+FEATURE_FLAGS_AIRPURIFIER_AIRDOG = FEATURE_SET_CHILD_LOCK
 
 SERVICE_SET_BUZZER_ON = "fan_set_buzzer_on"
 SERVICE_SET_BUZZER_OFF = "fan_set_buzzer_off"
@@ -2855,7 +2853,7 @@ class XiaomiFan1C(XiaomiFan):
             FanOperationModeMiot.Normal,
         )
 
-  
+
 class XiaomiAirDog(XiaomiGenericDevice):
     """Representation of a Xiaomi AirDog air purifiers."""
 
@@ -2871,15 +2869,18 @@ class XiaomiAirDog(XiaomiGenericDevice):
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_AIRDOG_X3
 
         self._preset_modes_to_mode_speed = {
-                'Auto': (AirDogOperationMode('auto'), 1),
-                'Night mode': (AirDogOperationMode('sleep'), 1),
-                'Speed 1': (AirDogOperationMode('manual'), 1),
-                'Speed 2': (AirDogOperationMode('manual'), 2),
-                'Speed 3': (AirDogOperationMode('manual'), 3),
-                'Speed 4': (AirDogOperationMode('manual'), 4),
+            "Auto": (AirDogOperationMode("auto"), 1),
+            "Night mode": (AirDogOperationMode("sleep"), 1),
+            "Speed 1": (AirDogOperationMode("manual"), 1),
+            "Speed 2": (AirDogOperationMode("manual"), 2),
+            "Speed 3": (AirDogOperationMode("manual"), 3),
+            "Speed 4": (AirDogOperationMode("manual"), 4),
         }
         if self._model == MODEL_AIRPURIFIER_AIRDOG_X7SM:
-            self._preset_modes_to_mode_speed['Speed 5'] = (AirDogOperationMode('Manual'), 5)
+            self._preset_modes_to_mode_speed["Speed 5"] = (
+                AirDogOperationMode("Manual"),
+                5,
+            )
 
         self._mode_speed_to_preset_modes = {}
         for key, value in self._preset_modes_to_mode_speed.items():
@@ -2937,15 +2938,26 @@ class XiaomiAirDog(XiaomiGenericDevice):
         """Get the current preset mode."""
         if self._state:
             # There are invalid modes, such as 'Auto 2'. There are no presets for them
-            if (AirDogOperationMode(self._state_attrs[ATTR_MODE]), self._state_attrs[ATTR_SPEED]) in self._mode_speed_to_preset_modes:
-                return self._mode_speed_to_preset_modes[(AirDogOperationMode(self._state_attrs[ATTR_MODE]), self._state_attrs[ATTR_SPEED])]
+            if (
+                AirDogOperationMode(self._state_attrs[ATTR_MODE]),
+                self._state_attrs[ATTR_SPEED],
+            ) in self._mode_speed_to_preset_modes:
+                return self._mode_speed_to_preset_modes[
+                    (
+                        AirDogOperationMode(self._state_attrs[ATTR_MODE]),
+                        self._state_attrs[ATTR_SPEED],
+                    )
+                ]
 
         return None
 
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set the preset mode of the fan."""
         _LOGGER.debug("Setting the preset mode to: %s", preset_mode)
-        _LOGGER.debug("Calling set_mode_and_speed with parameters: %s", self._preset_modes_to_mode_speed[preset_mode])
+        _LOGGER.debug(
+            "Calling set_mode_and_speed with parameters: %s",
+            self._preset_modes_to_mode_speed[preset_mode],
+        )
 
         # Following is true on AirDogX5 with firmware 1.3.5_0005. Maybe this is different for other models. Needs testing
 
@@ -2960,7 +2972,7 @@ class XiaomiAirDog(XiaomiGenericDevice):
         # Switching from 'Auto X' mode to 'Manual X' works just fine.
         # Switching from 'Auto X' mode to 'Manual Y' switches to 'Manual X'.
 
-        # Here is a full table of device behaviour 
+        # Here is a full table of device behaviour
 
         # FROM          TO              RESULT
         #'Night mode' ->
@@ -2987,20 +2999,26 @@ class XiaomiAirDog(XiaomiGenericDevice):
         #               'Speed 3'       'Speed 1' + repeat ->  Good
         #               'Speed 4'       'Speed 1' + repeat ->  Good
 
-
         # To allow switching from any mode to any other mode command is repeated twice when switching is from 'Night mode' or 'Auto' to 'Speed X'.
 
         await self._try_command(
             "Setting preset mode of the miio device failed.",
             self._device.set_mode_and_speed,
-            *self._preset_modes_to_mode_speed[preset_mode], # Corresponding mode and speed parameters are in tuple
+            *self._preset_modes_to_mode_speed[
+                preset_mode
+            ],  # Corresponding mode and speed parameters are in tuple
         )
 
-        if self._state_attrs[ATTR_MODE] in ('auto', 'sleep') and self._preset_modes_to_mode_speed[preset_mode][0].value == 'manual':
+        if (
+            self._state_attrs[ATTR_MODE] in ("auto", "sleep")
+            and self._preset_modes_to_mode_speed[preset_mode][0].value == "manual"
+        ):
             await self._try_command(
                 "Setting preset mode of the miio device failed.",
                 self._device.set_mode_and_speed,
-                *self._preset_modes_to_mode_speed[preset_mode], # Corresponding mode and speed parameters are in tuple
+                *self._preset_modes_to_mode_speed[
+                    preset_mode
+                ],  # Corresponding mode and speed parameters are in tuple
             )
 
         self._state_attrs.update(
@@ -3017,8 +3035,6 @@ class XiaomiAirDog(XiaomiGenericDevice):
             "Setting filters cleaned failed.",
             self._device.set_filters_cleaned,
         )
-
-
 
     async def async_turn_on(
         self,
@@ -3040,7 +3056,6 @@ class XiaomiAirDog(XiaomiGenericDevice):
         self._state = False
         self._skip_update = True
 
-
     async def async_set_child_lock_on(self):
         """Turn the child lock on."""
         await super().async_set_child_lock_on()
@@ -3050,7 +3065,6 @@ class XiaomiAirDog(XiaomiGenericDevice):
             }
         )
         self._skip_update = True
-
 
     async def async_set_child_lock_off(self):
         """Turn the child lock off."""
