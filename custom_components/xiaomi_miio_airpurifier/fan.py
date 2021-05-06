@@ -18,11 +18,14 @@ from miio import (  # pylint: disable=import-error
     DeviceException,
     Fan,
     FanLeshow,
-    FanMiot,
     FanP5,
     AirDogX3,
     AirDogX5,
     AirDogX7SM,
+    FanC1,
+    FanP9,
+    FanP10,
+    FanP11,
 )
 from miio.airfresh import (  # pylint: disable=import-error, import-error
     LedBrightness as AirfreshLedBrightness,
@@ -67,6 +70,9 @@ from miio.fan_leshow import (  # pylint: disable=import-error, import-error
 )
 from miio.airpurifier_airdog import (  # pylint: disable=import-error, import-error
     OperationMode as AirDogOperationMode,
+)
+from miio.fan_miot import (
+    OperationModeMiot as FanOperationModeMiot
 )
 import voluptuous as vol
 
@@ -145,6 +151,7 @@ MODEL_FAN_P9 = "dmaker.fan.p9"
 MODEL_FAN_P10 = "dmaker.fan.p10"
 MODEL_FAN_P11 = "dmaker.fan.p11"
 MODEL_FAN_LESHOW_SS4 = "leshow.fan.ss4"
+MODEL_FAN_1C = "dmaker.fan.1c"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -195,6 +202,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_FAN_P10,
                 MODEL_FAN_P11,
                 MODEL_FAN_LESHOW_SS4,
+                MODEL_FAN_1C,
             ]
         ),
         vol.Optional(CONF_RETRIES, default=DEFAULT_RETRIES): cv.positive_int,
@@ -613,6 +621,16 @@ AVAILABLE_ATTRIBUTES_AIRPURIFIER_AIRDOG_X7SM = {
     ATTR_FORMALDEHYDE: "hcho",
 }
 
+AVAILABLE_ATTRIBUTES_FAN_1C = {
+    ATTR_MODE: "mode",
+    ATTR_RAW_SPEED: "speed",
+    ATTR_BUZZER: "buzzer",
+    ATTR_OSCILLATE: "oscillate",
+    ATTR_DELAY_OFF_COUNTDOWN: "delay_off_countdown",
+    ATTR_LED: "led",
+    ATTR_CHILD_LOCK: "child_lock",
+}
+
 FAN_SPEED_LEVEL1 = "Level 1"
 FAN_SPEED_LEVEL2 = "Level 2"
 FAN_SPEED_LEVEL3 = "Level 3"
@@ -640,6 +658,13 @@ FAN_PRESET_MODE_VALUES_P5 = {
     FAN_SPEED_LEVEL2: 35,
     FAN_SPEED_LEVEL3: 70,
     FAN_SPEED_LEVEL4: 100,
+}
+
+FAN_PRESET_MODES_1C = {
+    SPEED_OFF: 0,
+    FAN_SPEED_LEVEL1: 1,
+    FAN_SPEED_LEVEL2: 2,
+    FAN_SPEED_LEVEL3: 3,
 }
 
 OPERATION_MODES_AIRPURIFIER = ["Auto", "Silent", "Favorite", "Idle"]
@@ -837,6 +862,7 @@ FEATURE_FLAGS_FAN_P5 = (
 )
 
 FEATURE_FLAGS_FAN_LESHOW_SS4 = FEATURE_SET_BUZZER
+FEATURE_FLAGS_FAN_1C = FEATURE_FLAGS_FAN
 
 FEATURE_FLAGS_AIRPURIFIER_AIRDOG = FEATURE_SET_CHILD_LOCK 
 
@@ -938,7 +964,7 @@ SERVICE_SCHEMA_MOTOR_SPEED = AIRPURIFIER_SERVICE_SCHEMA.extend(
 )
 
 SERVICE_SCHEMA_OSCILLATION_ANGLE = AIRPURIFIER_SERVICE_SCHEMA.extend(
-    {vol.Required(ATTR_ANGLE): vol.All(vol.Coerce(int), vol.In([30, 60, 90, 120]))}
+    {vol.Required(ATTR_ANGLE): cv.positive_int}
 )
 
 SERVICE_SCHEMA_DELAY_OFF = AIRPURIFIER_SERVICE_SCHEMA.extend(
@@ -1095,8 +1121,14 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     elif model == MODEL_FAN_P5:
         fan = FanP5(host, token, model=model)
         device = XiaomiFanP5(name, fan, model, unique_id, retries)
-    elif model in [MODEL_FAN_P9, MODEL_FAN_P10, MODEL_FAN_P11]:
-        fan = FanMiot(host, token, model=model)
+    elif model == MODEL_FAN_P9:
+        fan = FanP9(host, token, model=model)
+        device = XiaomiFanMiot(name, fan, model, unique_id, retries)
+    elif model == MODEL_FAN_P10:
+        fan = FanP10(host, token, model=model)
+        device = XiaomiFanMiot(name, fan, model, unique_id, retries)
+    elif model == MODEL_FAN_P11:
+        fan = FanP11(host, token, model=model)
         device = XiaomiFanMiot(name, fan, model, unique_id, retries)
     elif model == MODEL_FAN_LESHOW_SS4:
         fan = FanLeshow(host, token, model=model)
@@ -1110,6 +1142,9 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     elif model == MODEL_AIRPURIFIER_AIRDOG_X7SM:
         air_purifier = AirDogX7SM(host, token)
         device = XiaomiAirDog(name, air_purifier, model, unique_id, retries)
+    elif model == MODEL_FAN_1C:
+        fan = FanC1(host, token, model=model)
+        device = XiaomiFan1C(name, fan, model, unique_id, retries)
     else:
         _LOGGER.error(
             "Unsupported device found! Please create an issue at "
@@ -1331,7 +1366,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
             self._device_features = FEATURE_FLAGS_AIRPURIFIER_2H
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_2H
             self._preset_modes = OPERATION_MODES_AIRPURIFIER_2H
-        elif self._model == MODEL_AIRPURIFIER_3 or self._model == MODEL_AIRPURIFIER_3H:
+        elif self._model in PURIFIER_MIOT:
             self._device_features = FEATURE_FLAGS_AIRPURIFIER_3
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_3
             self._preset_modes = OPERATION_MODES_AIRPURIFIER_3
@@ -1726,7 +1761,7 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
             True,
         )
 
-    async def async_set_led_off(self):
+    async def async_set_clean_mode_off(self):
         """Turn the clean mode off."""
         if self._device_features & FEATURE_SET_CLEAN_MODE == 0:
             return
@@ -2490,18 +2525,25 @@ class XiaomiFanP5(XiaomiFan):
             await self.async_turn_off()
             return
 
-        if self._natural_mode:
-            await self._try_command(
-                "Setting fan speed of the miio device failed.",
-                self._device.set_natural_speed,
-                FAN_PRESET_MODE_VALUES_P5[preset_mode],
-            )
-        else:
-            await self._try_command(
-                "Setting fan speed of the miio device failed.",
-                self._device.set_direct_speed,
-                FAN_PRESET_MODE_VALUES_P5[preset_mode],
-            )
+        await self._try_command(
+            "Setting fan speed of the miio device failed.",
+            self._device.set_speed,
+            FAN_PRESET_MODE_VALUES_P5[preset_mode],
+        )
+
+    async def async_set_percentage(self, percentage: int) -> None:
+        """Set the speed percentage of the fan."""
+        _LOGGER.debug("Setting the fan speed percentage to: %s", percentage)
+
+        if percentage == 0:
+            await self.async_turn_off()
+            return
+
+        await self._try_command(
+            "Setting fan speed percentage of the miio device failed.",
+            self._device.set_speed,
+            percentage,
+        )
 
     async def async_set_natural_mode_on(self):
         """Turn the natural mode on."""
@@ -2673,6 +2715,145 @@ class XiaomiFanLeshow(XiaomiGenericDevice):
         )
 
 
+class XiaomiFan1C(XiaomiFan):
+    """Representation of a Xiaomi Fan 1C."""
+
+    def __init__(self, name, device, model, unique_id, retries):
+        """Initialize the fan entity."""
+        super().__init__(name, device, model, unique_id, retries)
+
+        self._device_features = FEATURE_FLAGS_FAN_1C
+        self._available_attributes = AVAILABLE_ATTRIBUTES_FAN_1C
+        self._preset_modes = FAN_PRESET_MODES_1C
+        self._oscillate = None
+
+        self._state_attrs.update(
+            {attribute: None for attribute in self._available_attributes}
+        )
+
+    @property
+    def supported_features(self) -> int:
+        """Supported features."""
+        return SUPPORT_PRESET_MODE | SUPPORT_OSCILLATE
+
+    async def async_update(self):
+        """Fetch state from the device."""
+        # On state change the device doesn't provide the new state immediately.
+        if self._skip_update:
+            self._skip_update = False
+            return
+
+        try:
+            state = await self.hass.async_add_job(self._device.status)
+            _LOGGER.debug("Got new state: %s", state)
+
+            self._available = True
+            self._oscillate = state.oscillate
+            self._state = state.is_on
+
+            for preset_mode, value in FAN_PRESET_MODES_1C.items():
+                if state.speed == value:
+                    self._preset_mode = preset_mode
+
+            self._state_attrs.update(
+                {
+                    key: self._extract_value_from_attribute(state, value)
+                    for key, value in self._available_attributes.items()
+                }
+            )
+            self._retry = 0
+
+        except DeviceException as ex:
+            self._retry = self._retry + 1
+            if self._retry < self._retries:
+                _LOGGER.info(
+                    "Got exception while fetching the state: %s , _retry=%s",
+                    ex,
+                    self._retry,
+                )
+            else:
+                self._available = False
+                _LOGGER.error(
+                    "Got exception while fetching the state: %s , _retry=%s",
+                    ex,
+                    self._retry,
+                )
+
+    @property
+    def preset_modes(self):
+        """Get the list of available preset modes."""
+        return self._preset_modes
+
+    @property
+    def preset_mode(self):
+        """Get the current preset mode."""
+        if self._state:
+            return self._preset_mode
+
+        return None
+
+    async def async_set_preset_mode(self, preset_mode: str) -> None:
+        """Set the preset mode of the fan."""
+        _LOGGER.debug("Setting the preset mode to: %s", preset_mode)
+
+        await self._try_command(
+            "Setting preset mode of the miio device failed.",
+            self._device.set_speed,
+            FAN_PRESET_MODES_1C[preset_mode],
+        )
+
+    @property
+    def oscillating(self):
+        """Return the oscillation state."""
+        return self._oscillate
+
+    async def async_oscillate(self, oscillating: bool) -> None:
+        """Set oscillation."""
+        if oscillating:
+            await self._try_command(
+                "Setting oscillate on of the miio device failed.",
+                self._device.set_oscillate,
+                True,
+            )
+        else:
+            await self._try_command(
+                "Setting oscillate off of the miio device failed.",
+                self._device.set_oscillate,
+                False,
+            )
+
+    async def async_set_delay_off(self, delay_off_countdown: int) -> None:
+        """Set scheduled off timer in minutes."""
+
+        await self._try_command(
+            "Setting delay off miio device failed.",
+            self._device.delay_off,
+            delay_off_countdown,
+        )
+
+    async def async_set_natural_mode_on(self):
+        """Turn the natural mode on."""
+        if self._device_features & FEATURE_SET_NATURAL_MODE == 0:
+            return
+
+        await self._try_command(
+            "Setting fan natural mode of the miio device failed.",
+            self._device.set_mode,
+            FanOperationModeMiot.Nature,
+        )
+
+    async def async_set_natural_mode_off(self):
+        """Turn the natural mode off."""
+        if self._device_features & FEATURE_SET_NATURAL_MODE == 0:
+            return
+
+        await self._try_command(
+            "Setting fan natural mode of the miio device failed.",
+            self._device.set_mode,
+            FanOperationModeMiot.Normal,
+        )
+
+  
 class XiaomiAirDog(XiaomiGenericDevice):
     """Representation of a Xiaomi AirDog air purifiers."""
 
@@ -2878,4 +3059,3 @@ class XiaomiAirDog(XiaomiGenericDevice):
             }
         )
         self._skip_update = True
-
