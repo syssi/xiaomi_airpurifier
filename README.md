@@ -30,6 +30,9 @@ This custom component is more or less the beta version of the [official componen
 | Air Purifier Super 2   | zhimi.airpurifier.sa2  | | |
 | Air Purifier 3 (2019)  | zhimi.airpurifier.ma4  | | |
 | Air Purifier 3H (2019) | zhimi.airpurifier.mb3  | FJY4031GL<strong>(?)</strong>, XM200017 | 45m<sup>2</sup>, 380m<sup>3</sup>/h CADR, 64dB, 38W (max) |
+| Air Dog X3             | airdog.airpurifier.x3  | | |
+| Air Dog X5             | airdog.airpurifier.x5  | | |
+| Air Dog X7SM           | airdog.airpurifier.x7sm | | |
 | Air Humidifier         | zhimi.humidifier.v1    | | |
 | Air Humidifier CA1     | [zhimi.humidifier.ca1](docs/zhimi.humidifier.ca1.yaml)   | | |
 | Smartmi Humidifier Evaporator 2  | zhimi.humidifier.ca4   | CJXJSQ04ZM  | |
