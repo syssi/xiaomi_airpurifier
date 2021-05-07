@@ -20,7 +20,7 @@ from miio import (  # pylint: disable=import-error
     Device,
     DeviceException,
     Fan,
-    FanC1,
+    Fan1C,
     FanLeshow,
     FanP5,
     FanP9,
@@ -1143,7 +1143,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         air_purifier = AirDogX7SM(host, token)
         device = XiaomiAirDog(name, air_purifier, model, unique_id, retries)
     elif model in [MODEL_FAN_1C, MODEL_FAN_P8]:
-        fan = FanC1(host, token, model=model)
+        fan = Fan1C(host, token, model=model)
         device = XiaomiFan1C(name, fan, model, unique_id, retries)
     else:
         _LOGGER.error(
