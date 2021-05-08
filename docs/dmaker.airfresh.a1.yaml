@@ -163,5 +163,5 @@ automation:
       entity_id: input_select.xiaomi_fresh_air_ventilator_mode
       data_template:
         option: >
-          {{ states.fan.xiaomi_fresh_air_ventilator.attributes.preset_mode}}
+          {% if states.fan.xiaomi_fresh_air_ventilator.attributes.preset_mode %} {{ states.fan.xiaomi_fresh_air_ventilator.attributes.preset_mode }} {% else %}Auto{% endif %}
           
