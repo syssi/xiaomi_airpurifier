@@ -2,8 +2,8 @@
 import asyncio
 from enum import Enum
 from functools import partial
-from typing import Optional
 import logging
+from typing import Optional
 
 from miio import (  # pylint: disable=import-error
     AirDogX3,
@@ -94,7 +94,10 @@ from homeassistant.const import (
 )
 from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
-from homeassistant.util.percentage import ordered_list_item_to_percentage, percentage_to_ordered_list_item
+from homeassistant.util.percentage import (
+    ordered_list_item_to_percentage,
+    percentage_to_ordered_list_item,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -2378,11 +2381,11 @@ class XiaomiFan(XiaomiGenericDevice):
 
     async def async_set_direction(self, direction: str) -> None:
         """Set the direction of the fan."""
-        if direction == 'forward':
-            direction = 'right'
+        if direction == "forward":
+            direction = "right"
 
-        if direction == 'reverse':
-            direction = 'left'
+        if direction == "reverse":
+            direction = "left"
 
         if self._oscillate:
             await self._try_command(
