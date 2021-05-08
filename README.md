@@ -30,8 +30,11 @@ This custom component is more or less the beta version of the [official componen
 | Air Purifier Super 2   | zhimi.airpurifier.sa2  | | |
 | Air Purifier 3 (2019)  | zhimi.airpurifier.ma4  | | |
 | Air Purifier 3H (2019) | zhimi.airpurifier.mb3  | FJY4031GL<strong>(?)</strong>, XM200017 | 45m<sup>2</sup>, 380m<sup>3</sup>/h CADR, 64dB, 38W (max) |
+| Air Dog X3             | airdog.airpurifier.x3  | | |
+| Air Dog X5             | airdog.airpurifier.x5  | | |
+| Air Dog X7SM           | airdog.airpurifier.x7sm | | |
 | Air Humidifier         | zhimi.humidifier.v1    | | |
-| Air Humidifier CA1     | zhimi.humidifier.ca1   | | |
+| Air Humidifier CA1     | [zhimi.humidifier.ca1](docs/zhimi.humidifier.ca1.yaml)   | | |
 | Smartmi Humidifier Evaporator 2  | zhimi.humidifier.ca4   | CJXJSQ04ZM  | |
 | Smartmi Evaporative Humidifier   | zhimi.humidifier.cb1   | CJXJSQ02ZM, SKV6001EU  | 8W, 240x240x363mm  |
 | Mijia Smart Sterilization Humidifier S  | deerma.humidifier.mjjsq  | MJJSQ03DY  | 4.5L, <=39dB, 450mL/h, 40W  |
@@ -49,7 +52,9 @@ This custom component is more or less the beta version of the [official componen
 | Pedestal Fan Fan ZA1   | zhimi.fan.za1          | | |
 | Pedestal Fan Fan ZA3   | zhimi.fan.za3          | | |
 | Pedestal Fan Fan ZA4   | zhimi.fan.za4          | | |
+| Pedestal Fan Fan 1C    | dmaker.fan.1c          | | |
 | Pedestal Fan Fan P5    | dmaker.fan.p5          | | |
+| Pedestal Fan Fan P8     | dmaker.fan.p8         | | |
 | Pedestal Fan Fan P9     | dmaker.fan.p9         | | |
 | Pedestal Fan Fan P10    | dmaker.fan.p10        | | |
 | Mijia Pedestal Fan      | dmaker.fan.p11        | BPLDS03DM  | 2800mAh, 24W, <=58dB  |

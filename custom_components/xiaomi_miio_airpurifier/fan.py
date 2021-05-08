@@ -5,6 +5,9 @@ from functools import partial
 import logging
 
 from miio import (  # pylint: disable=import-error
+    AirDogX3,
+    AirDogX5,
+    AirDogX7SM,
     AirFresh,
     AirFreshA1,
     AirFreshT2017,
@@ -17,6 +20,7 @@ from miio import (  # pylint: disable=import-error
     Device,
     DeviceException,
     Fan,
+    Fan1C,
     FanLeshow,
     FanP5,
     FanP9,
@@ -52,6 +56,9 @@ from miio.airpurifier import (  # pylint: disable=import-error, import-error
     LedBrightness as AirpurifierLedBrightness,
     OperationMode as AirpurifierOperationMode,
 )
+from miio.airpurifier_airdog import (  # pylint: disable=import-error, import-error
+    OperationMode as AirDogOperationMode,
+)
 from miio.airpurifier_miot import (  # pylint: disable=import-error, import-error
     LedBrightness as AirpurifierMiotLedBrightness,
     OperationMode as AirpurifierMiotOperationMode,
@@ -64,6 +71,7 @@ from miio.fan import (  # pylint: disable=import-error, import-error
 from miio.fan_leshow import (  # pylint: disable=import-error, import-error
     OperationMode as FanLeshowOperationMode,
 )
+from miio.fan_miot import OperationModeMiot as FanOperationModeMiot
 import voluptuous as vol
 
 from homeassistant.components.fan import (
@@ -112,6 +120,9 @@ MODEL_AIRPURIFIER_2S = "zhimi.airpurifier.mc1"
 MODEL_AIRPURIFIER_2H = "zhimi.airpurifier.mc2"
 MODEL_AIRPURIFIER_3 = "zhimi.airpurifier.ma4"
 MODEL_AIRPURIFIER_3H = "zhimi.airpurifier.mb3"
+MODEL_AIRPURIFIER_AIRDOG_X3 = "airdog.airpurifier.x3"
+MODEL_AIRPURIFIER_AIRDOG_X5 = "airdog.airpurifier.x5"
+MODEL_AIRPURIFIER_AIRDOG_X7SM = "airdog.airpurifier.x7sm"
 
 MODEL_AIRHUMIDIFIER_V1 = "zhimi.humidifier.v1"
 MODEL_AIRHUMIDIFIER_CA1 = "zhimi.humidifier.ca1"
@@ -134,10 +145,12 @@ MODEL_FAN_ZA1 = "zhimi.fan.za1"
 MODEL_FAN_ZA3 = "zhimi.fan.za3"
 MODEL_FAN_ZA4 = "zhimi.fan.za4"
 MODEL_FAN_P5 = "dmaker.fan.p5"
+MODEL_FAN_P8 = "dmaker.fan.p8"
 MODEL_FAN_P9 = "dmaker.fan.p9"
 MODEL_FAN_P10 = "dmaker.fan.p10"
 MODEL_FAN_P11 = "dmaker.fan.p11"
 MODEL_FAN_LESHOW_SS4 = "leshow.fan.ss4"
+MODEL_FAN_1C = "dmaker.fan.1c"
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -162,6 +175,9 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_AIRPURIFIER_2H,
                 MODEL_AIRPURIFIER_3,
                 MODEL_AIRPURIFIER_3H,
+                MODEL_AIRPURIFIER_AIRDOG_X3,
+                MODEL_AIRPURIFIER_AIRDOG_X5,
+                MODEL_AIRPURIFIER_AIRDOG_X7SM,
                 MODEL_AIRHUMIDIFIER_V1,
                 MODEL_AIRHUMIDIFIER_CA1,
                 MODEL_AIRHUMIDIFIER_CA4,
@@ -181,10 +197,12 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_FAN_ZA3,
                 MODEL_FAN_ZA4,
                 MODEL_FAN_P5,
+                MODEL_FAN_P8,
                 MODEL_FAN_P9,
                 MODEL_FAN_P10,
                 MODEL_FAN_P11,
                 MODEL_FAN_LESHOW_SS4,
+                MODEL_FAN_1C,
             ]
         ),
         vol.Optional(CONF_RETRIES, default=DEFAULT_RETRIES): cv.positive_int,
@@ -289,6 +307,11 @@ ATTR_ERROR_DETECTED = "error_detected"
 
 PURIFIER_MIOT = [MODEL_AIRPURIFIER_3, MODEL_AIRPURIFIER_3H]
 HUMIDIFIER_MIOT = [MODEL_AIRHUMIDIFIER_CA4]
+
+# AirDogX7SM
+ATTR_FORMALDEHYDE = "hcho"
+# AirDogX3, AirDogX5, AirDogX7SM
+ATTR_CLEAN_FILTERS = "clean_filters"
 
 # Map attributes to properties of the state object
 AVAILABLE_ATTRIBUTES_AIRPURIFIER_COMMON = {
@@ -581,6 +604,33 @@ AVAILABLE_ATTRIBUTES_FAN_LESHOW_SS4 = {
     ATTR_ERROR_DETECTED: "error_detected",
 }
 
+AVAILABLE_ATTRIBUTES_AIRPURIFIER_AIRDOG_X3 = {
+    ATTR_MODE: "mode",
+    ATTR_SPEED: "speed",
+    ATTR_CHILD_LOCK: "child_lock",
+    ATTR_CLEAN_FILTERS: "clean_filters",
+    ATTR_PM25: "pm25",
+}
+
+AVAILABLE_ATTRIBUTES_AIRPURIFIER_AIRDOG_X5 = {
+    **AVAILABLE_ATTRIBUTES_AIRPURIFIER_AIRDOG_X3,
+}
+
+AVAILABLE_ATTRIBUTES_AIRPURIFIER_AIRDOG_X7SM = {
+    **AVAILABLE_ATTRIBUTES_AIRPURIFIER_AIRDOG_X3,
+    ATTR_FORMALDEHYDE: "hcho",
+}
+
+AVAILABLE_ATTRIBUTES_FAN_1C = {
+    ATTR_MODE: "mode",
+    ATTR_RAW_SPEED: "speed",
+    ATTR_BUZZER: "buzzer",
+    ATTR_OSCILLATE: "oscillate",
+    ATTR_DELAY_OFF_COUNTDOWN: "delay_off_countdown",
+    ATTR_LED: "led",
+    ATTR_CHILD_LOCK: "child_lock",
+}
+
 FAN_SPEED_LEVEL1 = "Level 1"
 FAN_SPEED_LEVEL2 = "Level 2"
 FAN_SPEED_LEVEL3 = "Level 3"
@@ -608,6 +658,13 @@ FAN_PRESET_MODE_VALUES_P5 = {
     FAN_SPEED_LEVEL2: 35,
     FAN_SPEED_LEVEL3: 70,
     FAN_SPEED_LEVEL4: 100,
+}
+
+FAN_PRESET_MODES_1C = {
+    SPEED_OFF: 0,
+    FAN_SPEED_LEVEL1: 1,
+    FAN_SPEED_LEVEL2: 2,
+    FAN_SPEED_LEVEL3: 3,
 }
 
 OPERATION_MODES_AIRPURIFIER = ["Auto", "Silent", "Favorite", "Idle"]
@@ -805,6 +862,9 @@ FEATURE_FLAGS_FAN_P5 = (
 )
 
 FEATURE_FLAGS_FAN_LESHOW_SS4 = FEATURE_SET_BUZZER
+FEATURE_FLAGS_FAN_1C = FEATURE_FLAGS_FAN
+
+FEATURE_FLAGS_AIRPURIFIER_AIRDOG = FEATURE_SET_CHILD_LOCK
 
 SERVICE_SET_BUZZER_ON = "fan_set_buzzer_on"
 SERVICE_SET_BUZZER_OFF = "fan_set_buzzer_off"
@@ -826,6 +886,7 @@ SERVICE_SET_EXTRA_FEATURES = "fan_set_extra_features"
 SERVICE_SET_TARGET_HUMIDITY = "fan_set_target_humidity"
 SERVICE_SET_DRY_ON = "fan_set_dry_on"
 SERVICE_SET_DRY_OFF = "fan_set_dry_off"
+SERVICE_SET_FILTERS_CLEANED = "fan_set_filters_cleaned"
 
 # Airhumidifer CA4
 SERVICE_SET_CLEAN_MODE_ON = "fan_set_clean_mode_on"
@@ -983,6 +1044,7 @@ SERVICE_TO_METHOD = {
     SERVICE_SET_WET_PROTECTION_OFF: {"method": "async_set_wet_protection_off"},
     SERVICE_SET_CLEAN_MODE_ON: {"method": "async_set_clean_mode_on"},
     SERVICE_SET_CLEAN_MODE_OFF: {"method": "async_set_clean_mode_off"},
+    SERVICE_SET_FILTERS_CLEANED: {"method": "async_set_filters_cleaned"},
 }
 
 
@@ -1071,6 +1133,18 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     elif model == MODEL_FAN_LESHOW_SS4:
         fan = FanLeshow(host, token, model=model)
         device = XiaomiFanLeshow(name, fan, model, unique_id, retries)
+    elif model == MODEL_AIRPURIFIER_AIRDOG_X3:
+        air_purifier = AirDogX3(host, token)
+        device = XiaomiAirDog(name, air_purifier, model, unique_id, retries)
+    elif model == MODEL_AIRPURIFIER_AIRDOG_X5:
+        air_purifier = AirDogX5(host, token)
+        device = XiaomiAirDog(name, air_purifier, model, unique_id, retries)
+    elif model == MODEL_AIRPURIFIER_AIRDOG_X7SM:
+        air_purifier = AirDogX7SM(host, token)
+        device = XiaomiAirDog(name, air_purifier, model, unique_id, retries)
+    elif model in [MODEL_FAN_1C, MODEL_FAN_P8]:
+        fan = Fan1C(host, token, model=model)
+        device = XiaomiFan1C(name, fan, model, unique_id, retries)
     else:
         _LOGGER.error(
             "Unsupported device found! Please create an issue at "
@@ -1292,7 +1366,7 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
             self._device_features = FEATURE_FLAGS_AIRPURIFIER_2H
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_2H
             self._preset_modes = OPERATION_MODES_AIRPURIFIER_2H
-        elif self._model == MODEL_AIRPURIFIER_3 or self._model == MODEL_AIRPURIFIER_3H:
+        elif self._model in PURIFIER_MIOT:
             self._device_features = FEATURE_FLAGS_AIRPURIFIER_3
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_3
             self._preset_modes = OPERATION_MODES_AIRPURIFIER_3
@@ -2639,3 +2713,365 @@ class XiaomiFanLeshow(XiaomiGenericDevice):
             self._device.delay_off,
             delay_off_countdown,
         )
+
+
+class XiaomiFan1C(XiaomiFan):
+    """Representation of a Xiaomi Fan 1C."""
+
+    def __init__(self, name, device, model, unique_id, retries):
+        """Initialize the fan entity."""
+        super().__init__(name, device, model, unique_id, retries)
+
+        self._device_features = FEATURE_FLAGS_FAN_1C
+        self._available_attributes = AVAILABLE_ATTRIBUTES_FAN_1C
+        self._preset_modes = FAN_PRESET_MODES_1C
+        self._oscillate = None
+
+        self._state_attrs.update(
+            {attribute: None for attribute in self._available_attributes}
+        )
+
+    @property
+    def supported_features(self) -> int:
+        """Supported features."""
+        return SUPPORT_PRESET_MODE | SUPPORT_OSCILLATE
+
+    async def async_update(self):
+        """Fetch state from the device."""
+        # On state change the device doesn't provide the new state immediately.
+        if self._skip_update:
+            self._skip_update = False
+            return
+
+        try:
+            state = await self.hass.async_add_job(self._device.status)
+            _LOGGER.debug("Got new state: %s", state)
+
+            self._available = True
+            self._oscillate = state.oscillate
+            self._state = state.is_on
+
+            for preset_mode, value in FAN_PRESET_MODES_1C.items():
+                if state.speed == value:
+                    self._preset_mode = preset_mode
+
+            self._state_attrs.update(
+                {
+                    key: self._extract_value_from_attribute(state, value)
+                    for key, value in self._available_attributes.items()
+                }
+            )
+            self._retry = 0
+
+        except DeviceException as ex:
+            self._retry = self._retry + 1
+            if self._retry < self._retries:
+                _LOGGER.info(
+                    "Got exception while fetching the state: %s , _retry=%s",
+                    ex,
+                    self._retry,
+                )
+            else:
+                self._available = False
+                _LOGGER.error(
+                    "Got exception while fetching the state: %s , _retry=%s",
+                    ex,
+                    self._retry,
+                )
+
+    @property
+    def preset_modes(self):
+        """Get the list of available preset modes."""
+        return self._preset_modes
+
+    @property
+    def preset_mode(self):
+        """Get the current preset mode."""
+        if self._state:
+            return self._preset_mode
+
+        return None
+
+    async def async_set_preset_mode(self, preset_mode: str) -> None:
+        """Set the preset mode of the fan."""
+        _LOGGER.debug("Setting the preset mode to: %s", preset_mode)
+
+        await self._try_command(
+            "Setting preset mode of the miio device failed.",
+            self._device.set_speed,
+            FAN_PRESET_MODES_1C[preset_mode],
+        )
+
+    @property
+    def oscillating(self):
+        """Return the oscillation state."""
+        return self._oscillate
+
+    async def async_oscillate(self, oscillating: bool) -> None:
+        """Set oscillation."""
+        if oscillating:
+            await self._try_command(
+                "Setting oscillate on of the miio device failed.",
+                self._device.set_oscillate,
+                True,
+            )
+        else:
+            await self._try_command(
+                "Setting oscillate off of the miio device failed.",
+                self._device.set_oscillate,
+                False,
+            )
+
+    async def async_set_delay_off(self, delay_off_countdown: int) -> None:
+        """Set scheduled off timer in minutes."""
+
+        await self._try_command(
+            "Setting delay off miio device failed.",
+            self._device.delay_off,
+            delay_off_countdown,
+        )
+
+    async def async_set_natural_mode_on(self):
+        """Turn the natural mode on."""
+        if self._device_features & FEATURE_SET_NATURAL_MODE == 0:
+            return
+
+        await self._try_command(
+            "Setting fan natural mode of the miio device failed.",
+            self._device.set_mode,
+            FanOperationModeMiot.Nature,
+        )
+
+    async def async_set_natural_mode_off(self):
+        """Turn the natural mode off."""
+        if self._device_features & FEATURE_SET_NATURAL_MODE == 0:
+            return
+
+        await self._try_command(
+            "Setting fan natural mode of the miio device failed.",
+            self._device.set_mode,
+            FanOperationModeMiot.Normal,
+        )
+
+
+class XiaomiAirDog(XiaomiGenericDevice):
+    """Representation of a Xiaomi AirDog air purifiers."""
+
+    def __init__(self, name, device, model, unique_id, retries=0):
+        """Initialize the plug switch."""
+        super().__init__(name, device, model, unique_id, retries)
+
+        self._device_features = FEATURE_FLAGS_AIRPURIFIER_AIRDOG
+
+        if self._model == MODEL_AIRPURIFIER_AIRDOG_X7SM:
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_AIRDOG_X7SM
+        else:
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_AIRDOG_X3
+
+        self._preset_modes_to_mode_speed = {
+            "Auto": (AirDogOperationMode("auto"), 1),
+            "Night mode": (AirDogOperationMode("sleep"), 1),
+            "Speed 1": (AirDogOperationMode("manual"), 1),
+            "Speed 2": (AirDogOperationMode("manual"), 2),
+            "Speed 3": (AirDogOperationMode("manual"), 3),
+            "Speed 4": (AirDogOperationMode("manual"), 4),
+        }
+        if self._model == MODEL_AIRPURIFIER_AIRDOG_X7SM:
+            self._preset_modes_to_mode_speed["Speed 5"] = (
+                AirDogOperationMode("Manual"),
+                5,
+            )
+
+        self._mode_speed_to_preset_modes = {}
+        for key, value in self._preset_modes_to_mode_speed.items():
+            self._mode_speed_to_preset_modes[value] = key
+
+        self._state_attrs.update(
+            {attribute: None for attribute in self._available_attributes}
+        )
+
+    async def async_update(self):
+        """Fetch state from the device."""
+        # On state change the device doesn't provide the new state immediately.
+        if self._skip_update:
+            self._skip_update = False
+            return
+
+        try:
+            state = await self.hass.async_add_executor_job(self._device.status)
+            _LOGGER.debug("Got new state: %s", state)
+
+            self._available = True
+            self._state = state.is_on
+            self._state_attrs.update(
+                {
+                    key: self._extract_value_from_attribute(state, value)
+                    for key, value in self._available_attributes.items()
+                }
+            )
+
+            self._retry = 0
+
+        except DeviceException as ex:
+            self._retry = self._retry + 1
+            if self._retry < self._retries:
+                _LOGGER.info(
+                    "Got exception while fetching the state: %s , _retry=%s",
+                    ex,
+                    self._retry,
+                )
+            else:
+                self._available = False
+                _LOGGER.error(
+                    "Got exception while fetching the state: %s , _retry=%s",
+                    ex,
+                    self._retry,
+                )
+
+    @property
+    def preset_modes(self):
+        """Get the list of available preset modes."""
+        return list(self._preset_modes_to_mode_speed.keys())
+
+    @property
+    def preset_mode(self):
+        """Get the current preset mode."""
+        if self._state:
+            # There are invalid modes, such as 'Auto 2'. There are no presets for them
+            if (
+                AirDogOperationMode(self._state_attrs[ATTR_MODE]),
+                self._state_attrs[ATTR_SPEED],
+            ) in self._mode_speed_to_preset_modes:
+                return self._mode_speed_to_preset_modes[
+                    (
+                        AirDogOperationMode(self._state_attrs[ATTR_MODE]),
+                        self._state_attrs[ATTR_SPEED],
+                    )
+                ]
+
+        return None
+
+    async def async_set_preset_mode(self, preset_mode: str) -> None:
+        """Set the preset mode of the fan."""
+        _LOGGER.debug("Setting the preset mode to: %s", preset_mode)
+        _LOGGER.debug(
+            "Calling set_mode_and_speed with parameters: %s",
+            self._preset_modes_to_mode_speed[preset_mode],
+        )
+
+        # Following is true on AirDogX5 with firmware 1.3.5_0005. Maybe this is different for other models. Needs testing
+
+        # It looks like the device was not designed to switch from any arbitrary mode to any other mode.
+        # Some of the combinations produce unexpected results
+        #
+        # For example, switching from 'Auto' to 'Speed X' switches to Manual mode, but always sets speed to 1, regardless of the speed parameter.
+        #
+        # Switching from 'Night mode' to 'Speed X' sets device in Auto mode with speed X.
+        # Tihs 'Auto X' state is quite strange and does not seem to be useful.
+        # Furthermore, we request Manual mode and get Auto.
+        # Switching from 'Auto X' mode to 'Manual X' works just fine.
+        # Switching from 'Auto X' mode to 'Manual Y' switches to 'Manual X'.
+
+        # Here is a full table of device behaviour
+
+        # FROM          TO              RESULT
+        #'Night mode' ->
+        #               'Auto'          Good
+        #               'Speed 1'       'Auto 1' + repeat -> Good
+        #               'Speed 2'       'Auto 2' + repeat -> Good
+        #               'Speed 3'       'Auto 3' + repeat -> Good
+        #               'Speed 4'       'Auto 4' + repeat -> Good
+        #'Speed 1'
+        #               'Night mode'    Good
+        #               'Auto'    Good
+        #'Speed 2' ->
+        #               'Night mode'    Good
+        #               'Auto'    Good
+        #'Speed 3' ->
+        #               'Night mode'    Good
+        #               'Auto'    Good
+        #'Speed 4' ->
+        #               'Night mode'    Good
+        #'Auto'->
+        #               'Night mode'    Good
+        #               'Speed 1'       Good
+        #               'Speed 2'       'Speed 1' + repeat ->  Good
+        #               'Speed 3'       'Speed 1' + repeat ->  Good
+        #               'Speed 4'       'Speed 1' + repeat ->  Good
+
+        # To allow switching from any mode to any other mode command is repeated twice when switching is from 'Night mode' or 'Auto' to 'Speed X'.
+
+        await self._try_command(
+            "Setting preset mode of the miio device failed.",
+            self._device.set_mode_and_speed,
+            *self._preset_modes_to_mode_speed[
+                preset_mode
+            ],  # Corresponding mode and speed parameters are in tuple
+        )
+
+        if (
+            self._state_attrs[ATTR_MODE] in ("auto", "sleep")
+            and self._preset_modes_to_mode_speed[preset_mode][0].value == "manual"
+        ):
+            await self._try_command(
+                "Setting preset mode of the miio device failed.",
+                self._device.set_mode_and_speed,
+                *self._preset_modes_to_mode_speed[
+                    preset_mode
+                ],  # Corresponding mode and speed parameters are in tuple
+            )
+
+        self._state_attrs.update(
+            {
+                ATTR_MODE: self._preset_modes_to_mode_speed[preset_mode][0].value,
+                ATTR_SPEED: self._preset_modes_to_mode_speed[preset_mode][1],
+            }
+        )
+        self._skip_update = True
+
+    async def async_set_filters_cleaned(self):
+        """Set filters cleaned."""
+        await self._try_command(
+            "Setting filters cleaned failed.",
+            self._device.set_filters_cleaned,
+        )
+
+    async def async_turn_on(
+        self,
+        speed: str = None,
+        percentage: int = None,
+        preset_mode: str = None,
+        **kwargs,
+    ) -> None:
+        """Turn the device on."""
+        await super().async_turn_on(speed, percentage, preset_mode, **kwargs)
+
+        self._state = True
+        self._skip_update = True
+
+    async def async_turn_off(self, **kwargs) -> None:
+        """Turn the device off."""
+        await super().async_turn_off(**kwargs)
+
+        self._state = False
+        self._skip_update = True
+
+    async def async_set_child_lock_on(self):
+        """Turn the child lock on."""
+        await super().async_set_child_lock_on()
+        self._state_attrs.update(
+            {
+                ATTR_CHILD_LOCK: True,
+            }
+        )
+        self._skip_update = True
+
+    async def async_set_child_lock_off(self):
+        """Turn the child lock off."""
+        await super().async_set_child_lock_off()
+        self._state_attrs.update(
+            {
+                ATTR_CHILD_LOCK: False,
+            }
+        )
+        self._skip_update = True
