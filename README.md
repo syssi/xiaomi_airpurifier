@@ -550,7 +550,10 @@ This paragraph was moved to [docs/dmaker-airfresh-t2017.md](docs/dmaker-airfresh
 
 ## Install
 
-You can install this custom component by adding this repository ([https://github.com/syssi/xiaomi_airpurifier](https://github.com/syssi/xiaomi_airpurifier/)) to [HACS](https://hacs.xyz/) in the settings menu of HACS first. You will find the custom component in the integration menu afterwards, look for 'Xiaomi Mi Air Purifier and Xiaomi Mi Air Humidifier Integration'. Alternatively, you can install it manually by copying the custom_component folder to your Home Assistant configuration folder.
+You can install this custom component via [HACS](https://hacs.xyz/). Search for for 'Xiaomi Mi Air Purifier and Xiaomi Mi Air Humidifier Integration' at the integration page of HACS. Alternatively, you can install it manually by copying the custom_compon
+ent folder to your Home Assistant configuration folder.
+
+As next step you have to setup the custom component at your `configuration.yaml`. This custom component doesn't provide a `config-flow` right now. A restart of Home Assistant is required afterwards.
 
 
 ## Setup
