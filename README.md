@@ -1,5 +1,11 @@
 # Xiaomi Mi Air Purifier & Xiaomi Mi Air Humidifier
 
+![GitHub actions](https://github.com/syssi/xiaomi_airpurifier/actions/workflows/ci.yaml/badge.svg)
+![GitHub stars](https://img.shields.io/github/stars/syssi/xiaomi_airpurifier)
+![GitHub forks](https://img.shields.io/github/forks/syssi/xiaomi_airpurifier)
+![GitHub watchers](https://img.shields.io/github/watchers/syssi/xiaomi_airpurifier)
+[!["Buy Me A Coffee"](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://www.buymeacoffee.com/syssi)
+
 This is a custom component for home assistant to integrate the Xiaomi Mi Air Purifier 2, Air Purifier 2S, Air Purifier Pro, Air Humidifier, Air Fresh and Pedestal Fan.
 
 Please follow the instructions on [Retrieving the Access Token](https://home-assistant.io/components/xiaomi/#retrieving-the-access-token) to get the API token to use in the configuration.yaml file.
