@@ -1,5 +1,11 @@
 # Xiaomi Mi Air Purifier & Xiaomi Mi Air Humidifier
 
+![GitHub actions](https://github.com/syssi/xiaomi_airpurifier/actions/workflows/ci.yaml/badge.svg)
+![GitHub stars](https://img.shields.io/github/stars/syssi/xiaomi_airpurifier)
+![GitHub forks](https://img.shields.io/github/forks/syssi/xiaomi_airpurifier)
+![GitHub watchers](https://img.shields.io/github/watchers/syssi/xiaomi_airpurifier)
+[!["Buy Me A Coffee"](https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg)](https://www.buymeacoffee.com/syssi)
+
 This is a custom component for home assistant to integrate the Xiaomi Mi Air Purifier 2, Air Purifier 2S, Air Purifier Pro, Air Humidifier, Air Fresh and Pedestal Fan.
 
 Please follow the instructions on [Retrieving the Access Token](https://home-assistant.io/components/xiaomi/#retrieving-the-access-token) to get the API token to use in the configuration.yaml file.
@@ -30,6 +36,7 @@ This custom component is more or less the beta version of the [official componen
 | Air Purifier Super 2   | zhimi.airpurifier.sa2  | | |
 | Air Purifier 3 (2019)  | zhimi.airpurifier.ma4  | | |
 | Air Purifier 3H (2019) | zhimi.airpurifier.mb3  | FJY4031GL<strong>(?)</strong>, XM200017 | 45m<sup>2</sup>, 380m<sup>3</sup>/h CADR, 64dB, 38W (max) |
+| Air Purifier ZA1       | zhimi.airpurifier.za1   | | |
 | Air Dog X3             | airdog.airpurifier.x3  | | |
 | Air Dog X5             | airdog.airpurifier.x5  | | |
 | Air Dog X7SM           | airdog.airpurifier.x7sm | | |
@@ -549,7 +556,10 @@ This paragraph was moved to [docs/dmaker-airfresh-t2017.md](docs/dmaker-airfresh
 
 ## Install
 
-You can install this custom component by adding this repository ([https://github.com/syssi/xiaomi_airpurifier](https://github.com/syssi/xiaomi_airpurifier/)) to [HACS](https://hacs.xyz/) in the settings menu of HACS first. You will find the custom component in the integration menu afterwards, look for 'Xiaomi Mi Air Purifier and Xiaomi Mi Air Humidifier Integration'. Alternatively, you can install it manually by copying the custom_component folder to your Home Assistant configuration folder.
+You can install this custom component via [HACS](https://hacs.xyz/). Search for for 'Xiaomi Mi Air Purifier and Xiaomi Mi Air Humidifier Integration' at the integration page of HACS. Alternatively, you can install it manually by copying the custom_compon
+ent folder to your Home Assistant configuration folder.
+
+As next step you have to setup the custom component at your `configuration.yaml`. This custom component doesn't provide a `config-flow` right now. A restart of Home Assistant is required afterwards.
 
 
 ## Setup

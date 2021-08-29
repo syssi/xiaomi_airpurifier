@@ -155,5 +155,3 @@ fan_set_filters_cleaned:
     entity_id:
       description: Name of the xiaomi miio entity.
       example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
-
-
