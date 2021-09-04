@@ -233,10 +233,10 @@ automation:
       entity_id: input_select.xiaomi_fresh_air_ventilator_mode
       platform: state
     action:
-      service: fan.set_speed
+      service: fan.set_preset_mode
       data_template:
         entity_id: fan.xiaomi_fresh_air_ventilator
-        speed: '{{ states.input_select.xiaomi_fresh_air_ventilator_mode.state }}'
+        preset_mode: '{{ states.input_select.xiaomi_fresh_air_ventilator_mode.state }}'
   - alias: Monitor operation mode and update input select
     trigger:
       platform: state
@@ -246,7 +246,7 @@ automation:
       entity_id: input_select.xiaomi_fresh_air_ventilator_mode
       data_template:
         option: >
-          {{ states.fan.xiaomi_fresh_air_ventilator.attributes.speed }}
+          {{ states.fan.xiaomi_fresh_air_ventilator.attributes.preset_mode }}
   - alias: Select display orientation by input select
     trigger:
       entity_id: input_select.xiaomi_fresh_air_ventilator_display_orientation
