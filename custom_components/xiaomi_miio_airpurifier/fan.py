@@ -137,6 +137,7 @@ MODEL_AIRHUMIDIFIER_CB1 = "zhimi.humidifier.cb1"
 MODEL_AIRHUMIDIFIER_MJJSQ = "deerma.humidifier.mjjsq"
 MODEL_AIRHUMIDIFIER_JSQ = "deerma.humidifier.jsq"
 MODEL_AIRHUMIDIFIER_JSQ1 = "deerma.humidifier.jsq1"
+MODEL_AIRHUMIDIFIER_JSQ5 = "deerma.humidifier.jsq5"
 MODEL_AIRHUMIDIFIER_JSQ001 = "shuii.humidifier.jsq001"
 
 MODEL_AIRFRESH_A1 = "dmaker.airfresh.a1"
@@ -192,6 +193,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_AIRHUMIDIFIER_MJJSQ,
                 MODEL_AIRHUMIDIFIER_JSQ,
                 MODEL_AIRHUMIDIFIER_JSQ1,
+                MODEL_AIRHUMIDIFIER_JSQ5,
                 MODEL_AIRHUMIDIFIER_JSQ001,
                 MODEL_AIRFRESH_A1,
                 MODEL_AIRFRESH_VA2,
@@ -270,7 +272,7 @@ ATTR_FAULT = "fault"
 ATTR_POWER_TIME = "power_time"
 ATTR_CLEAN_MODE = "clean_mode"
 
-# Air Humidifier MJJSQ, JSQ and JSQ1
+# Air Humidifier MJJSQ, JSQ and JSQ1 and JSQ5
 ATTR_NO_WATER = "no_water"
 ATTR_WATER_TANK_DETACHED = "water_tank_detached"
 ATTR_WET_PROTECTION = "wet_protection"
@@ -512,6 +514,10 @@ AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ = {
 AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ1 = {
     **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ,
     ATTR_WET_PROTECTION: "wet_protection",
+}
+
+AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ5 = {
+    **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ
 }
 
 AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ = {
@@ -809,6 +815,12 @@ FEATURE_FLAGS_AIRHUMIDIFIER_JSQ1 = (
     | FEATURE_SET_WET_PROTECTION
 )
 
+FEATURE_FLAGS_AIRHUMIDIFIER_JSQ5 = (
+    FEATURE_SET_BUZZER
+    | FEATURE_SET_LED
+    | FEATURE_SET_TARGET_HUMIDITY
+)
+
 FEATURE_FLAGS_AIRHUMIDIFIER_JSQ = (
     FEATURE_SET_BUZZER
     | FEATURE_SET_LED
@@ -1103,6 +1115,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         MODEL_AIRHUMIDIFIER_MJJSQ,
         MODEL_AIRHUMIDIFIER_JSQ,
         MODEL_AIRHUMIDIFIER_JSQ1,
+        MODEL_AIRHUMIDIFIER_JSQ5
     ]:
         air_humidifier = AirHumidifierMjjsq(host, token, model=model)
         device = XiaomiAirHumidifierMjjsq(name, air_humidifier, model, unique_id)
@@ -1848,6 +1861,9 @@ class XiaomiAirHumidifierMjjsq(XiaomiAirHumidifier):
         if self._model == MODEL_AIRHUMIDIFIER_JSQ1:
             self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_JSQ1
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ1
+        elif self._model == MODEL_AIRHUMIDIFIER_JSQ5:
+            self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_JSQ5
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ5
         else:
             self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ
