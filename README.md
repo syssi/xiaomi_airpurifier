@@ -451,6 +451,7 @@ This model uses newer MiOT communication protocol.
   - `motor_speed`
   - `extra_features`
   - `ptc` (zhimi.airfresh.va4 only)
+  - `ntc_temperature` (zhimi.airfresh.va4 only)
 
 ### Mi Fresh Air Ventilator (dmaker.airfresh.t2017, dmaker.airfresh.a1)
 
