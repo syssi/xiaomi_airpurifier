@@ -134,6 +134,7 @@ MODEL_AIRHUMIDIFIER_V1 = "zhimi.humidifier.v1"
 MODEL_AIRHUMIDIFIER_CA1 = "zhimi.humidifier.ca1"
 MODEL_AIRHUMIDIFIER_CA4 = "zhimi.humidifier.ca4"
 MODEL_AIRHUMIDIFIER_CB1 = "zhimi.humidifier.cb1"
+MODEL_AIRHUMIDIFIER_CB2 = "zhimi.humidifier.cb2"
 MODEL_AIRHUMIDIFIER_MJJSQ = "deerma.humidifier.mjjsq"
 MODEL_AIRHUMIDIFIER_JSQ = "deerma.humidifier.jsq"
 MODEL_AIRHUMIDIFIER_JSQ1 = "deerma.humidifier.jsq1"
@@ -190,6 +191,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_AIRHUMIDIFIER_CA1,
                 MODEL_AIRHUMIDIFIER_CA4,
                 MODEL_AIRHUMIDIFIER_CB1,
+                MODEL_AIRHUMIDIFIER_CB2,
                 MODEL_AIRHUMIDIFIER_MJJSQ,
                 MODEL_AIRHUMIDIFIER_JSQ,
                 MODEL_AIRHUMIDIFIER_JSQ1,
@@ -549,7 +551,11 @@ AVAILABLE_ATTRIBUTES_AIRFRESH = {
     ATTR_EXTRA_FEATURES: "extra_features",
 }
 
-AVAILABLE_ATTRIBUTES_AIRFRESH_VA4 = {**AVAILABLE_ATTRIBUTES_AIRFRESH, ATTR_PTC: "ptc", ATTR_NTC_TEMPERATURE: "ntc_temperature"}
+AVAILABLE_ATTRIBUTES_AIRFRESH_VA4 = {
+    **AVAILABLE_ATTRIBUTES_AIRFRESH,
+    ATTR_PTC: "ptc",
+    ATTR_NTC_TEMPERATURE: "ntc_temperature",
+}
 
 AVAILABLE_ATTRIBUTES_AIRFRESH_A1 = {
     ATTR_POWER: "power",
@@ -1637,7 +1643,11 @@ class XiaomiAirHumidifier(XiaomiGenericDevice):
         """Initialize the plug switch."""
         super().__init__(name, device, model, unique_id)
 
-        if self._model in [MODEL_AIRHUMIDIFIER_CA1, MODEL_AIRHUMIDIFIER_CB1]:
+        if self._model in [
+            MODEL_AIRHUMIDIFIER_CA1,
+            MODEL_AIRHUMIDIFIER_CB1,
+            MODEL_AIRHUMIDIFIER_CB2,
+        ]:
             self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_CA_AND_CB
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA_AND_CB
             self._preset_modes = [
