@@ -64,7 +64,7 @@ from miio.airpurifier_miot import (  # pylint: disable=import-error, import-erro
     LedBrightness as AirpurifierMiotLedBrightness,
     OperationMode as AirpurifierMiotOperationMode,
 )
-from miio.fan import (  # pylint: disable=import-error, import-error
+from miio.fan_common import (  # pylint: disable=import-error, import-error
     LedBrightness as FanLedBrightness,
     MoveDirection as FanMoveDirection,
     OperationMode as FanOperationMode,
