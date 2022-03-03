@@ -64,15 +64,14 @@ from miio.airpurifier_miot import (  # pylint: disable=import-error, import-erro
     LedBrightness as AirpurifierMiotLedBrightness,
     OperationMode as AirpurifierMiotOperationMode,
 )
-from miio.fan import (  # pylint: disable=import-error, import-error
+from miio.fan_common import (  # pylint: disable=import-error, import-error
     LedBrightness as FanLedBrightness,
     MoveDirection as FanMoveDirection,
     OperationMode as FanOperationMode,
 )
-from miio.fan_leshow import (  # pylint: disable=import-error, import-error
+from miio.integrations.fan.leshow.fan_leshow import (  # pylint: disable=import-error, import-error
     OperationMode as FanLeshowOperationMode,
 )
-from miio.fan_miot import OperationModeMiot as FanOperationModeMiot
 import voluptuous as vol
 
 from homeassistant.components.fan import (
@@ -2914,7 +2913,7 @@ class XiaomiFan1C(XiaomiFan):
         await self._try_command(
             "Setting fan natural mode of the miio device failed.",
             self._device.set_mode,
-            FanOperationModeMiot.Nature,
+            FanOperationMode.Nature,
         )
 
     async def async_set_natural_mode_off(self):
@@ -2925,7 +2924,7 @@ class XiaomiFan1C(XiaomiFan):
         await self._try_command(
             "Setting fan natural mode of the miio device failed.",
             self._device.set_mode,
-            FanOperationModeMiot.Normal,
+            FanOperationMode.Normal,
         )
 
 
