@@ -1,7 +1,7 @@
 {
   "domain": "xiaomi_miio_airpurifier",
   "name": "Xiaomi Mi Air Purifier, Air Humidifier, Air Fresh and Pedestal Fan Integration",
-  "version": "2022.3.0",
+  "version": "2022.3.2",
   "iot_class": "local_polling",
   "config_flow": false,
   "documentation": "https://github.com/syssi/xiaomi_airpurifier",
