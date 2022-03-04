@@ -14,6 +14,7 @@ from miio import (  # pylint: disable=import-error
     AirFreshT2017,
     AirHumidifier,
     AirHumidifierJsq,
+    AirHumidifierJsqs,
     AirHumidifierMiot,
     AirHumidifierMjjsq,
     AirPurifier,
@@ -44,6 +45,9 @@ from miio.airhumidifier import (  # pylint: disable=import-error, import-error
 from miio.airhumidifier_jsq import (  # pylint: disable=import-error, import-error
     LedBrightness as AirhumidifierJsqLedBrightness,
     OperationMode as AirhumidifierJsqOperationMode,
+)
+from miio.integrations.humidifier.deerma.airhumidifier_jsqs import (  # pylint: disable=import-error, import-error
+    OperationMode as AirhumidifierJsqsOperationMode,
 )
 from miio.airhumidifier_miot import (  # pylint: disable=import-error, import-error
     LedBrightness as AirhumidifierMiotLedBrightness,
@@ -521,7 +525,14 @@ AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ1 = {
     ATTR_WET_PROTECTION: "wet_protection",
 }
 
-AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ5 = {**AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ}
+AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ5 = {
+    **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON,
+    ATTR_HUMIDITY: "relative_humidity",
+    ATTR_TARGET_HUMIDITY: "target_humidity",
+    ATTR_LED: "led_light",
+    ATTR_NO_WATER: "water_shortage_fault",
+    ATTR_WATER_TANK_DETACHED: "tank_filed",
+}
 
 AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ = {
     **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON,
@@ -1120,10 +1131,12 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         MODEL_AIRHUMIDIFIER_MJJSQ,
         MODEL_AIRHUMIDIFIER_JSQ,
         MODEL_AIRHUMIDIFIER_JSQ1,
-        MODEL_AIRHUMIDIFIER_JSQ5,
     ]:
         air_humidifier = AirHumidifierMjjsq(host, token, model=model)
         device = XiaomiAirHumidifierMjjsq(name, air_humidifier, model, unique_id)
+    elif model == MODEL_AIRHUMIDIFIER_JSQ5:
+        air_humidifier = AirHumidifierJsqs(host, token, model=model)
+        device = XiaomiAirHumidifierJsqs(name, air_humidifier, model, unique_id)
     elif model == MODEL_AIRHUMIDIFIER_JSQ001:
         air_humidifier = AirHumidifierJsq(host, token, model=model)
         device = XiaomiAirHumidifierJsq(name, air_humidifier, model, unique_id)
@@ -1870,9 +1883,6 @@ class XiaomiAirHumidifierMjjsq(XiaomiAirHumidifier):
         if self._model == MODEL_AIRHUMIDIFIER_JSQ1:
             self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_JSQ1
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ1
-        elif self._model == MODEL_AIRHUMIDIFIER_JSQ5:
-            self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_JSQ5
-            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ5
         else:
             self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ
@@ -1921,6 +1931,86 @@ class XiaomiAirHumidifierMjjsq(XiaomiAirHumidifier):
         await self._try_command(
             "Turning the wet protection of the miio device off failed.",
             self._device.set_wet_protection,
+            False,
+        )
+
+
+class XiaomiAirHumidifierJsqs(XiaomiAirHumidifier):
+    """Representation of a Xiaomi Air Humidifier Jsqs."""
+
+    def __init__(self, name, device, model, unique_id):
+        """Initialize the plug switch."""
+        super().__init__(name, device, model, unique_id)
+
+        self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_JSQ5
+        self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ5
+
+        self._preset_modes = [mode.name for mode in AirhumidifierJsqsOperationMode]
+        self._state_attrs = {ATTR_MODEL: self._model}
+        self._state_attrs.update(
+            {attribute: None for attribute in self._available_attributes}
+        )
+
+    @property
+    def preset_mode(self):
+        """Get the current preset mode."""
+        if self._state:
+            return AirhumidifierJsqsOperationMode(self._state_attrs[ATTR_MODE]).name
+
+        return None
+
+    async def async_set_preset_mode(self, preset_mode: str) -> None:
+        """Set the preset mode of the fan."""
+
+        _LOGGER.debug("Setting the preset mode to: %s", preset_mode)
+
+        await self._try_command(
+            "Setting preset mode of the miio device failed.",
+            self._device.set_mode,
+            AirhumidifierJsqsOperationMode[preset_mode.title()],
+        )
+
+    async def async_set_led_on(self):
+        """Turn the led on."""
+        if self._device_features & FEATURE_SET_LED == 0:
+            return
+
+        await self._try_command(
+            "Turning the led of the miio device on failed.",
+            self._device.set_light,
+            True,
+        )
+
+    async def async_set_led_off(self):
+        """Turn the led off."""
+        if self._device_features & FEATURE_SET_LED == 0:
+            return
+
+        await self._try_command(
+            "Turning the led of the miio device off failed.",
+            self._device.set_light,
+            False,
+        )
+
+    async def async_set_wet_protection_on(self):
+        """Turn the wet protection on."""
+        if self._device_features & FEATURE_SET_WET_PROTECTION == 0:
+            return
+
+        await self._try_command(
+            "Turning the wet protection of the miio device on failed.",
+            self._device.set_overwet_protect,
+            True,
+        )
+
+    async def async_set_wet_protection_off(self):
+        """Turn the wet protection off."""
+        if self._device_features & FEATURE_SET_WET_PROTECTION == 0:
+            return
+
+        await self._try_command(
+            "Turning the wet protection of the miio device off failed.",
+            self._device.set_overwet_protect,
             False,
         )
 
