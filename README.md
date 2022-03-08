@@ -48,6 +48,7 @@ This custom component is more or less the beta version of the [official componen
 | Mijia Smart Sterilization Humidifier S  | deerma.humidifier.mjjsq  | MJJSQ03DY  | 4.5L, <=39dB, 450mL/h, 40W  |
 | Mijia Intelligent Sterilization Humidifier (EU version?) | deerma.humidifier.jsq  | ZNJSQ01DEM  | 4.5L, <=38dB, 300mL/h, 24W  |
 | Mijia Intelligent Sterilization Humidifier (EU version?) | deerma.humidifier.jsq5  | ZNJSQ01DEM  | 4.5L, <=38dB, 300mL/h, 24W  |
+| Mijia Smart Sterilization Humidifier S (EU version?) | deerma.humidifier.jsqs  | MJJSQ03DY  | 4.5L, <=39dB, 450mL/h, 40W  |
 | Mijia Intelligent Sterilization Humidifier SCK0A45  | deerma.humidifier.jsq1  | SCKOA45, SCK0A45  | 4.5L, <=38dB, 300mL/h, 25W |
 | Zero Fog Humidifier    | shuii.humidifier.jsq001   | | |
 | New Widetech Internet Dehumidifier  | nwt.derh.wdh318efw1  | WDH318EFW1  | 2.7L tank, 38dB, 18L/d, 240W |
@@ -458,7 +459,7 @@ This model uses newer MiOT communication protocol.
 
 This paragraph was moved to [docs/dmaker-airfresh-t2017.md](docs/dmaker-airfresh-t2017.md).
 
-### Air Humidifier MJJSQ and JSQ1 and JSQ5 (deerma.humidifier.mjjsq, deerma.humidifier.jsq1, deerma.humidifier.jsq5)
+### Air Humidifier MJJSQ, JSQ1, JSQ5 and JSQS (deerma.humidifier.mjjsq, deerma.humidifier.jsq1, deerma.humidifier.jsq5, deerma.humidifier.jsqs)
 
 * Power (on, off)
 * Preset modes (low, medium, high, humidity)

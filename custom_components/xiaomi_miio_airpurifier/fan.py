@@ -7,8 +7,6 @@ from typing import Optional
 
 from miio import (  # pylint: disable=import-error
     AirDogX3,
-    AirDogX5,
-    AirDogX7SM,
     AirFresh,
     AirFreshA1,
     AirFreshT2017,
@@ -25,9 +23,7 @@ from miio import (  # pylint: disable=import-error
     Fan1C,
     FanLeshow,
     FanP5,
-    FanP9,
-    FanP10,
-    FanP11,
+    FanMiot,
 )
 from miio.airfresh import (  # pylint: disable=import-error, import-error
     LedBrightness as AirfreshLedBrightness,
@@ -1179,26 +1175,18 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     elif model == MODEL_FAN_P5:
         fan = FanP5(host, token, model=model)
         device = XiaomiFanP5(name, fan, model, unique_id, retries)
-    elif model == MODEL_FAN_P9:
-        fan = FanP9(host, token, model=model)
-        device = XiaomiFanMiot(name, fan, model, unique_id, retries)
-    elif model == MODEL_FAN_P10:
-        fan = FanP10(host, token, model=model)
-        device = XiaomiFanMiot(name, fan, model, unique_id, retries)
-    elif model == MODEL_FAN_P11:
-        fan = FanP11(host, token, model=model)
+    elif model in [MODEL_FAN_P9, MODEL_FAN_P10, MODEL_FAN_P11]:
+        fan = FanMiot(host, token, model=model)
         device = XiaomiFanMiot(name, fan, model, unique_id, retries)
     elif model == MODEL_FAN_LESHOW_SS4:
         fan = FanLeshow(host, token, model=model)
         device = XiaomiFanLeshow(name, fan, model, unique_id, retries)
-    elif model == MODEL_AIRPURIFIER_AIRDOG_X3:
-        air_purifier = AirDogX3(host, token)
-        device = XiaomiAirDog(name, air_purifier, model, unique_id, retries)
-    elif model == MODEL_AIRPURIFIER_AIRDOG_X5:
-        air_purifier = AirDogX5(host, token)
-        device = XiaomiAirDog(name, air_purifier, model, unique_id, retries)
-    elif model == MODEL_AIRPURIFIER_AIRDOG_X7SM:
-        air_purifier = AirDogX7SM(host, token)
+    elif model in [
+        MODEL_AIRPURIFIER_AIRDOG_X3,
+        MODEL_AIRPURIFIER_AIRDOG_X5,
+        MODEL_AIRPURIFIER_AIRDOG_X7SM,
+    ]:
+        air_purifier = AirDogX3(host, token, model=model)
         device = XiaomiAirDog(name, air_purifier, model, unique_id, retries)
     elif model in [MODEL_FAN_1C, MODEL_FAN_P8]:
         fan = Fan1C(host, token, model=model)
