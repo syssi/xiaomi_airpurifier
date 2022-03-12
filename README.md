@@ -47,6 +47,7 @@ This custom component is more or less the beta version of the [official componen
 | Smartmi Evaporative Humidifier (Korea Version)  | zhimi.humidifier.cb2   | CJXJSQ02ZM  | 8W, 240x240x363mm  |
 | Mijia Smart Sterilization Humidifier S  | deerma.humidifier.mjjsq  | MJJSQ03DY  | 4.5L, <=39dB, 450mL/h, 40W  |
 | Mijia Intelligent Sterilization Humidifier (EU version?) | deerma.humidifier.jsq  | ZNJSQ01DEM  | 4.5L, <=38dB, 300mL/h, 24W  |
+| Mijia Humidifier 4L  | deerma.humidifier.jsq3  | MJJSQ04DY  | 4L, <=38dB, 300mL/h, 25W  |
 | Mijia Intelligent Sterilization Humidifier (EU version?) | deerma.humidifier.jsq5  | ZNJSQ01DEM  | 4.5L, <=38dB, 300mL/h, 24W  |
 | Mijia Smart Sterilization Humidifier S (EU version?) | deerma.humidifier.jsqs  | MJJSQ03DY  | 4.5L, <=39dB, 450mL/h, 40W  |
 | Mijia Intelligent Sterilization Humidifier SCK0A45  | deerma.humidifier.jsq1  | SCKOA45, SCK0A45  | 4.5L, <=38dB, 300mL/h, 25W |
@@ -69,9 +70,6 @@ This custom component is more or less the beta version of the [official componen
 | Pedestal Fan Fan P10    | dmaker.fan.p10        | | |
 | Mijia Pedestal Fan      | dmaker.fan.p11        | BPLDS03DM  | 2800mAh, 24W, <=58dB  |
 | Rosou SS4 Ventilator    | leshow.fan.ss4        | | |
-
-Support unknown / Testing required:
-- Mijia Humidifier 4L (MJJSQ04DY), 300ml/h, 25W, <=38dB: Please create an issue if you own this device.
 
 Unsupported devices:
 - Mijia Humidifer 4L (MJJSQ02LX): This device isn't smart / has no WiFi support.
