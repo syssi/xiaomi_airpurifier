@@ -137,6 +137,7 @@ MODEL_AIRHUMIDIFIER_CB2 = "zhimi.humidifier.cb2"
 MODEL_AIRHUMIDIFIER_MJJSQ = "deerma.humidifier.mjjsq"
 MODEL_AIRHUMIDIFIER_JSQ = "deerma.humidifier.jsq"
 MODEL_AIRHUMIDIFIER_JSQ1 = "deerma.humidifier.jsq1"
+MODEL_AIRHUMIDIFIER_JSQ3 = "deerma.humidifier.jsq3"
 MODEL_AIRHUMIDIFIER_JSQ5 = "deerma.humidifier.jsq5"
 MODEL_AIRHUMIDIFIER_JSQS = "deerma.humidifier.jsqs"
 MODEL_AIRHUMIDIFIER_JSQ001 = "shuii.humidifier.jsq001"
@@ -195,6 +196,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_AIRHUMIDIFIER_MJJSQ,
                 MODEL_AIRHUMIDIFIER_JSQ,
                 MODEL_AIRHUMIDIFIER_JSQ1,
+                MODEL_AIRHUMIDIFIER_JSQ3,
                 MODEL_AIRHUMIDIFIER_JSQ5,
                 MODEL_AIRHUMIDIFIER_JSQS,
                 MODEL_AIRHUMIDIFIER_JSQ001,
@@ -1145,6 +1147,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         air_humidifier = AirHumidifierMjjsq(host, token, model=model)
         device = XiaomiAirHumidifierMjjsq(name, air_humidifier, model, unique_id)
     elif model in [
+        MODEL_AIRHUMIDIFIER_JSQ3,
         MODEL_AIRHUMIDIFIER_JSQ5,
         MODEL_AIRHUMIDIFIER_JSQS,
     ]:
@@ -1947,7 +1950,7 @@ class XiaomiAirHumidifierJsqs(XiaomiAirHumidifier):
         """Initialize the plug switch."""
         super().__init__(name, device, model, unique_id)
 
-        if self._model == MODEL_AIRHUMIDIFIER_JSQ5:
+        if self._model in [MODEL_AIRHUMIDIFIER_JSQ3, MODEL_AIRHUMIDIFIER_JSQ5]:
             self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_JSQ5
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_JSQ5
         else:
