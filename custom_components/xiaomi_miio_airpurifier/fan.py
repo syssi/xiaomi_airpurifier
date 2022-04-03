@@ -1895,7 +1895,9 @@ class XiaomiAirHumidifierMjjsq(XiaomiAirHumidifier):
             self._device_features = FEATURE_FLAGS_AIRHUMIDIFIER_MJJSQ
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_MJJSQ
 
-        self._preset_modes = [mode.name for mode in AirhumidifierMjjsqOperationMode]
+        self._preset_modes = [mode.name for mode in AirhumidifierMjjsqOperationMode
+                              if self._device_features & FEATURE_SET_WET_PROTECTION != 0
+                              or mode != AirhumidifierMjjsqOperationMode.WetAndProtect]
         self._state_attrs = {ATTR_MODEL: self._model}
         self._state_attrs.update(
             {attribute: None for attribute in self._available_attributes}
