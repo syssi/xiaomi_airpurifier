@@ -76,7 +76,6 @@ import voluptuous as vol
 
 from homeassistant.components.fan import (
     PLATFORM_SCHEMA,
-    SPEED_OFF,
     SUPPORT_DIRECTION,
     SUPPORT_OSCILLATE,
     SUPPORT_PRESET_MODE,
@@ -221,6 +220,8 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
         vol.Optional(CONF_RETRIES, default=DEFAULT_RETRIES): cv.positive_int,
     }
 )
+
+SPEED_OFF = "off"
 
 ATTR_MODEL = "model"
 ATTR_SPEED = "speed"
