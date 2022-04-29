@@ -263,6 +263,11 @@ ATTR_SLEEP_MODE = "sleep_mode"
 ATTR_VOLUME = "volume"
 ATTR_USE_TIME = "use_time"
 ATTR_BUTTON_PRESSED = "button_pressed"
+ATTR_ANION = "anion"
+ATTR_PM10_DENSITY = "pm10_density"
+ATTR_FILTER_LEFT_TIME = "filter_left_time"
+ATTR_FAVORITE_RPM = "favorite_rpm"
+ATTR_DISPLAY_UNIT = "device-display-unit"
 
 # Air Humidifier
 ATTR_TARGET_HUMIDITY = "target_humidity"
