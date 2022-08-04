@@ -42,7 +42,7 @@ from miio.integrations.humidifier.shuii.airhumidifier_jsq import (  # pylint: di
     LedBrightness as AirhumidifierJsqLedBrightness,
     OperationMode as AirhumidifierJsqOperationMode,
 )
-from miio.integrations.humidifier.zhimi.airhumidifier_miot (  # pylint: disable=import-error, import-error
+from miio.integrations.humidifier.zhimi.airhumidifier_miot import (  # pylint: disable=import-error, import-error
     LedBrightness as AirhumidifierMiotLedBrightness,
     OperationMode as AirhumidifierMiotOperationMode,
     PressedButton as AirhumidifierPressedButton,
