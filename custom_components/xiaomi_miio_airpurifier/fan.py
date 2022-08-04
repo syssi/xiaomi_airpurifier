@@ -25,39 +25,39 @@ from miio import (  # pylint: disable=import-error
     FanMiot,
     FanP5,
 )
-from miio.airfresh import (  # pylint: disable=import-error, import-error
+from miio.integrations.airpurifier.zhimi.airfresh import (  # pylint: disable=import-error, import-error
     LedBrightness as AirfreshLedBrightness,
     OperationMode as AirfreshOperationMode,
 )
-from miio.airfresh_t2017 import (  # pylint: disable=import-error, import-error
+from miio.integrations.airpurifier.dmaker.airfresh_t2017 import (  # pylint: disable=import-error, import-error
     DisplayOrientation as AirfreshT2017DisplayOrientation,
     OperationMode as AirfreshT2017OperationMode,
     PtcLevel as AirfreshT2017PtcLevel,
 )
-from miio.airhumidifier import (  # pylint: disable=import-error, import-error
+from miio.integrations.humidifier.zhimi.airhumidifier import (  # pylint: disable=import-error, import-error
     LedBrightness as AirhumidifierLedBrightness,
     OperationMode as AirhumidifierOperationMode,
 )
-from miio.airhumidifier_jsq import (  # pylint: disable=import-error, import-error
+from miio.integrations.humidifier.shuii.airhumidifier_jsq import (  # pylint: disable=import-error, import-error
     LedBrightness as AirhumidifierJsqLedBrightness,
     OperationMode as AirhumidifierJsqOperationMode,
 )
-from miio.airhumidifier_miot import (  # pylint: disable=import-error, import-error
+from miio.integrations.humidifier.zhimi.airhumidifier_miot import (  # pylint: disable=import-error, import-error
     LedBrightness as AirhumidifierMiotLedBrightness,
     OperationMode as AirhumidifierMiotOperationMode,
     PressedButton as AirhumidifierPressedButton,
 )
-from miio.airhumidifier_mjjsq import (  # pylint: disable=import-error, import-error
+from miio.integrations.humidifier.deerma.airhumidifier_mjjsq import (  # pylint: disable=import-error, import-error
     OperationMode as AirhumidifierMjjsqOperationMode,
 )
-from miio.airpurifier import (  # pylint: disable=import-error, import-error
+from miio.integrations.airpurifier.zhimi.airpurifier import (  # pylint: disable=import-error, import-error
     LedBrightness as AirpurifierLedBrightness,
     OperationMode as AirpurifierOperationMode,
 )
-from miio.airpurifier_airdog import (  # pylint: disable=import-error, import-error
+from miio.integrations.airpurifier.airdog.airpurifier_airdog import (  # pylint: disable=import-error, import-error
     OperationMode as AirDogOperationMode,
 )
-from miio.airpurifier_miot import (  # pylint: disable=import-error, import-error
+from miio.integrations.airpurifier.zhimi.airpurifier_miot import (  # pylint: disable=import-error, import-error
     LedBrightness as AirpurifierMiotLedBrightness,
     OperationMode as AirpurifierMiotOperationMode,
 )
