@@ -267,7 +267,6 @@ ATTR_HARDWARE_VERSION = "hardware_version"
 
 # Air Humidifier CA
 # ATTR_MOTOR_SPEED = "motor_speed"
-ATTR_DEPTH = "depth"
 ATTR_DRY = "dry"
 
 # Air Humidifier CA4
@@ -487,7 +486,6 @@ AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_CA_AND_CB = {
     **AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON,
     ATTR_TARGET_HUMIDITY: "target_humidity",
     ATTR_MOTOR_SPEED: "motor_speed",
-    ATTR_DEPTH: "depth",  # deprecated
     ATTR_DRY: "dry",
     ATTR_CHILD_LOCK: "child_lock",
     ATTR_LED_BRIGHTNESS: "led_brightness",
