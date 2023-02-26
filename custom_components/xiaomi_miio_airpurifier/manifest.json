@@ -1,14 +1,14 @@
 {
+  "domain": "xiaomi_miio_airpurifier",
+  "name": "Xiaomi Mi Air Purifier, Air Humidifier, Air Fresh and Pedestal Fan Integration",
   "codeowners": [
     "@syssi"
   ],
   "config_flow": false,
   "dependencies": [],
   "documentation": "https://github.com/syssi/xiaomi_airpurifier",
-  "domain": "xiaomi_miio_airpurifier",
   "iot_class": "local_polling",
   "issue_tracker": "https://github.com/syssi/xiaomi_airpurifier/issues",
-  "name": "Xiaomi Mi Air Purifier, Air Humidifier, Air Fresh and Pedestal Fan Integration",
   "requirements": [
     "construct==2.10.56",
     "python-miio>=0.5.12"
