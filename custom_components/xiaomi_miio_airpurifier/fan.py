@@ -156,6 +156,7 @@ MODEL_FAN_P8 = "dmaker.fan.p8"
 MODEL_FAN_P9 = "dmaker.fan.p9"
 MODEL_FAN_P10 = "dmaker.fan.p10"
 MODEL_FAN_P11 = "dmaker.fan.p11"
+MODEL_FAN_P18 = "dmaker.fan.p18"
 MODEL_FAN_LESHOW_SS4 = "leshow.fan.ss4"
 MODEL_FAN_1C = "dmaker.fan.1c"
 
@@ -213,6 +214,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_FAN_P9,
                 MODEL_FAN_P10,
                 MODEL_FAN_P11,
+                MODEL_FAN_P18,
                 MODEL_FAN_LESHOW_SS4,
                 MODEL_FAN_1C,
             ]
@@ -1177,7 +1179,10 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     elif model == MODEL_FAN_P5:
         fan = FanP5(host, token, model=model)
         device = XiaomiFanP5(name, fan, model, unique_id, retries)
-    elif model in [MODEL_FAN_P9, MODEL_FAN_P10, MODEL_FAN_P11]:
+    elif model in [MODEL_FAN_P10, MODEL_FAN_P18]:
+        fan = FanMiot(host, token, model=MODEL_FAN_P10)
+        device = XiaomiFanMiot(name, fan, model, unique_id, retries)
+    elif model in [MODEL_FAN_P9, MODEL_FAN_P11]:
         fan = FanMiot(host, token, model=model)
         device = XiaomiFanMiot(name, fan, model, unique_id, retries)
     elif model == MODEL_FAN_LESHOW_SS4:
@@ -1226,7 +1231,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
             if not hasattr(device, method["method"]):
                 continue
             await getattr(device, method["method"])(**params)
-            update_tasks.append(device.async_update_ha_state(True))
+            update_tasks.append(asyncio.create_task(device.async_update_ha_state(True)))
 
         if update_tasks:
             await asyncio.wait(update_tasks)
@@ -2721,7 +2726,7 @@ class XiaomiFanP5(XiaomiFan):
 
 
 class XiaomiFanMiot(XiaomiFanP5):
-    """Representation of a Xiaomi Pedestal Fan P9, P10, P11."""
+    """Representation of a Xiaomi Pedestal Fan P9, P10, P11, P18."""
 
 
 class XiaomiFanLeshow(XiaomiGenericDevice):
