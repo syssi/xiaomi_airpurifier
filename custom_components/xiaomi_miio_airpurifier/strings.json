@@ -77,7 +77,7 @@
           "description": "Name of the xiaomi miio airpurifier entity."
         },
         "brightness": {
-          "name": "Level",
+          "name": "Brightness",
           "description": "Brightness (0 = Bright, 1 = Dim, 2 = Off)"
         }
       }

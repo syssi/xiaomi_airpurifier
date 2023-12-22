@@ -82,6 +82,7 @@ fan_set_favorite_level:
           integration: xiaomi_miio_airpurifier
           domain: fan
     level:
+      name: Level
       description: Level, between 0 and 16.
       example: 1
 
@@ -97,6 +98,7 @@ fan_set_fan_level:
           integration: xiaomi_miio_airpurifier
           domain: fan
     level:
+      name: Level
       description: Level, between 1 and 3.
       example: 1
 
@@ -112,6 +114,7 @@ fan_set_led_brightness:
           integration: xiaomi_miio_airpurifier
           domain: fan
     brightness:
+      name: Brightness
       description: Brightness (0 = Bright, 1 = Dim, 2 = Off)
       example: 1
 
@@ -175,6 +178,7 @@ fan_set_volume:
           integration: xiaomi_miio_airpurifier
           domain: fan
     volume:
+      name: Volume
       description: Volume, between 0 and 100.
       example: 50
 
@@ -202,6 +206,7 @@ fan_set_extra_features:
           integration: xiaomi_miio_airpurifier
           domain: fan
     features:
+      name: Features
       description: Integer, known values are 0 (default) and 1 (turbo mode).
       example: 1
 
@@ -217,6 +222,7 @@ fan_set_target_humidity:
           integration: xiaomi_miio_airpurifier
           domain: fan
     humidity:
+      name: Humidity
       description: Target humidity. Allowed values are 30, 40, 50, 60, 70 and 80.
       example: 50
 
