@@ -1,0 +1,208 @@
+{
+  "services": {
+    "fan_set_buzzer_on": {
+      "name": "Set buzzer on",
+      "description": "Turn the buzzer on.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Name of the xiaomi miio airpurifier entity."
+        }
+      }
+    },
+    "fan_set_buzzer_off": {
+      "name": "Set buzzer off",
+      "description": "Turn the buzzer off.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Name of the xiaomi miio airpurifier entity."
+        }
+      }
+    },
+    "fan_set_child_lock_on": {
+      "name": "Set child lock on",
+      "description": "Turn the child lock on.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Name of the xiaomi miio airpurifier entity."
+        }
+      }
+    },
+    "fan_set_child_lock_off": {
+      "name": "Set child lock off",
+      "description": "Turn the child lock off.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Name of the xiaomi miio airpurifier entity."
+        }
+      }
+    },
+    "fan_set_favorite_level": {
+      "name": "Set favorite level",
+      "description": "Set the favorite level.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Name of the xiaomi miio airpurifier entity."
+        },
+        "level": {
+          "name": "Level",
+          "description": "Level, between 0 and 16."
+        }
+      }
+    },
+    "fan_set_fan_level": {
+      "name": "Set fan level",
+      "description": "Set the fan level.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Name of the xiaomi miio airpurifier entity."
+        },
+        "level": {
+          "name": "Level",
+          "description": "Level, between 1 and 3."
+        }
+      }
+    },
+    "fan_set_led_brightness": {
+      "name": "Set LED brightness",
+      "description": "Set the LED brightness.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Name of the xiaomi miio airpurifier entity."
+        },
+        "brightness": {
+          "name": "Brightness",
+          "description": "Brightness (0 = Bright, 1 = Dim, 2 = Off)"
+        }
+      }
+    },
+    "fan_set_auto_detect_on": {
+      "name": "Set auto detect on",
+      "description": "Turn the auto detect on.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Name of the xiaomi miio airpurifier entity."
+        }
+      }
+    },
+    "fan_set_auto_detect_off": {
+      "name": "Set auto detect off",
+      "description": "Turn the auto detect off.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Name of the xiaomi miio airpurifier entity."
+        }
+      }
+    },
+    "fan_set_learn_mode_on": {
+      "name": "Set learn mode on",
+      "description": "Turn the learn mode on.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Name of the xiaomi miio airpurifier entity."
+        }
+      }
+    },
+    "fan_set_learn_mode_off": {
+      "name": "Set learn mode off",
+      "description": "Turn the learn mode off.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Name of the xiaomi miio airpurifier entity."
+        }
+      }
+    },
+    "fan_set_volume": {
+      "name": "Set volume",
+      "description": "Set the sound volume.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Name of the xiaomi miio airpurifier entity."
+        },
+        "volume": {
+          "name": "Volume",
+          "description": "Volume, between 0 and 100."
+        }
+      }
+    },
+    "fan_reset_filter": {
+      "name": "Reset filter",
+      "description": "Reset the filter lifetime and usage.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Name of the xiaomi miio airpurifier entity."
+        }
+      }
+    },
+    "fan_set_extra_features": {
+      "name": "Set extra features",
+      "description": "Manipulates a storage register which advertises extra features. The Mi Home app evaluates the value. A feature called \"turbo mode\" is unlocked in the app on value 1.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Name of the xiaomi miio airpurifier entity."
+        },
+        "features": {
+          "name": "Features",
+          "description": "Integer, known values are 0 (default) and 1 (turbo mode)."
+        }
+      }
+    },
+    "fan_set_target_humidity": {
+      "name": "Set target humidity",
+      "description": "Set the target humidity.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Name of the xiaomi miio airpurifier entity."
+        },
+        "humidity": {
+          "name": "Humidity",
+          "description": "Target humidity. Allowed values are 30, 40, 50, 60, 70 and 80."
+        }
+      }
+    },
+    "fan_set_dry_on": {
+      "name": "Set dry on",
+      "description": "Turn the dry mode on.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Name of the xiaomi miio airpurifier entity."
+        }
+      }
+    },
+    "fan_set_dry_off": {
+      "name": "Set dry off",
+      "description": "Turn the dry mode off.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Name of the xiaomi miio airpurifier entity."
+        }
+      }
+    },
+    "fan_set_filters_cleaned": {
+      "name": "Set filters cleaned",
+      "description": "Inform the device that filters are cleaned.",
+      "fields": {
+        "entity_id": {
+          "name": "Entity ID",
+          "description": "Name of the xiaomi miio airpurifier entity."
+        }
+      }
+    }
+  }
+}

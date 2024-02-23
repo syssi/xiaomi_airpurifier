@@ -1,157 +1,263 @@
 fan_set_buzzer_on:
+  name: Set buzzer on
   description: Turn the buzzer on.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
 
 fan_set_buzzer_off:
+  name: Set buzzer off
   description: Turn the buzzer off.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
 
 fan_set_led_on:
-  description: Turn the led on.
+  name: Set LED on
+  description: Turn the LED on.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
 
 fan_set_led_off:
-  description: Turn the led off.
+  name: Set LED off
+  description: Turn the LED off.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
 
 fan_set_child_lock_on:
+  name: Set child lock on
   description: Turn the child lock on.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
 
 fan_set_child_lock_off:
+  name: Set child lock off
   description: Turn the child lock off.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
 
 fan_set_favorite_level:
+  name: Set favorite level
   description: Set the favorite level.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
     level:
+      name: Level
       description: Level, between 0 and 16.
       example: 1
 
 fan_set_fan_level:
+  name: Set fan level
   description: Set the fan level.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
     level:
+      name: Level
       description: Level, between 1 and 3.
       example: 1
 
 fan_set_led_brightness:
-  description: Set the led brightness.
+  name: Set LED brightness
+  description: Set the LED brightness.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
     brightness:
+      name: Brightness
       description: Brightness (0 = Bright, 1 = Dim, 2 = Off)
       example: 1
 
 fan_set_auto_detect_on:
+  name: Set auto detect on
   description: Turn the auto detect on.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
 
 fan_set_auto_detect_off:
+  name: Set auto detect off
   description: Turn the auto detect off.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
 
 fan_set_learn_mode_on:
+  name: Set learn mode on
   description: Turn the learn mode on.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
 
 fan_set_learn_mode_off:
+  name: Set learn mode off
   description: Turn the learn mode off.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
 
 fan_set_volume:
+  name: Set volume
   description: Set the sound volume.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
     volume:
+      name: Volume
       description: Volume, between 0 and 100.
       example: 50
 
 fan_reset_filter:
+  name: Reset filter
   description: Reset the filter lifetime and usage.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
 
 fan_set_extra_features:
+  name: Set extra features
   description: Manipulates a storage register which advertises extra features. The Mi Home app evaluates the value. A feature called "turbo mode" is unlocked in the app on value 1.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
     features:
+      name: Features
       description: Integer, known values are 0 (default) and 1 (turbo mode).
       example: 1
 
 fan_set_target_humidity:
+  name: Set target humidity
   description: Set the target humidity.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
     humidity:
+      name: Humidity
       description: Target humidity. Allowed values are 30, 40, 50, 60, 70 and 80.
       example: 50
 
 fan_set_dry_on:
+  name: Set dry on
   description: Turn the dry mode on.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
 
 fan_set_dry_off:
+  name: Set dry off
   description: Turn the dry mode off.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
 
 fan_set_filters_cleaned:
+  name: Set filters cleaned
   description: Inform the device that filters are cleaned.
   fields:
     entity_id:
-      description: Name of the xiaomi miio entity.
-      example: "xiaomi_miio_airpurifier.xiaomi_miio_device"
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
