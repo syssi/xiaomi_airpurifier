@@ -2396,10 +2396,10 @@ class XiaomiFan(XiaomiGenericDevice):
     def supported_features(self) -> int:
         """Supported features."""
         return (
-                FanEntityFeature.SET_SPEED
-                | FanEntityFeature.PRESET_MODE
-                | FanEntityFeature.OSCILLATE
-                | FanEntityFeature.DIRECTION
+            FanEntityFeature.SET_SPEED
+            | FanEntityFeature.PRESET_MODE
+            | FanEntityFeature.OSCILLATE
+            | FanEntityFeature.DIRECTION
         )
 
     async def async_update(self):
