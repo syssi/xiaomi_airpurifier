@@ -47,6 +47,7 @@ This custom component is more or less the beta version of the [official componen
 | Smartmi Evaporative Humidifier (Korea Version)  | zhimi.humidifier.cb2   | CJXJSQ02ZM  | 8W, 240x240x363mm  |
 | Mijia Smart Sterilization Humidifier S  | deerma.humidifier.mjjsq  | MJJSQ03DY  | 4.5L, <=39dB, 450mL/h, 40W  |
 | Mijia Intelligent Sterilization Humidifier (EU version?) | deerma.humidifier.jsq  | ZNJSQ01DEM  | 4.5L, <=38dB, 300mL/h, 24W  |
+| Mijia Smart Humidifier 2 (EU version) | deerma.humidifier.jsq2w  | MJJSQ05DY  | 4.5L, <=32dB, 300mL/h, 28  W  |
 | Mijia Humidifier 4L  | deerma.humidifier.jsq3  | MJJSQ04DY  | 4L, <=38dB, 300mL/h, 25W  |
 | Mijia Intelligent Sterilization Humidifier (EU version?) | deerma.humidifier.jsq5  | ZNJSQ01DEM  | 4.5L, <=38dB, 300mL/h, 24W  |
 | Mijia Smart Sterilization Humidifier S (EU version?) | deerma.humidifier.jsqs  | MJJSQ03DY  | 4.5L, <=39dB, 450mL/h, 40W  |

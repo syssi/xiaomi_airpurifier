@@ -76,11 +76,8 @@ import voluptuous as vol
 
 from homeassistant.components.fan import (
     PLATFORM_SCHEMA,
-    SUPPORT_DIRECTION,
-    SUPPORT_OSCILLATE,
-    SUPPORT_PRESET_MODE,
-    SUPPORT_SET_SPEED,
     FanEntity,
+    FanEntityFeature
 )
 from homeassistant.const import (
     ATTR_ENTITY_ID,
@@ -135,6 +132,7 @@ MODEL_AIRHUMIDIFIER_CB2 = "zhimi.humidifier.cb2"
 MODEL_AIRHUMIDIFIER_MJJSQ = "deerma.humidifier.mjjsq"
 MODEL_AIRHUMIDIFIER_JSQ = "deerma.humidifier.jsq"
 MODEL_AIRHUMIDIFIER_JSQ1 = "deerma.humidifier.jsq1"
+MODEL_AIRHUMIDIFIER_JSQ2W = "deerma.humidifier.jsq2w"
 MODEL_AIRHUMIDIFIER_JSQ3 = "deerma.humidifier.jsq3"
 MODEL_AIRHUMIDIFIER_JSQ5 = "deerma.humidifier.jsq5"
 MODEL_AIRHUMIDIFIER_JSQS = "deerma.humidifier.jsqs"
@@ -195,6 +193,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_AIRHUMIDIFIER_MJJSQ,
                 MODEL_AIRHUMIDIFIER_JSQ,
                 MODEL_AIRHUMIDIFIER_JSQ1,
+                MODEL_AIRHUMIDIFIER_JSQ2W,
                 MODEL_AIRHUMIDIFIER_JSQ3,
                 MODEL_AIRHUMIDIFIER_JSQ5,
                 MODEL_AIRHUMIDIFIER_JSQS,
@@ -1148,6 +1147,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         air_humidifier = AirHumidifierMjjsq(host, token, model=model)
         device = XiaomiAirHumidifierMjjsq(name, air_humidifier, model, unique_id)
     elif model in [
+        MODEL_AIRHUMIDIFIER_JSQ2W,
         MODEL_AIRHUMIDIFIER_JSQ3,
         MODEL_AIRHUMIDIFIER_JSQ5,
         MODEL_AIRHUMIDIFIER_JSQS,
@@ -1266,7 +1266,7 @@ class XiaomiGenericDevice(FanEntity):
     @property
     def supported_features(self):
         """Flag supported features."""
-        return SUPPORT_PRESET_MODE
+        return FanEntityFeature.PRESET_MODE
 
     @property
     def should_poll(self):
@@ -2396,10 +2396,10 @@ class XiaomiFan(XiaomiGenericDevice):
     def supported_features(self) -> int:
         """Supported features."""
         return (
-            SUPPORT_SET_SPEED
-            | SUPPORT_PRESET_MODE
-            | SUPPORT_OSCILLATE
-            | SUPPORT_DIRECTION
+            FanEntityFeature.SET_SPEED
+            | FanEntityFeature.PRESET_MODE
+            | FanEntityFeature.OSCILLATE
+            | FanEntityFeature.DIRECTION
         )
 
     async def async_update(self):
@@ -2749,7 +2749,7 @@ class XiaomiFanLeshow(XiaomiGenericDevice):
     @property
     def supported_features(self) -> int:
         """Supported features."""
-        return SUPPORT_SET_SPEED | SUPPORT_PRESET_MODE | SUPPORT_OSCILLATE
+        return FanEntityFeature.SET_SPEED | FanEntityFeature.PRESET_MODE | FanEntityFeature.OSCILLATE
 
     async def async_update(self):
         """Fetch state from the device."""
@@ -2882,7 +2882,7 @@ class XiaomiFan1C(XiaomiFan):
     @property
     def supported_features(self) -> int:
         """Supported features."""
-        return SUPPORT_SET_SPEED | SUPPORT_PRESET_MODE | SUPPORT_OSCILLATE
+        return FanEntityFeature.SET_SPEED | FanEntityFeature.PRESET_MODE | FanEntityFeature.OSCILLATE
 
     async def async_update(self):
         """Fetch state from the device."""
