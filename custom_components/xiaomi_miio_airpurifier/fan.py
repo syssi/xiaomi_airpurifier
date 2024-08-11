@@ -1263,7 +1263,11 @@ class XiaomiGenericDevice(FanEntity):
     @property
     def supported_features(self):
         """Flag supported features."""
-        return FanEntityFeature.PRESET_MODE
+        return (
+            FanEntityFeature.PRESET_MODE
+            | FanEntityFeature.TURN_OFF
+            | FanEntityFeature.TURN_ON
+        )
 
     @property
     def should_poll(self):
@@ -2400,6 +2404,8 @@ class XiaomiFan(XiaomiGenericDevice):
             | FanEntityFeature.PRESET_MODE
             | FanEntityFeature.OSCILLATE
             | FanEntityFeature.DIRECTION
+            | FanEntityFeature.TURN_OFF
+            | FanEntityFeature.TURN_ON
         )
 
     async def async_update(self):
@@ -2753,6 +2759,8 @@ class XiaomiFanLeshow(XiaomiGenericDevice):
             FanEntityFeature.SET_SPEED
             | FanEntityFeature.PRESET_MODE
             | FanEntityFeature.OSCILLATE
+            | FanEntityFeature.TURN_OFF
+            | FanEntityFeature.TURN_ON
         )
 
     async def async_update(self):
@@ -2890,6 +2898,8 @@ class XiaomiFan1C(XiaomiFan):
             FanEntityFeature.SET_SPEED
             | FanEntityFeature.PRESET_MODE
             | FanEntityFeature.OSCILLATE
+            | FanEntityFeature.TURN_OFF
+            | FanEntityFeature.TURN_ON
         )
 
     async def async_update(self):
