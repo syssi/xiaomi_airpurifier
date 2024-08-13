@@ -1,4 +1,5 @@
 """Support for Xiaomi Mi Air Dehumidifier."""
+
 import asyncio
 from enum import Enum
 from functools import partial
