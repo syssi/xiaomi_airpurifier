@@ -2416,7 +2416,7 @@ class XiaomiFan(XiaomiGenericDevice):
             return
 
         try:
-            state = await self.hass.async_add_job(self._device.status)
+            state = await self.hass.async_add_executor_job(self._device.status)
             _LOGGER.debug("Got new state: %s", state)
 
             self._available = True
@@ -2632,7 +2632,7 @@ class XiaomiFanP5(XiaomiFan):
             return
 
         try:
-            state = await self.hass.async_add_job(self._device.status)
+            state = await self.hass.async_add_executor_job(self._device.status)
             _LOGGER.debug("Got new state: %s", state)
 
             self._available = True
@@ -2771,7 +2771,7 @@ class XiaomiFanLeshow(XiaomiGenericDevice):
             return
 
         try:
-            state = await self.hass.async_add_job(self._device.status)
+            state = await self.hass.async_add_executor_job(self._device.status)
             _LOGGER.debug("Got new state: %s", state)
 
             self._available = True
@@ -2910,7 +2910,7 @@ class XiaomiFan1C(XiaomiFan):
             return
 
         try:
-            state = await self.hass.async_add_job(self._device.status)
+            state = await self.hass.async_add_executor_job(self._device.status)
             _LOGGER.debug("Got new state: %s", state)
 
             self._available = True
