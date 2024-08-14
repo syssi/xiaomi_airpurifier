@@ -1245,6 +1245,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
 class XiaomiGenericDevice(FanEntity):
     """Representation of a generic Xiaomi device."""
 
+    _enable_turn_on_off_backwards_compatibility = False
+
     def __init__(self, name, device, model, unique_id, retries=0):
         """Initialize the generic Xiaomi device."""
         self._name = name
