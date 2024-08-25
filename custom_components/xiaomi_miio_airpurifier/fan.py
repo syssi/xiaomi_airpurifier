@@ -117,6 +117,8 @@ MODEL_AIRPURIFIER_2H = "zhimi.airpurifier.mc2"
 MODEL_AIRPURIFIER_3 = "zhimi.airpurifier.ma4"
 MODEL_AIRPURIFIER_3H = "zhimi.airpurifier.mb3"
 MODEL_AIRPURIFIER_ZA1 = "zhimi.airpurifier.za1"
+MODEL_AIRPURIFIER_4_PRO = "zhimi.airp.vb4"
+MODEL_AIRPURIFIER_4_LITE = "zhimi.airp.rmb1"
 MODEL_AIRPURIFIER_AIRDOG_X3 = "airdog.airpurifier.x3"
 MODEL_AIRPURIFIER_AIRDOG_X5 = "airdog.airpurifier.x5"
 MODEL_AIRPURIFIER_AIRDOG_X7SM = "airdog.airpurifier.x7sm"
@@ -179,6 +181,8 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_AIRPURIFIER_3,
                 MODEL_AIRPURIFIER_3H,
                 MODEL_AIRPURIFIER_ZA1,
+                MODEL_AIRPURIFIER_4_PRO,
+                MODEL_AIRPURIFIER_4_LITE,
                 MODEL_AIRPURIFIER_AIRDOG_X3,
                 MODEL_AIRPURIFIER_AIRDOG_X5,
                 MODEL_AIRPURIFIER_AIRDOG_X7SM,
@@ -257,6 +261,11 @@ ATTR_SLEEP_MODE = "sleep_mode"
 ATTR_VOLUME = "volume"
 ATTR_USE_TIME = "use_time"
 ATTR_BUTTON_PRESSED = "button_pressed"
+ATTR_ANION = "anion"
+ATTR_PM10_DENSITY = "pm10_density"
+ATTR_FILTER_LEFT_TIME = "filter_left_time"
+ATTR_FAVORITE_RPM = "favorite_rpm"
+ATTR_DISPLAY_UNIT = "device-display-unit"
 
 # Air Humidifier
 ATTR_TARGET_HUMIDITY = "target_humidity"
@@ -319,7 +328,7 @@ ATTR_RAW_SPEED = "raw_speed"
 # Fan Leshow SS4
 ATTR_ERROR_DETECTED = "error_detected"
 
-PURIFIER_MIOT = [MODEL_AIRPURIFIER_3, MODEL_AIRPURIFIER_3H, MODEL_AIRPURIFIER_ZA1]
+PURIFIER_MIOT = [MODEL_AIRPURIFIER_3, MODEL_AIRPURIFIER_3H, MODEL_AIRPURIFIER_ZA1, MODEL_AIRPURIFIER_4_PRO, MODEL_AIRPURIFIER_4_LITE]
 HUMIDIFIER_MIOT = [MODEL_AIRHUMIDIFIER_CA4]
 
 # AirDogX7SM
@@ -460,6 +469,48 @@ AVAILABLE_ATTRIBUTES_AIRPURIFIER_V3 = {
     ATTR_AUTO_DETECT: "auto_detect",
     ATTR_USE_TIME: "use_time",
     ATTR_BUTTON_PRESSED: "button_pressed",
+}
+
+AVAILABLE_ATTRIBUTES_AIRPURIFIER_4_PRO = {
+    ATTR_POWER: "power",
+    ATTR_MODE: "mode",
+    ATTR_FAN_LEVEL: "fan_level",
+    ATTR_ANION: "anion",
+    ATTR_HUMIDITY: "humidity",
+    ATTR_AIR_QUALITY_INDEX: "aqi",
+    ATTR_TEMPERATURE: "temperature",
+    ATTR_PM10_DENSITY: "pm10_density",
+    ATTR_FILTER_LIFE: "filter_life_remaining",
+    ATTR_FILTER_HOURS_USED: "filter_hours_used",
+    ATTR_FILTER_LEFT_TIME: "filter_left_time",
+    ATTR_BUZZER: "buzzer",
+    ATTR_CHILD_LOCK: "child_lock",
+    ATTR_MOTOR_SPEED: "motor_speed",
+    ATTR_FAVORITE_RPM: "favorite_rpm",
+    ATTR_FAVORITE_LEVEL: "favorite_level",
+    ATTR_PURIFY_VOLUME: "purify_volume",
+    ATTR_AVERAGE_AIR_QUALITY_INDEX: "average_aqi",
+    ATTR_FILTER_RFID_TAG: "filter_rfid_tag",
+    ATTR_FILTER_RFID_PRODUCT_ID: "filter_rfid_product_id",
+    ATTR_LED_BRIGHTNESS: "led_brightness",
+    ATTR_DISPLAY_UNIT: "device-display-unit"
+}
+
+AVAILABLE_ATTRIBUTES_AIRPURIFIER_4_LITE = {
+    ATTR_POWER: "power",
+    ATTR_MODE: "mode",
+    ATTR_HUMIDITY: "humidity",
+    ATTR_AIR_QUALITY_INDEX: "aqi",
+    ATTR_TEMPERATURE: "temperature",
+    ATTR_FILTER_LIFE: "filter_life_remaining",
+    ATTR_FILTER_HOURS_USED: "filter_hours_used",
+    ATTR_FILTER_LEFT_TIME: "filter_left_time",
+    ATTR_BUZZER: "buzzer",
+    ATTR_CHILD_LOCK: "child_lock",
+    ATTR_MOTOR_SPEED: "motor_speed",
+    ATTR_FAVORITE_LEVEL: "favorite_level",
+    ATTR_LED_BRIGHTNESS: "led_brightness",
+    ATTR_DISPLAY_UNIT: "device-display-unit"
 }
 
 AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON = {
@@ -718,6 +769,8 @@ OPERATION_MODES_AIRPURIFIER_V3 = [
     "High",
     "Strong",
 ]
+OPERATION_MODES_AIRPURIFIER_4_PRO = ["Auto", "Sleep", "Favorite", "Manual"]
+OPERATION_MODES_AIRPURIFIER_4_LITE = ["Auto", "Sleep", "Favorite"]
 OPERATION_MODES_AIRFRESH = ["Auto", "Silent", "Interval", "Low", "Middle", "Strong"]
 OPERATION_MODES_AIRFRESH_T2017 = ["Auto", "Sleep", "Favorite"]
 
@@ -802,6 +855,24 @@ FEATURE_FLAGS_AIRPURIFIER_3 = (
 
 FEATURE_FLAGS_AIRPURIFIER_V3 = (
     FEATURE_SET_BUZZER | FEATURE_SET_CHILD_LOCK | FEATURE_SET_LED
+)
+
+FEATURE_FLAGS_AIRPURIFIER_4_PRO = (
+    FEATURE_SET_BUZZER
+    | FEATURE_SET_CHILD_LOCK
+    | FEATURE_SET_LED
+    | FEATURE_SET_FAVORITE_LEVEL
+    | FEATURE_SET_FAN_LEVEL
+    | FEATURE_SET_LED_BRIGHTNESS
+)
+
+FEATURE_FLAGS_AIRPURIFIER_4_LITE = (
+    FEATURE_SET_BUZZER
+    | FEATURE_SET_CHILD_LOCK
+    | FEATURE_SET_LED
+    | FEATURE_SET_FAVORITE_LEVEL
+    | FEATURE_SET_FAN_LEVEL
+    | FEATURE_SET_LED_BRIGHTNESS
 )
 
 FEATURE_FLAGS_AIRHUMIDIFIER = (
@@ -1430,6 +1501,14 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
             self._device_features = FEATURE_FLAGS_AIRPURIFIER_V3
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_V3
             self._preset_modes = OPERATION_MODES_AIRPURIFIER_V3
+        elif self._model == MODEL_AIRPURIFIER_4_PRO:
+            self._device_features = FEATURE_FLAGS_AIRPURIFIER_4_PRO
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_4_PRO
+            self._preset_modes = OPERATION_MODES_AIRPURIFIER_4_PRO
+        elif self._model == MODEL_AIRPURIFIER_4_LITE:
+            self._device_features = FEATURE_FLAGS_AIRPURIFIER_4_LITE
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_4_LITE
+            self._preset_modes = OPERATION_MODES_AIRPURIFIER_4_LITE
         else:
             self._device_features = FEATURE_FLAGS_AIRPURIFIER
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER
