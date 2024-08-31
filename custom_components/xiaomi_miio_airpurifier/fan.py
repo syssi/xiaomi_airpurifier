@@ -152,6 +152,7 @@ MODEL_FAN_P9 = "dmaker.fan.p9"
 MODEL_FAN_P10 = "dmaker.fan.p10"
 MODEL_FAN_P11 = "dmaker.fan.p11"
 MODEL_FAN_P18 = "dmaker.fan.p18"
+MODEL_FAN_P45 = "dmaker.fan.p45"
 MODEL_FAN_LESHOW_SS4 = "leshow.fan.ss4"
 MODEL_FAN_1C = "dmaker.fan.1c"
 
@@ -211,6 +212,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_FAN_P10,
                 MODEL_FAN_P11,
                 MODEL_FAN_P18,
+                MODEL_FAN_P45,
                 MODEL_FAN_LESHOW_SS4,
                 MODEL_FAN_1C,
             ]
@@ -662,6 +664,23 @@ AVAILABLE_ATTRIBUTES_FAN_1C = {
     ATTR_DELAY_OFF_COUNTDOWN: "delay_off_countdown",
     ATTR_LED: "led",
     ATTR_CHILD_LOCK: "child_lock",
+}
+
+FAN_P45_MAPPINGS = {
+    MODEL_FAN_P9: { # init using exist model - FanMiot(host, token, model=MODEL_FAN_P9), should use same model name for mapping
+        # https://miot-spec.org/miot-spec-v2/instance?type=urn:miot-spec-v2:device:fan:0000A005:dmaker-p45:1
+        # https://home.miot-spec.com/spec/dmaker.fan.p45
+        "power": {"siid": 2, "piid": 1},
+        "fan_level": {"siid": 2, "piid": 2},
+        "child_lock": {"siid": 7, "piid": 1},
+        "fan_speed": {"siid": 8, "piid": 1},
+        "swing_mode": {"siid": 2, "piid": 4},
+        "swing_mode_angle": {"siid": 2, "piid": 5},
+        "power_off_time": {"siid": 3, "piid": 1},
+        "buzzer": {"siid": 5, "piid": 1},
+        "light": {"siid": 4, "piid": 1},
+        "mode": {"siid": 2, "piid": 3},
+    }
 }
 
 FAN_SPEED_LEVEL1 = "Level 1"
@@ -1181,6 +1200,10 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         device = XiaomiFanMiot(name, fan, model, unique_id, retries)
     elif model in [MODEL_FAN_P9, MODEL_FAN_P11]:
         fan = FanMiot(host, token, model=model)
+        device = XiaomiFanMiot(name, fan, model, unique_id, retries)
+    elif model == MODEL_FAN_P45:
+        fan = FanMiot(host, token, model=MODEL_FAN_P9)
+        fan._mappings = FAN_P45_MAPPINGS
         device = XiaomiFanMiot(name, fan, model, unique_id, retries)
     elif model == MODEL_FAN_LESHOW_SS4:
         fan = FanLeshow(host, token, model=model)
