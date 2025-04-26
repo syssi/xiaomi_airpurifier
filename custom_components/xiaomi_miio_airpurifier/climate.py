@@ -411,10 +411,12 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
     @property
     def supported_features(self):
         """Flag supported features."""
-        if self.hvac_mode == HVACMode.OFF:
-            return 0
+        features = ClimateEntityFeature.TURN_OFF | ClimateEntityFeature.TURN_ON
 
-        features = ClimateEntityFeature.PRESET_MODE
+        if self.hvac_mode == HVACMode.OFF:
+            return features
+
+        features |= ClimateEntityFeature.PRESET_MODE
         mode = AirdehumidifierOperationMode(self._state_attrs[ATTR_MODE])
         if mode == AirdehumidifierOperationMode.Auto:
             features |= ClimateEntityFeature.TARGET_HUMIDITY
