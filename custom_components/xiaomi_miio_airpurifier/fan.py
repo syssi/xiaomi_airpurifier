@@ -1107,14 +1107,13 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     retries = config[CONF_RETRIES]
 
     _LOGGER.info("Initializing with host %s (token %s...)", host, token[:5])
-    unique_id = None
+    unique_id = f"{host}-{token[:5]}"
 
     if model is None:
         try:
             miio_device = Device(host, token)
             device_info = await hass.async_add_executor_job(miio_device.info)
             model = device_info.model
-            unique_id = f"{model}-{device_info.mac_address}"
             _LOGGER.info(
                 "%s %s %s detected",
                 model,
