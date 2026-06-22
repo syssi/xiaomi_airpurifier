@@ -415,8 +415,12 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
         if self.hvac_mode == HVACMode.OFF:
             return features
 
+        mode_value = self._state_attrs.get(ATTR_MODE)
+        if mode_value is None:
+            return features
+
         features |= ClimateEntityFeature.PRESET_MODE
-        mode = AirdehumidifierOperationMode(self._state_attrs[ATTR_MODE])
+        mode = AirdehumidifierOperationMode(mode_value)
         if mode == AirdehumidifierOperationMode.Auto:
             features |= ClimateEntityFeature.TARGET_HUMIDITY
         if mode != AirdehumidifierOperationMode.DryCloth:
