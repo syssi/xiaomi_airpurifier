@@ -1350,17 +1350,21 @@ class XiaomiGenericDevice(FanEntity):
         **kwargs,
     ) -> None:
         """Turn the device on."""
-        if preset_mode:
-            # If operation mode was set the device must not be turned on.
-            result = await self.async_set_preset_mode(preset_mode)
-        else:
-            result = await self._try_command(
-                "Turning the miio device on failed.", self._device.on
-            )
+        result = await self._try_command(
+            "Turning the miio device on failed.", self._device.on
+        )
 
-        if result:
-            self._state = True
-            self._skip_update = True
+        if not result:
+            return
+
+        self._state = True
+        self._skip_update = True
+
+        if percentage is not None:
+            await self.async_set_percentage(percentage)
+
+        if preset_mode is not None:
+            await self.async_set_preset_mode(preset_mode)
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the device off."""
@@ -3270,10 +3274,12 @@ class XiaomiAirDog(XiaomiGenericDevice):
         **kwargs,
     ) -> None:
         """Turn the device on."""
-        await super().async_turn_on(speed, percentage, preset_mode, **kwargs)
-
-        self._state = True
-        self._skip_update = True
+        await super().async_turn_on(
+            speed=speed,
+            percentage=percentage,
+            preset_mode=preset_mode,
+            **kwargs,
+        )
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the device off."""
