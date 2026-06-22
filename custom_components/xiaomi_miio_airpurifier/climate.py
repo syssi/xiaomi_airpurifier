@@ -532,7 +532,7 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
     async def async_set_humidity(self, humidity: int) -> None:
         """Set new target humidity."""
         if self.preset_mode != AirdehumidifierOperationMode.Auto.name:
-            await self.async_set_preset_mode(AirdehumidifierOperationMode.Auto)
+            await self.async_set_preset_mode(AirdehumidifierOperationMode.Auto.name)
 
         humidity = round(humidity / 10) * 10
         await self._try_command(
