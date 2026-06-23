@@ -416,7 +416,10 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
             return features
 
         features |= ClimateEntityFeature.PRESET_MODE
-        mode = AirdehumidifierOperationMode(self._state_attrs[ATTR_MODE])
+        mode_value = self._state_attrs.get(ATTR_MODE)
+        if mode_value is None:
+            return features
+        mode = AirdehumidifierOperationMode(mode_value)
         if mode == AirdehumidifierOperationMode.Auto:
             features |= ClimateEntityFeature.TARGET_HUMIDITY
         if mode != AirdehumidifierOperationMode.DryCloth:
@@ -494,7 +497,10 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
     @property
     def preset_mode(self):
         """Return the current preset mode, e.g., home, away, temp."""
-        return AirdehumidifierOperationMode(self._state_attrs[ATTR_MODE]).name
+        mode_value = self._state_attrs.get(ATTR_MODE)
+        if mode_value is None:
+            return None
+        return AirdehumidifierOperationMode(mode_value).name
 
     @property
     def fan_mode(self):
