@@ -2,9 +2,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
-*.bak
 
 .idea/
-.pytest_cache/*
-.coverage
-local/*
+venv/
