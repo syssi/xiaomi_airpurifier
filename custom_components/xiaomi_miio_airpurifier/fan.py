@@ -4,6 +4,7 @@ import asyncio
 from enum import Enum
 from functools import partial
 import logging
+from typing import Any
 
 from homeassistant.components.fan import PLATFORM_SCHEMA, FanEntity, FanEntityFeature
 from homeassistant.const import (
@@ -1344,23 +1345,23 @@ class XiaomiGenericDevice(FanEntity):
 
     async def async_turn_on(
         self,
-        speed: str | None = None,
         percentage: int | None = None,
         preset_mode: str | None = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> None:
         """Turn the device on."""
-        if preset_mode:
-            # If operation mode was set the device must not be turned on.
-            result = await self.async_set_preset_mode(preset_mode)
+
+        if percentage is not None:
+            await self.async_set_percentage(percentage)
+        elif preset_mode is not None:
+            await self.async_set_preset_mode(preset_mode)
         else:
-            result = await self._try_command(
+            await self._try_command(
                 "Turning the miio device on failed.", self._device.on
             )
 
-        if result:
-            self._state = True
-            self._skip_update = True
+        self._state = True
+        self._skip_update = True
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the device off."""
@@ -3264,16 +3265,16 @@ class XiaomiAirDog(XiaomiGenericDevice):
 
     async def async_turn_on(
         self,
-        speed: str | None = None,
         percentage: int | None = None,
         preset_mode: str | None = None,
-        **kwargs,
+        **kwargs: Any,
     ) -> None:
         """Turn the device on."""
-        await super().async_turn_on(speed, percentage, preset_mode, **kwargs)
-
-        self._state = True
-        self._skip_update = True
+        await super().async_turn_on(
+            percentage=percentage,
+            preset_mode=preset_mode,
+            **kwargs,
+        )
 
     async def async_turn_off(self, **kwargs) -> None:
         """Turn the device off."""
