@@ -4,8 +4,21 @@ import asyncio
 from enum import Enum
 from functools import partial
 import logging
-from typing import Optional
 
+from homeassistant.components.fan import PLATFORM_SCHEMA, FanEntity, FanEntityFeature
+from homeassistant.const import (
+    ATTR_ENTITY_ID,
+    ATTR_MODE,
+    CONF_HOST,
+    CONF_NAME,
+    CONF_TOKEN,
+)
+from homeassistant.exceptions import PlatformNotReady
+import homeassistant.helpers.config_validation as cv
+from homeassistant.util.percentage import (
+    ordered_list_item_to_percentage,
+    percentage_to_ordered_list_item,
+)
 from miio import (  # pylint: disable=import-error
     AirDogX3,
     AirFresh,
@@ -26,46 +39,44 @@ from miio import (  # pylint: disable=import-error
     FanMiot,
     FanP5,
 )
-from miio.integrations.airpurifier.zhimi.airfresh import (  # pylint: disable=import-error, import-error
-    LedBrightness as AirfreshLedBrightness,
-    OperationMode as AirfreshOperationMode,
+from miio.fan_common import (  # pylint: disable=import-error, import-error
+    LedBrightness as FanLedBrightness,
 )
-from miio.integrations.airpurifier.dmaker.airfresh_t2017 import (  # pylint: disable=import-error, import-error
-    DisplayOrientation as AirfreshT2017DisplayOrientation,
-    OperationMode as AirfreshT2017OperationMode,
-    PtcLevel as AirfreshT2017PtcLevel,
+from miio.fan_common import (
+    MoveDirection as FanMoveDirection,
 )
-from miio.integrations.humidifier.zhimi.airhumidifier import (  # pylint: disable=import-error, import-error
-    LedBrightness as AirhumidifierLedBrightness,
-    OperationMode as AirhumidifierOperationMode,
-)
-from miio.integrations.humidifier.shuii.airhumidifier_jsq import (  # pylint: disable=import-error, import-error
-    LedBrightness as AirhumidifierJsqLedBrightness,
-    OperationMode as AirhumidifierJsqOperationMode,
-)
-from miio.integrations.humidifier.zhimi.airhumidifier_miot import (  # pylint: disable=import-error, import-error
-    LedBrightness as AirhumidifierMiotLedBrightness,
-    OperationMode as AirhumidifierMiotOperationMode,
-    PressedButton as AirhumidifierPressedButton,
-)
-from miio.integrations.humidifier.deerma.airhumidifier_mjjsq import (  # pylint: disable=import-error, import-error
-    OperationMode as AirhumidifierMjjsqOperationMode,
-)
-from miio.integrations.airpurifier.zhimi.airpurifier import (  # pylint: disable=import-error, import-error
-    LedBrightness as AirpurifierLedBrightness,
-    OperationMode as AirpurifierOperationMode,
+from miio.fan_common import (
+    OperationMode as FanOperationMode,
 )
 from miio.integrations.airpurifier.airdog.airpurifier_airdog import (  # pylint: disable=import-error, import-error
     OperationMode as AirDogOperationMode,
 )
+from miio.integrations.airpurifier.dmaker.airfresh_t2017 import (  # pylint: disable=import-error, import-error
+    DisplayOrientation as AirfreshT2017DisplayOrientation,
+)
+from miio.integrations.airpurifier.dmaker.airfresh_t2017 import (
+    OperationMode as AirfreshT2017OperationMode,
+)
+from miio.integrations.airpurifier.dmaker.airfresh_t2017 import (
+    PtcLevel as AirfreshT2017PtcLevel,
+)
+from miio.integrations.airpurifier.zhimi.airfresh import (  # pylint: disable=import-error, import-error
+    LedBrightness as AirfreshLedBrightness,
+)
+from miio.integrations.airpurifier.zhimi.airfresh import (
+    OperationMode as AirfreshOperationMode,
+)
+from miio.integrations.airpurifier.zhimi.airpurifier import (  # pylint: disable=import-error, import-error
+    LedBrightness as AirpurifierLedBrightness,
+)
+from miio.integrations.airpurifier.zhimi.airpurifier import (
+    OperationMode as AirpurifierOperationMode,
+)
 from miio.integrations.airpurifier.zhimi.airpurifier_miot import (  # pylint: disable=import-error, import-error
     LedBrightness as AirpurifierMiotLedBrightness,
-    OperationMode as AirpurifierMiotOperationMode,
 )
-from miio.fan_common import (  # pylint: disable=import-error, import-error
-    LedBrightness as FanLedBrightness,
-    MoveDirection as FanMoveDirection,
-    OperationMode as FanOperationMode,
+from miio.integrations.airpurifier.zhimi.airpurifier_miot import (
+    OperationMode as AirpurifierMiotOperationMode,
 )
 from miio.integrations.fan.leshow.fan_leshow import (  # pylint: disable=import-error, import-error
     OperationMode as FanLeshowOperationMode,
@@ -73,22 +84,31 @@ from miio.integrations.fan.leshow.fan_leshow import (  # pylint: disable=import-
 from miio.integrations.humidifier.deerma.airhumidifier_jsqs import (  # pylint: disable=import-error, import-error
     OperationMode as AirhumidifierJsqsOperationMode,
 )
+from miio.integrations.humidifier.deerma.airhumidifier_mjjsq import (  # pylint: disable=import-error, import-error
+    OperationMode as AirhumidifierMjjsqOperationMode,
+)
+from miio.integrations.humidifier.shuii.airhumidifier_jsq import (  # pylint: disable=import-error, import-error
+    LedBrightness as AirhumidifierJsqLedBrightness,
+)
+from miio.integrations.humidifier.shuii.airhumidifier_jsq import (
+    OperationMode as AirhumidifierJsqOperationMode,
+)
+from miio.integrations.humidifier.zhimi.airhumidifier import (  # pylint: disable=import-error, import-error
+    LedBrightness as AirhumidifierLedBrightness,
+)
+from miio.integrations.humidifier.zhimi.airhumidifier import (
+    OperationMode as AirhumidifierOperationMode,
+)
+from miio.integrations.humidifier.zhimi.airhumidifier_miot import (  # pylint: disable=import-error, import-error
+    LedBrightness as AirhumidifierMiotLedBrightness,
+)
+from miio.integrations.humidifier.zhimi.airhumidifier_miot import (
+    OperationMode as AirhumidifierMiotOperationMode,
+)
+from miio.integrations.humidifier.zhimi.airhumidifier_miot import (
+    PressedButton as AirhumidifierPressedButton,
+)
 import voluptuous as vol
-
-from homeassistant.components.fan import PLATFORM_SCHEMA, FanEntity, FanEntityFeature
-from homeassistant.const import (
-    ATTR_ENTITY_ID,
-    ATTR_MODE,
-    CONF_HOST,
-    CONF_NAME,
-    CONF_TOKEN,
-)
-from homeassistant.exceptions import PlatformNotReady
-import homeassistant.helpers.config_validation as cv
-from homeassistant.util.percentage import (
-    ordered_list_item_to_percentage,
-    percentage_to_ordered_list_item,
-)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -275,7 +295,7 @@ ATTR_FAULT = "fault"
 ATTR_POWER_TIME = "power_time"
 ATTR_CLEAN_MODE = "clean_mode"
 
-# Air Humidifier MJJSQ, JSQ, JSQ1, JSQ5 ans JSQS
+# Air Humidifier MJJSQ, JSQ, JSQ1, JSQ5 and JSQS
 ATTR_NO_WATER = "no_water"
 ATTR_WATER_TANK_DETACHED = "water_tank_detached"
 ATTR_WET_PROTECTION = "wet_protection"
@@ -1233,10 +1253,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         if update_tasks:
             await asyncio.wait(update_tasks)
 
-    for air_purifier_service in SERVICE_TO_METHOD:
-        schema = SERVICE_TO_METHOD[air_purifier_service].get(
-            "schema", AIRPURIFIER_SERVICE_SCHEMA
-        )
+    for air_purifier_service, air_purifier_method in SERVICE_TO_METHOD.items():
+        schema = air_purifier_method.get("schema", AIRPURIFIER_SERVICE_SCHEMA)
         hass.services.async_register(
             DOMAIN, air_purifier_service, async_service_handler, schema=schema
         )
@@ -2948,7 +2966,7 @@ class XiaomiFan1C(XiaomiFan):
                 )
 
     @property
-    def percentage(self) -> Optional[int]:
+    def percentage(self) -> int | None:
         """Return the current speed percentage."""
         return ordered_list_item_to_percentage(FAN_SPEEDS_1C, self._preset_mode)
 
@@ -3138,18 +3156,21 @@ class XiaomiAirDog(XiaomiGenericDevice):
     @property
     def preset_mode(self):
         """Get the current preset mode."""
-        if self._state:
-            # There are invalid modes, such as 'Auto 2'. There are no presets for them
-            if (
+        # There are invalid modes, such as 'Auto 2'. There are no presets for them
+        if (
+            self._state
+            and (
                 AirDogOperationMode(self._state_attrs[ATTR_MODE]),
                 self._state_attrs[ATTR_SPEED],
-            ) in self._mode_speed_to_preset_modes:
-                return self._mode_speed_to_preset_modes[
-                    (
-                        AirDogOperationMode(self._state_attrs[ATTR_MODE]),
-                        self._state_attrs[ATTR_SPEED],
-                    )
-                ]
+            )
+            in self._mode_speed_to_preset_modes
+        ):
+            return self._mode_speed_to_preset_modes[
+                (
+                    AirDogOperationMode(self._state_attrs[ATTR_MODE]),
+                    self._state_attrs[ATTR_SPEED],
+                )
+            ]
 
         return None
 
@@ -3171,7 +3192,7 @@ class XiaomiAirDog(XiaomiGenericDevice):
         # but always sets speed to 1, regardless of the speed parameter.
         #
         # Switching from 'Night mode' to 'Speed X' sets device in Auto mode with speed X.
-        # Tihs 'Auto X' state is quite strange and does not seem to be useful.
+        # This 'Auto X' state is quite strange and does not seem to be useful.
         # Furthermore, we request Manual mode and get Auto.
         # Switching from 'Auto X' mode to 'Manual X' works just fine.
         # Switching from 'Auto X' mode to 'Manual Y' switches to 'Manual X'.
