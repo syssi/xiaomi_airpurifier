@@ -1512,14 +1512,6 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
             self._device_features = FEATURE_FLAGS_AIRPURIFIER_2H
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_2H
             self._preset_modes = OPERATION_MODES_AIRPURIFIER_2H
-        elif self._model in PURIFIER_MIOT:
-            self._device_features = FEATURE_FLAGS_AIRPURIFIER_3
-            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_3
-            self._preset_modes = OPERATION_MODES_AIRPURIFIER_3
-        elif self._model == MODEL_AIRPURIFIER_V3:
-            self._device_features = FEATURE_FLAGS_AIRPURIFIER_V3
-            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_V3
-            self._preset_modes = OPERATION_MODES_AIRPURIFIER_V3
         elif self._model == MODEL_AIRPURIFIER_4_PRO:
             self._device_features = FEATURE_FLAGS_AIRPURIFIER_4_PRO
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_4_PRO
@@ -1528,6 +1520,14 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
             self._device_features = FEATURE_FLAGS_AIRPURIFIER_4_LITE
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_4_LITE
             self._preset_modes = OPERATION_MODES_AIRPURIFIER_4_LITE
+        elif self._model in PURIFIER_MIOT:
+            self._device_features = FEATURE_FLAGS_AIRPURIFIER_3
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_3
+            self._preset_modes = OPERATION_MODES_AIRPURIFIER_3
+        elif self._model == MODEL_AIRPURIFIER_V3:
+            self._device_features = FEATURE_FLAGS_AIRPURIFIER_V3
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_V3
+            self._preset_modes = OPERATION_MODES_AIRPURIFIER_V3
         else:
             self._device_features = FEATURE_FLAGS_AIRPURIFIER
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER
