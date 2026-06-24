@@ -52,7 +52,7 @@ sensor:
     sensors:
       humidifier_water_level:
         friendly_name: Water level
-        value_template: '{{ (states.fan.humidifier.attributes.depth / 125 * 100) | round() }}' # provides value in [0, ..., 125]
+        value_template: '{{ (states.fan.humidifier.attributes.depth / 125 * 100) | round() }}'  # provides value in [0, ..., 125]
         unit_of_measurement: '%'
         icon_template: mdi:waves
 
@@ -80,7 +80,7 @@ input_select:
   humidifier_led:
     name: Led mode
     options:
-      - 'Off' # will be converted to False without quotes
+      - 'Off'  # will be converted to False without quotes
       - Dim
       - Bright
 

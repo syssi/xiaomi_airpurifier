@@ -5,17 +5,6 @@ from enum import Enum
 from functools import partial
 import logging
 
-from miio import (  # pylint: disable=import-error
-    AirDehumidifier,
-    Device,
-    DeviceException,
-)
-from miio.airdehumidifier import (  # pylint: disable=import-error, import-error
-    FanSpeed as AirdehumidifierFanSpeed,
-    OperationMode as AirdehumidifierOperationMode,
-)
-import voluptuous as vol
-
 from homeassistant.components.climate import DOMAIN, PLATFORM_SCHEMA, ClimateEntity
 from homeassistant.components.climate.const import (
     ATTR_CURRENT_HUMIDITY,
@@ -27,8 +16,8 @@ from homeassistant.components.climate.const import (
     ATTR_MIN_HUMIDITY,
     ATTR_PRESET_MODE,
     ATTR_PRESET_MODES,
-    HVACMode,
     ClimateEntityFeature,
+    HVACMode,
 )
 from homeassistant.const import (
     ATTR_ENTITY_ID,
@@ -39,6 +28,18 @@ from homeassistant.const import (
 )
 from homeassistant.exceptions import PlatformNotReady
 import homeassistant.helpers.config_validation as cv
+from miio import (  # pylint: disable=import-error
+    AirDehumidifier,
+    Device,
+    DeviceException,
+)
+from miio.airdehumidifier import (  # pylint: disable=import-error, import-error
+    FanSpeed as AirdehumidifierFanSpeed,
+)
+from miio.airdehumidifier import (
+    OperationMode as AirdehumidifierOperationMode,
+)
+import voluptuous as vol
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -146,10 +147,10 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         try:
             device_info = miio_device.info()
         except DeviceException:
-            raise PlatformNotReady
+            raise PlatformNotReady from None
 
         model = device_info.model
-        unique_id = "{}-{}".format(model, device_info.mac_address)
+        unique_id = f"{model}-{device_info.mac_address}"
         _LOGGER.info(
             "%s %s %s detected",
             model,
@@ -198,10 +199,8 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         if update_tasks:
             await asyncio.wait(update_tasks)
 
-    for air_dehumidifier_service in SERVICE_TO_METHOD:
-        schema = SERVICE_TO_METHOD[air_dehumidifier_service].get(
-            "schema", AIRDEHUMIDIFIER_SERVICE_SCHEMA
-        )
+    for air_dehumidifier_service, air_dehumidifier_method in SERVICE_TO_METHOD.items():
+        schema = air_dehumidifier_method.get("schema", AIRDEHUMIDIFIER_SERVICE_SCHEMA)
         hass.services.async_register(
             DOMAIN, air_dehumidifier_service, async_service_handler, schema=schema
         )
@@ -417,7 +416,10 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
             return features
 
         features |= ClimateEntityFeature.PRESET_MODE
-        mode = AirdehumidifierOperationMode(self._state_attrs[ATTR_MODE])
+        mode_value = self._state_attrs.get(ATTR_MODE)
+        if mode_value is None:
+            return features
+        mode = AirdehumidifierOperationMode(mode_value)
         if mode == AirdehumidifierOperationMode.Auto:
             features |= ClimateEntityFeature.TARGET_HUMIDITY
         if mode != AirdehumidifierOperationMode.DryCloth:
@@ -495,7 +497,10 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
     @property
     def preset_mode(self):
         """Return the current preset mode, e.g., home, away, temp."""
-        return AirdehumidifierOperationMode(self._state_attrs[ATTR_MODE]).name
+        mode_value = self._state_attrs.get(ATTR_MODE)
+        if mode_value is None:
+            return None
+        return AirdehumidifierOperationMode(mode_value).name
 
     @property
     def fan_mode(self):
@@ -527,7 +532,7 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
     async def async_set_humidity(self, humidity: int) -> None:
         """Set new target humidity."""
         if self.preset_mode != AirdehumidifierOperationMode.Auto.name:
-            await self.async_set_preset_mode(AirdehumidifierOperationMode.Auto)
+            await self.async_set_preset_mode(AirdehumidifierOperationMode.Auto.name)
 
         humidity = round(humidity / 10) * 10
         await self._try_command(
