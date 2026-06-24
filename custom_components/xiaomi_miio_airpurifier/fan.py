@@ -286,7 +286,6 @@ ATTR_ANION = "anion"
 ATTR_PM10_DENSITY = "pm10_density"
 ATTR_FILTER_LEFT_TIME = "filter_left_time"
 ATTR_FAVORITE_RPM = "favorite_rpm"
-ATTR_DISPLAY_UNIT = "device-display-unit"
 
 # Air Humidifier
 ATTR_TARGET_HUMIDITY = "target_humidity"
@@ -514,7 +513,6 @@ AVAILABLE_ATTRIBUTES_AIRPURIFIER_4_PRO = {
     ATTR_FILTER_RFID_TAG: "filter_rfid_tag",
     ATTR_FILTER_RFID_PRODUCT_ID: "filter_rfid_product_id",
     ATTR_LED_BRIGHTNESS: "led_brightness",
-    ATTR_DISPLAY_UNIT: "device-display-unit"
 }
 
 AVAILABLE_ATTRIBUTES_AIRPURIFIER_4_LITE = {
@@ -531,7 +529,6 @@ AVAILABLE_ATTRIBUTES_AIRPURIFIER_4_LITE = {
     ATTR_MOTOR_SPEED: "motor_speed",
     ATTR_FAVORITE_LEVEL: "favorite_level",
     ATTR_LED_BRIGHTNESS: "led_brightness",
-    ATTR_DISPLAY_UNIT: "device-display-unit"
 }
 
 AVAILABLE_ATTRIBUTES_AIRHUMIDIFIER_COMMON = {
