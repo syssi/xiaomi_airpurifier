@@ -790,8 +790,8 @@ OPERATION_MODES_AIRPURIFIER_V3 = [
     "High",
     "Strong",
 ]
-OPERATION_MODES_AIRPURIFIER_4_PRO = ["Auto", "Sleep", "Favorite", "Manual"]
-OPERATION_MODES_AIRPURIFIER_4_LITE = ["Auto", "Sleep", "Favorite"]
+OPERATION_MODES_AIRPURIFIER_4_PRO = ["Auto", "Silent", "Favorite", "Fan"]
+OPERATION_MODES_AIRPURIFIER_4_LITE = ["Auto", "Silent", "Favorite"]
 OPERATION_MODES_AIRFRESH = ["Auto", "Silent", "Interval", "Low", "Middle", "Strong"]
 OPERATION_MODES_AIRFRESH_T2017 = ["Auto", "Sleep", "Favorite"]
 
