@@ -1149,7 +1149,7 @@ Turn the wet protection on.
 |---------------------------|----------|---------------------------------------------------------|
 | `entity_id`               |       no | Only act on a specific Xiaomi miIO fan entity.          |
 
-#### Service `xiaomi_miio_airpurifier.fan_set_wet_protection_on` (deerma.humidifier.jsq1 only)
+#### Service `xiaomi_miio_airpurifier.fan_set_wet_protection_off` (deerma.humidifier.jsq1 only)
 
 Turn the wet protection off.
 
