@@ -261,3 +261,219 @@ fan_set_filters_cleaned:
         entity:
           integration: xiaomi_miio_airpurifier
           domain: fan
+
+fan_set_favorite_speed:
+  name: Set favorite speed
+  description: Set the favorite speed.
+  fields:
+    entity_id:
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
+    speed:
+      name: Speed
+      description: Speed, between 60 and 300.
+      example: 120
+
+fan_set_motor_speed:
+  name: Set motor speed
+  description: Set the motor speed.
+  fields:
+    entity_id:
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
+    motor_speed:
+      name: Motor speed
+      description: Motor speed, between 200 and 2000.
+      example: 1000
+
+fan_set_oscillation_angle:
+  name: Set oscillation angle
+  description: Set the oscillation angle.
+  fields:
+    entity_id:
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
+    angle:
+      name: Angle
+      description: Oscillation angle.
+      example: 90
+
+fan_set_delay_off:
+  name: Set delay off
+  description: Set the delay off countdown.
+  fields:
+    entity_id:
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
+    delay_off_countdown:
+      name: Delay off countdown
+      description: Delay off countdown. Allowed values are 0, 60, 120, 180, 240, 300, 360, 420 and 480.
+      example: 60
+
+fan_set_natural_mode_on:
+  name: Set natural mode on
+  description: Turn the natural mode on.
+  fields:
+    entity_id:
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
+
+fan_set_natural_mode_off:
+  name: Set natural mode off
+  description: Turn the natural mode off.
+  fields:
+    entity_id:
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
+
+fan_set_ptc_level:
+  name: Set PTC level
+  description: Set the PTC heating level.
+  fields:
+    entity_id:
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
+    level:
+      name: Level
+      description: PTC heating level.
+      example: Low
+
+fan_set_display_orientation:
+  name: Set display orientation
+  description: Set the display orientation.
+  fields:
+    entity_id:
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
+    display_orientation:
+      name: Display orientation
+      description: Display orientation.
+      example: Forward
+
+fan_set_ptc_on:
+  name: Set PTC on
+  description: Turn the PTC heating on.
+  fields:
+    entity_id:
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
+
+fan_set_ptc_off:
+  name: Set PTC off
+  description: Turn the PTC heating off.
+  fields:
+    entity_id:
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
+
+fan_set_display_on:
+  name: Set display on
+  description: Turn the display on.
+  fields:
+    entity_id:
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
+
+fan_set_display_off:
+  name: Set display off
+  description: Turn the display off.
+  fields:
+    entity_id:
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
+
+fan_set_wet_protection_on:
+  name: Set wet protection on
+  description: Turn the wet protection on.
+  fields:
+    entity_id:
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
+
+fan_set_wet_protection_off:
+  name: Set wet protection off
+  description: Turn the wet protection off.
+  fields:
+    entity_id:
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
+
+fan_set_clean_mode_on:
+  name: Set clean mode on
+  description: Turn the clean mode on.
+  fields:
+    entity_id:
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
+
+fan_set_clean_mode_off:
+  name: Set clean mode off
+  description: Turn the clean mode off.
+  fields:
+    entity_id:
+      name: Entity ID
+      description: Name of the xiaomi miio airpurifier entity.
+      selector:
+        entity:
+          integration: xiaomi_miio_airpurifier
+          domain: fan
