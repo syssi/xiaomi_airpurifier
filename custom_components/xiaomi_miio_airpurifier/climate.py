@@ -507,7 +507,12 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
         """Return the fan setting."""
         if self.preset_mode == AirdehumidifierOperationMode.DryCloth.name:
             return None
-        return AirdehumidifierFanSpeed(self._state_attrs[ATTR_FAN_ST]).name
+
+        fan_speed = self._state_attrs.get(ATTR_FAN_ST)
+        if fan_speed is None:
+            return None
+
+        return AirdehumidifierFanSpeed(fan_speed).name
 
     @property
     def fan_modes(self):
