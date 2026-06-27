@@ -3190,7 +3190,7 @@ class XiaomiAirDog(XiaomiGenericDevice):
         }
         if self._model == MODEL_AIRPURIFIER_AIRDOG_X7SM:
             self._preset_modes_to_mode_speed["Speed 5"] = (
-                AirDogOperationMode("Manual"),
+                AirDogOperationMode.Manual,
                 5,
             )
 
