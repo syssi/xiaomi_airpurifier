@@ -140,6 +140,7 @@ MODEL_AIRPURIFIER_3H = "zhimi.airpurifier.mb3"
 MODEL_AIRPURIFIER_ZA1 = "zhimi.airpurifier.za1"
 MODEL_AIRPURIFIER_4_PRO = "zhimi.airp.vb4"
 MODEL_AIRPURIFIER_4_LITE = "zhimi.airp.rmb1"
+MODEL_AIRPURIFIER_CPA5 = "xiaomi.airp.cpa5"
 MODEL_AIRPURIFIER_AIRDOG_X3 = "airdog.airpurifier.x3"
 MODEL_AIRPURIFIER_AIRDOG_X5 = "airdog.airpurifier.x5"
 MODEL_AIRPURIFIER_AIRDOG_X7SM = "airdog.airpurifier.x7sm"
@@ -204,6 +205,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_AIRPURIFIER_ZA1,
                 MODEL_AIRPURIFIER_4_PRO,
                 MODEL_AIRPURIFIER_4_LITE,
+                MODEL_AIRPURIFIER_CPA5,
                 MODEL_AIRPURIFIER_AIRDOG_X3,
                 MODEL_AIRPURIFIER_AIRDOG_X5,
                 MODEL_AIRPURIFIER_AIRDOG_X7SM,
@@ -467,6 +469,20 @@ AVAILABLE_ATTRIBUTES_AIRPURIFIER_3 = {
     ATTR_FILTER_RFID_TAG: "filter_rfid_tag",
     ATTR_FILTER_TYPE: "filter_type",
     ATTR_FAN_LEVEL: "fan_level",
+}
+
+AVAILABLE_ATTRIBUTES_AIRPURIFIER_CPA5 = {
+    ATTR_AIR_QUALITY_INDEX: "aqi",
+    ATTR_MODE: "mode",
+    ATTR_FILTER_HOURS_USED: "filter_hours_used",
+    ATTR_FILTER_LIFE: "filter_life_remaining",
+    ATTR_FILTER_LEFT_TIME: "filter_left_time",
+    ATTR_FAVORITE_LEVEL: "favorite_level",
+    ATTR_CHILD_LOCK: "child_lock",
+    ATTR_MOTOR_SPEED: "motor_speed",
+    ATTR_BUZZER: "buzzer",
+    ATTR_LED_BRIGHTNESS: "led_brightness",
+    ATTR_FAULT: "fault",
 }
 
 AVAILABLE_ATTRIBUTES_AIRPURIFIER_V3 = {
@@ -795,6 +811,7 @@ OPERATION_MODES_AIRPURIFIER_V3 = [
 ]
 OPERATION_MODES_AIRPURIFIER_4_PRO = ["Auto", "Silent", "Favorite", "Fan"]
 OPERATION_MODES_AIRPURIFIER_4_LITE = ["Auto", "Silent", "Favorite"]
+OPERATION_MODES_AIRPURIFIER_CPA5 = ["Auto", "Silent", "Favorite", "Fan"]
 OPERATION_MODES_AIRFRESH = ["Auto", "Silent", "Interval", "Low", "Middle", "Strong"]
 OPERATION_MODES_AIRFRESH_T2017 = ["Auto", "Sleep", "Favorite"]
 
@@ -894,6 +911,13 @@ FEATURE_FLAGS_AIRPURIFIER_4_LITE = (
     FEATURE_SET_BUZZER
     | FEATURE_SET_CHILD_LOCK
     | FEATURE_SET_LED
+    | FEATURE_SET_FAVORITE_LEVEL
+    | FEATURE_SET_LED_BRIGHTNESS
+)
+
+FEATURE_FLAGS_AIRPURIFIER_CPA5 = (
+    FEATURE_SET_BUZZER
+    | FEATURE_SET_CHILD_LOCK
     | FEATURE_SET_FAVORITE_LEVEL
     | FEATURE_SET_LED_BRIGHTNESS
 )
@@ -1528,6 +1552,10 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
             self._device_features = FEATURE_FLAGS_AIRPURIFIER_4_LITE
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_4_LITE
             self._preset_modes = OPERATION_MODES_AIRPURIFIER_4_LITE
+        elif self._model == MODEL_AIRPURIFIER_CPA5:
+            self._device_features = FEATURE_FLAGS_AIRPURIFIER_CPA5
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_CPA5
+            self._preset_modes = OPERATION_MODES_AIRPURIFIER_CPA5
         elif self._model in PURIFIER_MIOT:
             self._device_features = FEATURE_FLAGS_AIRPURIFIER_3
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_3
