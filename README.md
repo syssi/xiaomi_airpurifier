@@ -37,6 +37,9 @@ This custom component is more or less the beta version of the [official componen
 | Air Purifier 3 (2019)  | zhimi.airpurifier.ma4  | | |
 | Air Purifier 3H (2019) | zhimi.airpurifier.mb3  | FJY4031GL<strong>(?)</strong>, XM200017 | 45m<sup>2</sup>, 380m<sup>3</sup>/h CADR, 64dB, 38W (max) |
 | Air Purifier ZA1       | zhimi.airpurifier.za1   | | |
+| Air Purifier 4 Pro     | zhimi.airp.vb4         | | |
+| Air Purifier 4 Lite    | zhimi.airp.rmb1        | | |
+| Air Purifier 4 Compact | xiaomi.airp.cpa4       | AC-M18-SC | 16-27m<sup>2</sup>, 230m<sup>3</sup>/h CADR |
 | Air Dog X3             | airdog.airpurifier.x3  | | |
 | Air Dog X5             | airdog.airpurifier.x5  | | |
 | Air Dog X7SM           | airdog.airpurifier.x7sm | | |
@@ -268,6 +271,30 @@ This model uses newer MiOT communication protocol.
   - `filter_rfid_tag`
   - `filter_type`
   - `fan_level`
+
+### Air Purifier 4 Compact (xiaomi.airp.cpa4)
+
+This model uses the newer MiOT communication protocol. The mapping is not (yet)
+shipped by upstream python-miio; this integration registers it at runtime.
+
+- Power (on, off)
+- Preset modes (auto, silent, favorite)
+- Buzzer (on, off)
+- Child lock (on, off)
+- LED brightness (bright, dim, off)
+- Favorite Level (0...14)
+- Attributes
+  - `model`
+  - `aqi`
+  - `mode`
+  - `filter_hours_used`
+  - `filter_life_remaining`
+  - `filter_left_time`
+  - `favorite_level`
+  - `child_lock`
+  - `motor_speed`
+  - `buzzer`
+  - `led_brightness`
 
 ### Air Purifier V3 (zhimi.airpurifier.v3)
 

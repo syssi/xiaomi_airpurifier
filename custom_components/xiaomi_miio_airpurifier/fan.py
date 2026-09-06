@@ -140,9 +140,32 @@ MODEL_AIRPURIFIER_3H = "zhimi.airpurifier.mb3"
 MODEL_AIRPURIFIER_ZA1 = "zhimi.airpurifier.za1"
 MODEL_AIRPURIFIER_4_PRO = "zhimi.airp.vb4"
 MODEL_AIRPURIFIER_4_LITE = "zhimi.airp.rmb1"
+MODEL_AIRPURIFIER_4_COMPACT = "xiaomi.airp.cpa4"
 MODEL_AIRPURIFIER_AIRDOG_X3 = "airdog.airpurifier.x3"
 MODEL_AIRPURIFIER_AIRDOG_X5 = "airdog.airpurifier.x5"
 MODEL_AIRPURIFIER_AIRDOG_X7SM = "airdog.airpurifier.x7sm"
+
+# python-miio (as of 0.5.12) does not yet ship a MIoT property mapping for the
+# Xiaomi Smart Air Purifier 4 Compact. Register it here so AirPurifierMiot can
+# talk to the device; verified against
+# https://home.miot-spec.com/spec/xiaomi.airp.cpa4
+AirPurifierMiot._mappings.setdefault(
+    MODEL_AIRPURIFIER_4_COMPACT,
+    {
+        "power": {"siid": 2, "piid": 1},
+        "mode": {"siid": 2, "piid": 4},
+        "aqi": {"siid": 3, "piid": 4},
+        "filter_life_remaining": {"siid": 4, "piid": 1},
+        "filter_hours_used": {"siid": 4, "piid": 3},
+        "filter_left_time": {"siid": 4, "piid": 4},
+        "buzzer": {"siid": 6, "piid": 1},
+        "child_lock": {"siid": 8, "piid": 1},
+        "motor_speed": {"siid": 9, "piid": 1},
+        "favorite_level": {"siid": 9, "piid": 11},
+        "aqi_realtime_update_duration": {"siid": 11, "piid": 4},
+        "led_brightness": {"siid": 13, "piid": 2},
+    },
+)
 
 MODEL_AIRHUMIDIFIER_V1 = "zhimi.humidifier.v1"
 MODEL_AIRHUMIDIFIER_CA1 = "zhimi.humidifier.ca1"
@@ -204,6 +227,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
                 MODEL_AIRPURIFIER_ZA1,
                 MODEL_AIRPURIFIER_4_PRO,
                 MODEL_AIRPURIFIER_4_LITE,
+                MODEL_AIRPURIFIER_4_COMPACT,
                 MODEL_AIRPURIFIER_AIRDOG_X3,
                 MODEL_AIRPURIFIER_AIRDOG_X5,
                 MODEL_AIRPURIFIER_AIRDOG_X7SM,
@@ -354,6 +378,7 @@ PURIFIER_MIOT = [
     MODEL_AIRPURIFIER_ZA1,
     MODEL_AIRPURIFIER_4_PRO,
     MODEL_AIRPURIFIER_4_LITE,
+    MODEL_AIRPURIFIER_4_COMPACT,
 ]
 HUMIDIFIER_MIOT = [MODEL_AIRHUMIDIFIER_CA4]
 
@@ -527,6 +552,20 @@ AVAILABLE_ATTRIBUTES_AIRPURIFIER_4_LITE = {
     ATTR_HUMIDITY: "humidity",
     ATTR_AIR_QUALITY_INDEX: "aqi",
     ATTR_TEMPERATURE: "temperature",
+    ATTR_FILTER_LIFE: "filter_life_remaining",
+    ATTR_FILTER_HOURS_USED: "filter_hours_used",
+    ATTR_FILTER_LEFT_TIME: "filter_left_time",
+    ATTR_BUZZER: "buzzer",
+    ATTR_CHILD_LOCK: "child_lock",
+    ATTR_MOTOR_SPEED: "motor_speed",
+    ATTR_FAVORITE_LEVEL: "favorite_level",
+    ATTR_LED_BRIGHTNESS: "led_brightness",
+}
+
+AVAILABLE_ATTRIBUTES_AIRPURIFIER_4_COMPACT = {
+    ATTR_POWER: "power",
+    ATTR_MODE: "mode",
+    ATTR_AIR_QUALITY_INDEX: "aqi",
     ATTR_FILTER_LIFE: "filter_life_remaining",
     ATTR_FILTER_HOURS_USED: "filter_hours_used",
     ATTR_FILTER_LEFT_TIME: "filter_left_time",
@@ -795,6 +834,7 @@ OPERATION_MODES_AIRPURIFIER_V3 = [
 ]
 OPERATION_MODES_AIRPURIFIER_4_PRO = ["Auto", "Silent", "Favorite", "Fan"]
 OPERATION_MODES_AIRPURIFIER_4_LITE = ["Auto", "Silent", "Favorite"]
+OPERATION_MODES_AIRPURIFIER_4_COMPACT = ["Auto", "Silent", "Favorite"]
 OPERATION_MODES_AIRFRESH = ["Auto", "Silent", "Interval", "Low", "Middle", "Strong"]
 OPERATION_MODES_AIRFRESH_T2017 = ["Auto", "Sleep", "Favorite"]
 
@@ -891,6 +931,14 @@ FEATURE_FLAGS_AIRPURIFIER_4_PRO = (
 )
 
 FEATURE_FLAGS_AIRPURIFIER_4_LITE = (
+    FEATURE_SET_BUZZER
+    | FEATURE_SET_CHILD_LOCK
+    | FEATURE_SET_LED
+    | FEATURE_SET_FAVORITE_LEVEL
+    | FEATURE_SET_LED_BRIGHTNESS
+)
+
+FEATURE_FLAGS_AIRPURIFIER_4_COMPACT = (
     FEATURE_SET_BUZZER
     | FEATURE_SET_CHILD_LOCK
     | FEATURE_SET_LED
@@ -1528,6 +1576,10 @@ class XiaomiAirPurifier(XiaomiGenericDevice):
             self._device_features = FEATURE_FLAGS_AIRPURIFIER_4_LITE
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_4_LITE
             self._preset_modes = OPERATION_MODES_AIRPURIFIER_4_LITE
+        elif self._model == MODEL_AIRPURIFIER_4_COMPACT:
+            self._device_features = FEATURE_FLAGS_AIRPURIFIER_4_COMPACT
+            self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_4_COMPACT
+            self._preset_modes = OPERATION_MODES_AIRPURIFIER_4_COMPACT
         elif self._model in PURIFIER_MIOT:
             self._device_features = FEATURE_FLAGS_AIRPURIFIER_3
             self._available_attributes = AVAILABLE_ATTRIBUTES_AIRPURIFIER_3
