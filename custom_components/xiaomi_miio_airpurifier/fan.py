@@ -1223,7 +1223,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
         device = XiaomiAirPurifierMiot(name, air_purifier, model, unique_id, retries)
     elif model.startswith("zhimi.airpurifier."):
         air_purifier = AirPurifier(host, token)
-        device = XiaomiAirPurifier(name, air_purifier, model, unique_id)
+        device = XiaomiAirPurifier(name, air_purifier, model, unique_id, retries)
     elif model in HUMIDIFIER_MIOT:
         air_humidifier = AirHumidifierMiot(host, token)
         device = XiaomiAirHumidifierMiot(name, air_humidifier, model, unique_id)
