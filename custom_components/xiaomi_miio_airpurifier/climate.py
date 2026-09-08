@@ -529,7 +529,7 @@ class XiaomiAirDehumidifier(XiaomiGenericDevice):
     async def async_set_preset_mode(self, preset_mode: str) -> None:
         """Set new preset mode."""
         await self._try_command(
-            "Setting the fan mode of the miio device failed.",
+            "Setting the preset mode of the miio device failed.",
             self._device.set_mode,
             AirdehumidifierOperationMode[preset_mode],
         )
