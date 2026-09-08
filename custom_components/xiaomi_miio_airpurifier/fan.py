@@ -2035,7 +2035,7 @@ class XiaomiAirHumidifierMjjsq(XiaomiAirHumidifier):
         await self._try_command(
             "Setting preset mode of the miio device failed.",
             self._device.set_mode,
-            AirhumidifierMjjsqOperationMode[preset_mode.title()],
+            AirhumidifierMjjsqOperationMode[preset_mode],
         )
 
     async def async_set_wet_protection_on(self):
