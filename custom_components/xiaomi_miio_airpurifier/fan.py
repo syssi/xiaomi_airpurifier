@@ -3056,6 +3056,8 @@ class XiaomiFan1C(XiaomiFan):
     @property
     def percentage(self) -> int | None:
         """Return the current speed percentage."""
+        if not self._state or self._preset_mode == SPEED_OFF:
+            return 0
         return ordered_list_item_to_percentage(FAN_SPEEDS_1C, self._preset_mode)
 
     @property
