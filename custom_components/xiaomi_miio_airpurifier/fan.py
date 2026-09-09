@@ -2334,7 +2334,7 @@ class XiaomiAirFresh(XiaomiGenericDevice):
             return
 
         await self._try_command(
-            "Turning the led of the miio device off failed.",
+            "Turning the ptc of the miio device off failed.",
             self._device.set_ptc,
             False,
         )
@@ -2418,7 +2418,7 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
             return
 
         await self._try_command(
-            "Turning the led of the miio device off failed.",
+            "Turning the display of the miio device on failed.",
             self._device.set_display,
             True,
         )
@@ -2429,7 +2429,7 @@ class XiaomiAirFreshT2017(XiaomiAirFresh):
             return
 
         await self._try_command(
-            "Turning the led of the miio device off failed.",
+            "Turning the display of the miio device off failed.",
             self._device.set_display,
             False,
         )
