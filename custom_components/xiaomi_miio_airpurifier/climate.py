@@ -145,7 +145,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     if model is None:
         miio_device = Device(host, token)
         try:
-            device_info = miio_device.info()
+            device_info = await hass.async_add_executor_job(miio_device.info)
         except DeviceException:
             raise PlatformNotReady from None
 
